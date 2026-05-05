@@ -30,6 +30,13 @@ Google Firestore under your account, so it can be restored across devices.
 If you do not sign in, all budget data stays only on your device and is
 never transmitted to our servers.
 
+When you contact support from within the app, a diagnostic snapshot 
+(app version, install date on this device, device model, OS version, language, 
+currency, and your Pro subscription status) is also stored under your account in 
+Firestore so we can respond to your ticket effectively. The snapshot is overwritten 
+each time you submit a new request and is only sent when you tap "Send" — it is 
+never collected automatically.
+
 ### 1.3. Purchase information
 
 When you purchase a Pro subscription, the transaction is processed by
@@ -50,7 +57,10 @@ The App does not use cookies.
 We use the information we collect only to:
 - Provide and maintain the App's functionality (authentication, cloud sync).
 - Process and verify Pro subscription purchases.
-- Respond to support requests you send to our email.
+- Respond to support requests you send to our email. If you contact support
+while signed in, we read the diagnostic snapshot stored under your account;
+if you are signed out, the same diagnostics (excluding Pro subscription status)
+are included in the email body so we can investigate.
 
 We do not use your information for advertising, profiling, or any other
 purpose. We do not sell your information to third parties.
