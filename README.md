@@ -1,2 +1,2 @@
 # flowsapp-dev.github.io
-Legal documents (Privacy Policy, Terms of Service) for FLOW$ budget app
+Legal and account documents (Privacy Policy, Terms of Service, Account Deletion) for FLOW$ budget app
