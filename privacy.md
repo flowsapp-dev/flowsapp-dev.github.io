@@ -1,6 +1,12 @@
+---
+layout: default
+title: Privacy Policy
+permalink: /privacy
+---
+
 # Privacy Policy
 
-**Last updated: May 3, 2026**
+**Last updated: May 16, 2026**
 
 This Privacy Policy describes how FlowsApp ("we", "our", or "us") collects,
 uses, and shares information when you use the FLOW$ mobile application
@@ -30,11 +36,11 @@ Google Firestore under your account, so it can be restored across devices.
 If you do not sign in, all budget data stays only on your device and is
 never transmitted to our servers.
 
-When you contact support from within the app, a diagnostic snapshot 
-(app version, install date on this device, device model, OS version, language, 
-currency, and your Pro subscription status) is also stored under your account in 
-Firestore so we can respond to your ticket effectively. The snapshot is overwritten 
-each time you submit a new request and is only sent when you tap "Send" — it is 
+When you contact support from within the app, a diagnostic snapshot
+(app version, install date on this device, device model, OS version, language,
+currency, and your Pro subscription status) is also stored under your account in
+Firestore so we can respond to your ticket effectively. The snapshot is overwritten
+each time you submit a new request and is only sent when you tap "Send" — it is
 never collected automatically.
 
 ### 1.3. Purchase information
@@ -46,9 +52,9 @@ subscription exists for your Google account.
 
 ### 1.4. Information collected automatically
 
-The App does not contain analytics SDKs, advertising SDKs, crash reporters,
-or third-party tracking tools. We do not collect device identifiers, IP
-addresses, location, contacts, or installed apps.
+The App does not collect analytics or advertising data. We do not use your
+usage data, device identifiers, IP addresses, location, contacts, or installed
+apps for analytics, advertising, or tracking purposes.
 
 The App does not use cookies.
 
@@ -58,9 +64,9 @@ We use the information we collect only to:
 - Provide and maintain the App's functionality (authentication, cloud sync).
 - Process and verify Pro subscription purchases.
 - Respond to support requests you send to our email. If you contact support
-while signed in, we read the diagnostic snapshot stored under your account;
-if you are signed out, the same diagnostics (excluding Pro subscription status)
-are included in the email body so we can investigate.
+  while signed in, we read the diagnostic snapshot stored under your account;
+  if you are signed out, the same diagnostics (excluding Pro subscription status)
+  are included in the email body so we can investigate.
 
 We do not use your information for advertising, profiling, or any other
 purpose. We do not sell your information to third parties.
