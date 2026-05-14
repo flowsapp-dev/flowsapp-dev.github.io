@@ -1,6 +1,12 @@
+---
+layout: default
+title: Terms of Service
+permalink: /terms
+---
+
 # Terms of Service
 
-**Last updated: May 3, 2026**
+**Last updated: May 16, 2026**
 
 These Terms of Service ("Terms") govern your use of the FLOW$ mobile
 application ("the App"), provided by FlowsApp ("we", "our", or "us"). By
@@ -8,8 +14,8 @@ installing or using the App, you agree to be bound by these Terms.
 
 ## 1. Use of the App
 
-The App is provided for personal, non-commercial use to help you plan and
-track your personal or household budget. You may not:
+The App is provided for personal use to help you plan and track your
+personal or household budget. You may not:
 - Reverse engineer, decompile, or modify the App.
 - Use the App for any illegal purpose.
 - Attempt to gain unauthorized access to other users' accounts or to our
@@ -31,9 +37,9 @@ The App offers an optional Pro subscription with the following plans:
 - **Monthly** — billed monthly.
 - **Yearly** — billed annually, with savings compared to monthly.
 
-Both plans include a free trial period (typically 7 days) for first-time
-subscribers. After the trial, the subscription auto-renews at the price
-shown in the App, charged through your Google Play account.
+Both plans include a 7-day free trial for first-time subscribers. After the
+trial, the subscription auto-renews at the price shown in the App, charged
+through your Google Play account.
 
 ### 3.1. Cancellation
 
