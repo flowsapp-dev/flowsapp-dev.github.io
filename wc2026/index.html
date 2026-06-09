@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="uk">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
-<title>ЧМ 2026 — мой турнир</title>
+<title>ЧС 2026 — мій турнір</title>
 <style>
   :root{
     --green:#16a34a; --green-d:#15803d; --green-l:#dcfce7;
@@ -224,22 +224,22 @@
 <body>
 <div class="app">
   <div class="topbar">
-    <div class="title" id="topTitle">Чемпионат мира 2026</div>
+    <div class="title" id="topTitle">Чемпіонат світу 2026</div>
     <button class="ico" id="themeBtn" title="тема">🌙</button>
-    <button class="ico" id="codeOutBtn" title="код: отправить">📤</button>
-    <button class="ico" id="codeInBtn" title="код: загрузить">📥</button>
-    <button class="ico" id="importBtn" title="импорт файла">⤒</button>
-    <button class="ico" id="exportBtn" title="экспорт файла">⤓</button>
+    <button class="ico" id="codeOutBtn" title="код: надіслати">📤</button>
+    <button class="ico" id="codeInBtn" title="код: завантажити">📥</button>
+    <button class="ico" id="importBtn" title="імпорт файлу">⤒</button>
+    <button class="ico" id="exportBtn" title="експорт файлу">⤓</button>
     <input type="file" id="importFile" accept="application/json" hidden>
   </div>
   <div class="progress" id="progress"></div>
   <div class="subtabs" id="subtabs"></div>
   <div class="content" id="content"></div>
   <div class="bottomnav">
-    <button id="navMatches"><span class="bi">⚽</span>Матчи</button>
-    <button id="navTable" class="on"><span class="bi">▦</span>Таблица</button>
-    <button id="navCalendar"><span class="bi">🗓</span>Календарь</button>
-    <button id="navVenues"><span class="bi">🏟</span>Стадионы</button>
+    <button id="navMatches"><span class="bi">⚽</span>Матчі</button>
+    <button id="navTable" class="on"><span class="bi">▦</span>Таблиця</button>
+    <button id="navCalendar"><span class="bi">🗓</span>Календар</button>
+    <button id="navVenues"><span class="bi">🏟</span>Стадіони</button>
     <button id="navRules"><span class="bi">📋</span>Правила</button>
   </div>
 </div>
@@ -248,32 +248,32 @@
 <script>
 /* ============ DATA ============ */
 const ISO={
- "Мексика":"mx","Южно-Африканская Республика":"za","Республика Корея":"kr","Чехия":"cz",
- "Канада":"ca","Босния и Герцеговина":"ba","Швейцария":"ch","Катар":"qa",
- "Бразилия":"br","Марокко":"ma","Гаити":"ht","Шотландия":"gb-sct",
- "Соединённые Штаты":"us","Парагвай":"py","Австралия":"au","Турция":"tr",
- "Германия":"de","Кюрасао":"cw","Кот-д’Ивуар":"ci","Эквадор":"ec",
- "Нидерланды":"nl","Япония":"jp","Швеция":"se","Тунис":"tn",
- "Бельгия":"be","Египет":"eg","Иран":"ir","Новая Зеландия":"nz",
- "Испания":"es","Кабо-Верде":"cv","Саудовская Аравия":"sa","Уругвай":"uy",
- "Франция":"fr","Сенегал":"sn","Норвегия":"no","Ирак":"iq",
- "Аргентина":"ar","Алжир":"dz","Австрия":"at","Иордания":"jo",
- "Португалия":"pt","Конго — Киншаса":"cd","Узбекистан":"uz","Колумбия":"co",
- "Англия":"gb-eng","Хорватия":"hr","Гана":"gh","Панама":"pa"
+ "Мексика":"mx","Південно-Африканська Республіка":"za","Республіка Корея":"kr","Чехія":"cz",
+ "Канада":"ca","Боснія і Герцеговина":"ba","Швейцарія":"ch","Катар":"qa",
+ "Бразилія":"br","Марокко":"ma","Гаїті":"ht","Шотландія":"gb-sct",
+ "Сполучені Штати":"us","Парагвай":"py","Австралія":"au","Туреччина":"tr",
+ "Німеччина":"de","Кюрасао":"cw","Кот-д’Івуар":"ci","Еквадор":"ec",
+ "Нідерланди":"nl","Японія":"jp","Швеція":"se","Туніс":"tn",
+ "Бельгія":"be","Єгипет":"eg","Іран":"ir","Нова Зеландія":"nz",
+ "Іспанія":"es","Кабо-Верде":"cv","Саудівська Аравія":"sa","Уругвай":"uy",
+ "Франція":"fr","Сенегал":"sn","Норвегія":"no","Ірак":"iq",
+ "Аргентина":"ar","Алжир":"dz","Австрія":"at","Йорданія":"jo",
+ "Португалія":"pt","Конго — Кіншаса":"cd","Узбекистан":"uz","Колумбія":"co",
+ "Англія":"gb-eng","Хорватія":"hr","Гана":"gh","Панама":"pa"
 };
 const GROUPS={
- A:["Мексика","Южно-Африканская Республика","Республика Корея","Чехия"],
- B:["Канада","Босния и Герцеговина","Катар","Швейцария"],
- C:["Бразилия","Марокко","Гаити","Шотландия"],
- D:["Соединённые Штаты","Парагвай","Австралия","Турция"],
- E:["Германия","Кюрасао","Кот-д’Ивуар","Эквадор"],
- F:["Нидерланды","Япония","Швеция","Тунис"],
- G:["Бельгия","Египет","Иран","Новая Зеландия"],
- H:["Испания","Кабо-Верде","Саудовская Аравия","Уругвай"],
- I:["Франция","Сенегал","Ирак","Норвегия"],
- J:["Аргентина","Алжир","Австрия","Иордания"],
- K:["Португалия","Конго — Киншаса","Узбекистан","Колумбия"],
- L:["Англия","Хорватия","Гана","Панама"]
+ A:["Мексика","Південно-Африканська Республіка","Республіка Корея","Чехія"],
+ B:["Канада","Боснія і Герцеговина","Катар","Швейцарія"],
+ C:["Бразилія","Марокко","Гаїті","Шотландія"],
+ D:["Сполучені Штати","Парагвай","Австралія","Туреччина"],
+ E:["Німеччина","Кюрасао","Кот-д’Івуар","Еквадор"],
+ F:["Нідерланди","Японія","Швеція","Туніс"],
+ G:["Бельгія","Єгипет","Іран","Нова Зеландія"],
+ H:["Іспанія","Кабо-Верде","Саудівська Аравія","Уругвай"],
+ I:["Франція","Сенегал","Ірак","Норвегія"],
+ J:["Аргентина","Алжир","Австрія","Йорданія"],
+ K:["Португалія","Конго — Кіншаса","Узбекистан","Колумбія"],
+ L:["Англія","Хорватія","Гана","Панама"]
 };
 const GKEYS=Object.keys(GROUPS);
 const PAIRS=[[0,1],[2,3],[0,2],[1,3],[0,3],[1,2]];
@@ -281,7 +281,7 @@ const TOUR_OF=[1,1,2,2,3,3];
 
 /* 16 реальных арен ЧМ-2026 */
 const VENUES=[
- {id:"azteca",   n:"Estadio Azteca",          city:"Мехико",         cc:"mx",cap:87523},
+ {id:"azteca",   n:"Estadio Azteca",          city:"Мехіко",         cc:"mx",cap:87523},
  {id:"akron",    n:"Estadio Akron",           city:"Гвадалахара",    cc:"mx",cap:49850},
  {id:"bbva",     n:"Estadio BBVA",            city:"Монтеррей",      cc:"mx",cap:53500},
  {id:"bmo",      n:"BMO Field",               city:"Торонто",        cc:"ca",cap:45000},
@@ -290,13 +290,13 @@ const VENUES=[
  {id:"sofi",     n:"SoFi Stadium",            city:"Лос-Анджелес",   cc:"us",cap:70240},
  {id:"att",      n:"AT&T Stadium",            city:"Даллас",         cc:"us",cap:80000},
  {id:"mercedes", n:"Mercedes-Benz Stadium",   city:"Атланта",        cc:"us",cap:71000},
- {id:"nrg",      n:"NRG Stadium",             city:"Хьюстон",        cc:"us",cap:72220},
- {id:"arrowhead",n:"Arrowhead Stadium",       city:"Канзас-Сити",    cc:"us",cap:76416},
- {id:"linc",     n:"Lincoln Financial Field", city:"Филадельфия",    cc:"us",cap:69176},
+ {id:"nrg",      n:"NRG Stadium",             city:"Х’юстон",        cc:"us",cap:72220},
+ {id:"arrowhead",n:"Arrowhead Stadium",       city:"Канзас-Сіті",    cc:"us",cap:76416},
+ {id:"linc",     n:"Lincoln Financial Field", city:"Філадельфія",    cc:"us",cap:69176},
  {id:"gillette", n:"Gillette Stadium",        city:"Бостон",         cc:"us",cap:65878},
- {id:"lumen",    n:"Lumen Field",             city:"Сиэтл",          cc:"us",cap:68740},
+ {id:"lumen",    n:"Lumen Field",             city:"Сіетл",          cc:"us",cap:68740},
  {id:"levis",    n:"Levi's Stadium",          city:"Сан-Франциско",  cc:"us",cap:68500},
- {id:"hardrock", n:"Hard Rock Stadium",       city:"Майами",         cc:"us",cap:65326}
+ {id:"hardrock", n:"Hard Rock Stadium",       city:"Маямі",          cc:"us",cap:65326}
 ];
 const VMAP={}; VENUES.forEach(v=>VMAP[v.id]=v);
 
@@ -336,8 +336,8 @@ const KFIX=[
 ];
 const SCHED_DEF={};
 (function buildSched(){
-  const DOW=["вс","пн","вт","ср","чт","пт","сб"];
-  const MON=["января","февраля","марта","апреля","мая","июня","июля","августа","сентября","октября","ноября","декабря"];
+  const DOW=["нд","пн","вт","ср","чт","пт","сб"];
+  const MON=["січня","лютого","березня","квітня","травня","червня","липня","серпня","вересня","жовтня","листопада","грудня"];
   // ET(EDT)=UTC-4 → UTC=ET+4ч; EEST=UTC+3ч  ⇒  EEST = ET + 7ч (с переносом даты)
   function mk(mo,day,et,vid){
     const [hh,mm]=et.split(":").map(Number);
@@ -388,7 +388,7 @@ function computeGroup(key){
   });
   st.forEach(s=>s.gd=s.gf-s.ga); return sortStandings(key,st);
 }
-function cmp(a,b){return b.pts-a.pts||b.gd-a.gd||b.gf-a.gf||a.team.localeCompare(b.team,"ru");}
+function cmp(a,b){return b.pts-a.pts||b.gd-a.gd||b.gf-a.gf||a.team.localeCompare(b.team,"uk");}
 /* Офиц. тай-брейк ЧМ-2026: при равенстве очков — ЛИЧНЫЕ ВСТРЕЧИ (мини-таблица только
    матчей между равными командами), затем общие показатели. Карточек (fair-play) приложение
    не хранит → этот шаг пропущен. cmp() остаётся для МЕЖгруппового сравнения (третьи места,
@@ -414,7 +414,7 @@ function sortStandings(key,st){
     if(cl.length>1){ // 2) внутри равных по очкам — личные встречи, потом общие
       const h=h2hAcc(key,cl.map(s=>s.i));
       cl.sort((a,b)=> h[b.i].hp-h[a.i].hp || h[b.i].hgd-h[a.i].hgd || h[b.i].hgf-h[a.i].hgf
-                      || b.gd-a.gd || b.gf-a.gf || a.team.localeCompare(b.team,"ru"));
+                      || b.gd-a.gd || b.gf-a.gf || a.team.localeCompare(b.team,"uk"));
     }
     out=out.concat(cl); i=j;
   }
@@ -458,16 +458,16 @@ const $=id=>document.getElementById(id);
 function flag(t){const c=ISO[t];return c?`<img class="flag" src="https://flagcdn.com/w40/${c}.png" alt="" loading="lazy">`:`<span class="flag" style="display:inline-block;width:26px;height:18px;background:#dde2e7;border-radius:3px"></span>`;}
 function flagCC(cc){return `<img class="flag" src="https://flagcdn.com/w40/${cc}.png" alt="" loading="lazy" style="width:20px;height:14px">`;}
 function esc(s){return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
-function fmtCap(n){return n.toLocaleString("ru-RU");}
-function searchQ(a,b){return encodeURIComponent([a,b].filter(Boolean).join(" ")+" ЧМ 2026 футбол");}
+function fmtCap(n){return n.toLocaleString("uk-UA");}
+function searchQ(a,b){return encodeURIComponent([a,b].filter(Boolean).join(" ")+" ЧС 2026 футбол");}
 
 /* ============ SUBTABS ============ */
 function renderSubtabs(){
   const box=$("subtabs");box.innerHTML="";
   if(mainView==="venues"||mainView==="calendar"||mainView==="rules"){return;}
   let tabs = mainView==="table"
-    ? [["groups","ГРУППЫ"],["thirds","ТРЕТЬИ МЕСТА"]]
-    : [["t1","1 ТУР"],["t2","2 ТУР"],["t3","3 ТУР"],["R32","1/16"],["R16","1/8"],["QF","ЧЕТВЕРТЬ"],["SF","ПОЛУФИНАЛ"],["F","ФИНАЛ"],["tree","🗂 СЕТКА"]];
+    ? [["groups","ГРУПИ"],["thirds","ТРЕТІ МІСЦЯ"]]
+    : [["t1","1 ТУР"],["t2","2 ТУР"],["t3","3 ТУР"],["R32","1/16"],["R16","1/8"],["QF","ЧВЕРТЬ"],["SF","ПІВФІНАЛ"],["F","ФІНАЛ"],["tree","🗂 СІТКА"]];
   if(!tabs.find(t=>t[0]===sub)) sub=tabs[0][0];
   tabs.forEach(([k,lbl])=>{const b=document.createElement("button");b.textContent=lbl;if(k===sub)b.className="on";b.onclick=()=>{sub=k;render();};box.appendChild(b);});
 }
@@ -477,8 +477,8 @@ function groupTableHTML(){
   let h="";
   GKEYS.forEach(k=>{
     const st=computeGroup(k);
-    h+=`<div class="gcard"><div class="ghead"><div class="gname">Группа ${k}</div></div>`;
-    h+=`<div class="colhead"><span></span><span class="cstr">Страна</span><span>И</span><span>В</span><span>Н</span><span>П</span><span>+/-</span><span>О</span></div>`;
+    h+=`<div class="gcard"><div class="ghead"><div class="gname">Група ${k}</div></div>`;
+    h+=`<div class="colhead"><span></span><span class="cstr">Країна</span><span>І</span><span>В</span><span>Н</span><span>П</span><span>+/-</span><span>О</span></div>`;
     st.forEach((s,idx)=>{const rk=idx+1;
       h+=`<div class="row"><span class="rank r${rk}">${rk}</span><span class="tname">${flag(s.team)}${s.team}</span>`+
          `<span class="num">${s.p}</span><span class="num">${s.w}</span><span class="num">${s.d}</span><span class="num">${s.l}</span>`+
@@ -489,13 +489,13 @@ function groupTableHTML(){
 }
 function thirdsHTML(){
   const list=thirds();
-  let h=`<div class="gcard third"><div class="ghead"><div class="gname">Рейтинг третьих мест</div></div>`;
-  h+=`<div class="colhead"><span></span><span class="cstr">Страна</span><span>И</span><span>В</span><span>Н</span><span>П</span><span>+/-</span><span>О</span></div>`;
+  let h=`<div class="gcard third"><div class="ghead"><div class="gname">Рейтинг третіх місць</div></div>`;
+  h+=`<div class="colhead"><span></span><span class="cstr">Країна</span><span>І</span><span>В</span><span>Н</span><span>П</span><span>+/-</span><span>О</span></div>`;
   list.forEach((s,idx)=>{const out=idx>=8?"out":"";
     h+=`<div class="row ${out}"><span class="rank">${idx+1}</span><span class="tname">${flag(s.team)}${s.team} <small style="color:#9aa1ab">(${s.group})</small></span>`+
        `<span class="num">${s.p}</span><span class="num">${s.w}</span><span class="num">${s.d}</span><span class="num">${s.l}</span>`+
        `<span class="gd">${s.gd>0?"+"+s.gd:s.gd}</span><span class="pts">${s.pts}</span></div>`;});
-  h+=`<div class="note">Зелёные (1–8) выходят в плей-офф. Серые — выбывают.</div></div>`;
+  h+=`<div class="note">Зелені (1–8) виходять у плей-оф. Сірі — вибувають.</div></div>`;
   return h;
 }
 
@@ -504,7 +504,7 @@ function venueChip(key){
   const s=sched(key), v=s.vid?VMAP[s.vid]:null;
   const dt=[s.d,s.t].filter(Boolean).join(" ");
   if(!v && !dt){
-    return `<button class="venue empty" data-key="${key}">＋ стадион, дата, заметки<span class="vright">›</span></button>`;
+    return `<button class="venue empty" data-key="${key}">＋ стадіон, дата, нотатки<span class="vright">›</span></button>`;
   }
   const left = v
     ? `🏟 <b>${v.n}</b> · ${v.city}`
@@ -514,11 +514,11 @@ function venueChip(key){
 
 /* ============ MATCHES VIEW ============ */
 function tourHTML(tour){
-  let h=`<div class="toolbar"><button class="primary" id="seedBtn">⚙️ Сформировать плей-офф</button><button class="warn" id="resetBtn">Сбросить</button></div>`;
+  let h=`<div class="toolbar"><button class="primary" id="seedBtn">⚙️ Сформувати плей-оф</button><button class="warn" id="resetBtn">Скинути</button></div>`;
   const mis=[]; TOUR_OF.forEach((t,i)=>{if(t===tour)mis.push(i);});
   GKEYS.forEach(k=>{
     const teams=GROUPS[k];
-    h+=`<div class="mtour">Группа ${k}</div>`;
+    h+=`<div class="mtour">Група ${k}</div>`;
     mis.forEach(mi=>{
       const p=PAIRS[mi],a=teams[p[0]],b=teams[p[1]],sc=state.g[k][mi],key=`g-${k}-${mi}`;
       h+=matchBlock(key,a,b,sc[0],sc[1]);
@@ -535,18 +535,18 @@ function matchBlock(id,a,b,sa,sb){
 }
 function koHTML(round){
   if(!state.koSeed){
-    return `<div class="toolbar"><button class="primary" id="seedBtn">⚙️ Сформировать плей-офф</button></div><div class="note">Сначала заполни группы и нажми «Сформировать плей-офф». Сетка соберётся из 24 команд (1–2 места) + 8 лучших третьих, посев по очкам.</div>`;
+    return `<div class="toolbar"><button class="primary" id="seedBtn">⚙️ Сформувати плей-оф</button></div><div class="note">Спершу заповни групи і натисни «Сформувати плей-оф». Сітка збереться з 24 команд (1–2 місця) + 8 найкращих третіх, посів за очками.</div>`;
   }
-  let h=`<div class="toolbar"><button class="primary" id="seedBtn">⚙️ Пересобрать плей-офф</button></div>`;
+  let h=`<div class="toolbar"><button class="primary" id="seedBtn">⚙️ Перезібрати плей-оф</button></div>`;
   const teams=roundTeams(round);
-  const labels={R32:"1/16 финала",R16:"1/8 финала",QF:"Четвертьфинал",SF:"Полуфинал",F:"Финал"};
+  const labels={R32:"1/16 фіналу",R16:"1/8 фіналу",QF:"Чвертьфінал",SF:"Півфінал",F:"Фінал"};
   h+=`<div class="ko">`;
   teams.forEach((pair,i)=>h+=koMatch(round,i,pair,result(round,i),labels[round]+" · М"+(i+1)));
   if(round==="F"){
     const tp=roundTeams("TP")[0];
-    h+=koMatch("TP",0,tp,result("TP",0),"Матч за 3-е место");
+    h+=koMatch("TP",0,tp,result("TP",0),"Матч за 3-тє місце");
     const champ=winner("F",0);
-    h+=`<div class="champ"><div class="lbl">ЧЕМПИОН МИРА 2026</div><div class="name"><span class="cup">🏆</span>${champ?flag(champ)+" "+champ:"—"}</div></div>`;
+    h+=`<div class="champ"><div class="lbl">ЧЕМПІОН СВІТУ 2026</div><div class="name"><span class="cup">🏆</span>${champ?flag(champ)+" "+champ:"—"}</div></div>`;
   }
   h+=`</div>`;
   return h;
@@ -559,7 +559,7 @@ function koMatch(round,i,pair,res,tag){
   h+=`<div class="krow ${aw?'win':(res?'lose':'')}"><div class="kt">${flag(a)}<span class="nm">${a||"—"}</span></div><input id="k-${round}-${i}-a" type="number" min="0" inputmode="numeric" value="${m.sa}" ${a?'':'disabled'}></div>`;
   h+=`<div class="krow ${bw?'win':(res?'lose':'')}"><div class="kt">${flag(b)}<span class="nm">${b||"—"}</span></div><input id="k-${round}-${i}-b" type="number" min="0" inputmode="numeric" value="${m.sb}" ${b?'':'disabled'}></div>`;
   if(tie){
-    h+=`<div class="pen">Пенальти: `+
+    h+=`<div class="pen">Пенальті: `+
        `<button class="pn ${m.pen==='a'?'sel':''}" data-r="${round}" data-i="${i}" data-w="a">${a}</button>`+
        `<button class="pn ${m.pen==='b'?'sel':''}" data-r="${round}" data-i="${i}" data-w="b">${b}</button></div>`;
   }
@@ -573,21 +573,21 @@ function venuesHTML(){
   const cnt={};
   Object.keys(state.sched).forEach(key=>{const vid=state.sched[key].vid;if(vid)cnt[vid]=(cnt[vid]||0)+1;});
   SCHED_DEF && Object.keys(SCHED_DEF).forEach(key=>{if(!state.sched[key]){const vid=SCHED_DEF[key].vid;cnt[vid]=(cnt[vid]||0)+1;}});
-  let h=`<div class="note">16 арен ЧМ-2026 в США, Канаде и Мексике. Назначай стадион матчу в карточке матча.</div><div class="vlist">`;
+  let h=`<div class="note">16 арен ЧС-2026 у США, Канаді та Мексиці. Признач стадіон матчу в картці матчу.</div><div class="vlist">`;
   VENUES.forEach(v=>{
     const c=cnt[v.id]||0;
     h+=`<div class="vcard"><div class="vico">🏟</div>`+
        `<div class="vmid"><div class="vn">${v.n}</div><div class="vc">${flagCC(v.cc)} ${v.city}</div>`+
        (c?`<span class="vbadge">${c} ${matchWord(c)}</span>`:``)+`</div>`+
-       `<div class="vcap"><b>${fmtCap(v.cap)}</b><span>мест</span></div></div>`;
+       `<div class="vcap"><b>${fmtCap(v.cap)}</b><span>місць</span></div></div>`;
   });
   h+=`</div>`;
   return h;
 }
-function matchWord(n){const a=n%10,b=n%100;if(a===1&&b!==11)return "матч";if(a>=2&&a<=4&&(b<10||b>=20))return "матча";return "матчей";}
+function matchWord(n){const a=n%10,b=n%100;if(a===1&&b!==11)return "матч";if(a>=2&&a<=4&&(b<10||b>=20))return "матчі";return "матчів";}
 
 /* ============ CALENDAR (по дням) ============ */
-const MONTHS={"январ":1,"феврал":2,"март":3,"апрел":4,"ма":5,"июн":6,"июл":7,"август":8,"сентябр":9,"октябр":10,"ноябр":11,"декабр":12};
+const MONTHS={"січн":1,"лют":2,"берез":3,"квіт":4,"трав":5,"черв":6,"лип":7,"серп":8,"верес":9,"жовт":10,"листоп":11,"груд":12};
 function allMatchKeys(){
   const keys=[];
   GKEYS.forEach(k=>state.g[k].forEach((m,mi)=>keys.push(`g-${k}-${mi}`)));
@@ -614,7 +614,7 @@ function dateSortKey(d,t){
 function calTag(key){
   const p=key.split("-");
   if(p[0]==="g")return "Гр. "+p[1];
-  return ({R32:"1/16",R16:"1/8",QF:"1/4",SF:"1/2",F:"Финал",TP:"3-е место"})[p[1]]||p[1];
+  return ({R32:"1/16",R16:"1/8",QF:"1/4",SF:"1/2",F:"Фінал",TP:"3-тє місце"})[p[1]]||p[1];
 }
 function calendarHTML(){
   const days=new Map();
@@ -623,7 +623,7 @@ function calendarHTML(){
     if(!days.has(sr.d))days.set(sr.d,{sk:dateSortKey(sr.d,sr.t),items:[]});
     days.get(sr.d).items.push({key,t:sr.t||""});
   });
-  if(days.size===0)return `<div class="note">Пока нет матчей с датой. Открой матч → задай дату/время — и он появится здесь по дням. (Все 72 матча групп уже с расписанием; плей-офф добавишь вручную.)</div>`;
+  if(days.size===0)return `<div class="note">Поки немає матчів з датою. Відкрий матч → задай дату/час — і він зʼявиться тут за днями. (Усі 104 матчі вже з розкладом.)</div>`;
   const sorted=[...days.entries()].sort((a,b)=>a[1].sk-b[1].sk);
   let h="";
   sorted.forEach(([d,obj])=>{
@@ -670,33 +670,33 @@ function bracketTreeHTML(){
 /* ============ ПРАВИЛА ЧМ-2026 ============ */
 function rulesHTML(){
   return `<div class="rules">
-    <div class="muted">Главное про формат и правила именно ЧМ-2026 — и что нового против прошлых турниров. Источники: FIFA, IFAB, ESPN (проверено по нескольким, июнь 2026).</div>
+    <div class="muted">Головне про формат і правила саме ЧС-2026 — і що нового проти попередніх турнірів. Джерела: FIFA, IFAB, ESPN (перевірено за кількома, червень 2026).</div>
 
     <h2>🌍 Формат</h2>
-    <div class="rule"><span class="tag chg">НОВОЕ</span><br><b>48 команд</b> вместо 32 — впервые с 1998 года (+16 сборных).</div>
-    <div class="rule"><b>12 групп по 4 команды.</b> Каждая играет 3 матча в группе. Дальше проходят <b>топ-2 из группы</b> + <b>8 лучших третьих мест</b> из 12 → итого 32 команды в плей-офф.</div>
-    <div class="rule"><span class="tag chg">НОВОЕ</span><br><b>Плей-офф стартует с 1/16 финала</b> (Round of 32). Раньше начинался с 1/8. Дальше: 1/16 → 1/8 → 1/4 → 1/2 → финал (+ матч за 3-е место).</div>
-    <div class="rule"><b>104 матча</b> (было 64): 72 в группах + 32 на вылет. Победитель сыграет <b>8 матчей</b> (раньше 7). Турнир идёт 39 дней — 11 июня … 19 июля 2026.</div>
-    <div class="rule"><span class="tag chg">НОВОЕ</span><br><b>3 страны-хозяина</b> впервые в истории: США (11 городов), Мексика (3), Канада (2) — всего 16 стадионов.</div>
+    <div class="rule"><span class="tag chg">НОВЕ</span><br><b>48 команд</b> замість 32 — вперше з 1998 року (+16 збірних).</div>
+    <div class="rule"><b>12 груп по 4 команди.</b> Кожна грає 3 матчі в групі. Далі проходять <b>топ-2 з групи</b> + <b>8 найкращих третіх місць</b> із 12 → разом 32 команди в плей-оф.</div>
+    <div class="rule"><span class="tag chg">НОВЕ</span><br><b>Плей-оф стартує з 1/16 фіналу</b> (Round of 32). Раніше починався з 1/8. Далі: 1/16 → 1/8 → 1/4 → 1/2 → фінал (+ матч за 3-тє місце).</div>
+    <div class="rule"><b>104 матчі</b> (було 64): 72 в групах + 32 на виліт. Переможець зіграє <b>8 матчів</b> (раніше 7). Турнір триває 39 днів — 11 червня … 19 липня 2026.</div>
+    <div class="rule"><span class="tag chg">НОВЕ</span><br><b>3 країни-господарі</b> вперше в історії: США (11 міст), Мексика (3), Канада (2) — усього 16 стадіонів.</div>
 
-    <h2>⚖️ Тай-брейк в группах</h2>
-    <div class="rule"><span class="tag chg">ИЗМЕНЕНИЕ</span><br>При равенстве очков <b>первым считают личные встречи</b>, а не общую разницу мячей как раньше. Порядок:<br>1) очки в матчах между этими командами → 2) разница мячей в них → 3) голы в них → 4) fair-play (меньше карточек) → затем по всем матчам группы: 5) общая разница → 6) голы → 7) fair-play → 8) рейтинг ФИФА.</div>
-    <div class="rule"><b>8 лучших третьих мест.</b> Все третьи команды ранжируют: очки → разница → голы → fair-play → рейтинг ФИФА. Топ-8 проходят, 4 вылетают.</div>
+    <h2>⚖️ Тай-брейк у групах</h2>
+    <div class="rule"><span class="tag chg">ЗМІНА</span><br>За рівності очок <b>першими рахують особисті зустрічі</b>, а не загальну різницю мʼячів як раніше. Порядок:<br>1) очки в матчах між цими командами → 2) різниця мʼячів у них → 3) голи в них → 4) fair-play (менше карток) → потім за всіма матчами групи: 5) загальна різниця → 6) голи → 7) fair-play → 8) рейтинг ФІФА.</div>
+    <div class="rule"><b>8 найкращих третіх місць.</b> Усі треті команди ранжують: очки → різниця → голи → fair-play → рейтинг ФІФА. Топ-8 проходять, 4 вибувають.</div>
 
-    <h2>🥅 Новое правило игры (IFAB 2025/26)</h2>
-    <div class="rule"><span class="tag chg">НОВОЕ</span><br><b>Правило 8 секунд для вратаря.</b> Держит мяч в руках дольше 8 секунд (судья показывает отсчёт последних 5 сек поднятой рукой) → <b>угловой</b> сопернику. Раньше было 6 секунд и свободный удар — теперь жёстче, против затяжки времени.</div>
+    <h2>🥅 Нове правило гри (IFAB 2025/26)</h2>
+    <div class="rule"><span class="tag chg">НОВЕ</span><br><b>Правило 8 секунд для воротаря.</b> Тримає мʼяч у руках довше 8 секунд (суддя показує відлік останніх 5 сек піднятою рукою) → <b>кутовий</b> суперникові. Раніше було 6 секунд і вільний удар — тепер жорсткіше, проти затягування часу.</div>
 
-    <h2>🏆 Плей-офф</h2>
-    <div class="rule">Ничья после 90 минут → <b>дополнительное время 2×15 мин</b> → если снова ничья, <b>серия пенальти</b>. Переигровок нет.</div>
+    <h2>🏆 Плей-оф</h2>
+    <div class="rule">Нічия після 90 хвилин → <b>додатковий час 2×15 хв</b> → якщо знову нічия, <b>серія пенальті</b>. Перегравань немає.</div>
 
-    <div class="muted" style="margin-top:14px">ℹ️ Приложение считает таблицы по официальному тай-брейку (личные встречи первыми). Карточек оно не хранит — шаг fair-play пропускается; посев плей-офф остаётся упрощённым (по очкам, не по офиц. слот-таблице третьих мест).</div>
+    <div class="muted" style="margin-top:14px">ℹ️ Застосунок рахує таблиці за офіційним тай-брейком (особисті зустрічі першими). Карток він не зберігає — крок fair-play пропускається; посів плей-оф лишається спрощеним (за очками, не за офіц. слот-таблицею третіх місць).</div>
 
-    <h2>🔗 Источники</h2>
+    <h2>🔗 Джерела</h2>
     <div class="rule">
-      <button class="srclink" data-url="https://www.theifab.com/law-changes/latest/">IFAB — изменения правил 2025/26 (правило 8 секунд)</button>
-      <button class="srclink spoil" data-url="https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/groups-how-teams-qualify-tie-breakers">FIFA — формат, выход из групп, тай-брейки ⚠</button>
+      <button class="srclink" data-url="https://www.theifab.com/law-changes/latest/">IFAB — зміни правил 2025/26 (правило 8 секунд)</button>
+      <button class="srclink spoil" data-url="https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/groups-how-teams-qualify-tie-breakers">FIFA — формат, вихід із груп, тай-брейки ⚠</button>
       <button class="srclink spoil" data-url="https://en.wikipedia.org/wiki/2026_FIFA_World_Cup">Wikipedia — 2026 FIFA World Cup ⚠</button>
-      <div class="muted" style="margin-top:6px">⚠ = во время турнира на странице могут быть счёта матчей. Откроется только после подтверждения.</div>
+      <div class="muted" style="margin-top:6px">⚠ = під час турніру на сторінці можуть бути рахунки матчів. Відкриється лише після підтвердження.</div>
     </div>
   </div>`;
 }
@@ -715,9 +715,9 @@ function closeSheet(){
 function fillSheet(){
   const key=sheetKey,a=sheetA,b=sheetB,s=sched(key),v=s.vid?VMAP[s.vid]:null;
   const stad = v
-    ? `<div class="stadcard"><div class="si">🏟</div><div><div class="sn">${v.n}</div><div class="sm">${flagCC(v.cc)} ${v.city} · вместимость ${fmtCap(v.cap)}</div></div></div>`
-    : `<div class="stadcard"><div class="si">🏟</div><div><div class="sn">Стадион не выбран</div><div class="sm">выбери арену ниже</div></div></div>`;
-  let opts=`<option value="">— не выбран —</option>`;
+    ? `<div class="stadcard"><div class="si">🏟</div><div><div class="sn">${v.n}</div><div class="sm">${flagCC(v.cc)} ${v.city} · місткість ${fmtCap(v.cap)}</div></div></div>`
+    : `<div class="stadcard"><div class="si">🏟</div><div><div class="sn">Стадіон не вибрано</div><div class="sm">вибери арену нижче</div></div></div>`;
+  let opts=`<option value="">— не вибрано —</option>`;
   VENUES.forEach(vn=>{opts+=`<option value="${vn.id}" ${s.vid===vn.id?"selected":""}>${vn.n} · ${vn.city} (${fmtCap(vn.cap)})</option>`;});
   const mapsQ=encodeURIComponent(v?(v.n+", "+v.city):(a+" "+b));
   const h=
@@ -725,18 +725,18 @@ function fillSheet(){
     `<div class="shead"><div class="steams">${flag(a)}<span>${a||"—"}</span><span class="vs">vs</span><span>${b||"—"}</span>${flag(b)}</div></div>`+
     `<div class="sbody">`+
       stad+
-      `<div class="fld"><label>Стадион</label><select id="sh-vid">${opts}</select></div>`+
-      `<div class="frow"><div class="fld"><label>Дата</label><input id="sh-d" placeholder="напр. сб 13 июня" value="${esc(s.d)}"></div>`+
-      `<div class="fld" style="flex:0 0 110px"><label>Время</label><input id="sh-t" placeholder="--:--" value="${esc(s.t)}"></div></div>`+
-      `<div class="fld"><label>Заметки</label><textarea id="sh-n" placeholder="прогноз, составы, мысли…">${esc(s.n)}</textarea></div>`+
+      `<div class="fld"><label>Стадіон</label><select id="sh-vid">${opts}</select></div>`+
+      `<div class="frow"><div class="fld"><label>Дата</label><input id="sh-d" placeholder="напр. сб 13 червня" value="${esc(s.d)}"></div>`+
+      `<div class="fld" style="flex:0 0 110px"><label>Час</label><input id="sh-t" placeholder="--:--" value="${esc(s.t)}"></div></div>`+
+      `<div class="fld"><label>Нотатки</label><textarea id="sh-n" placeholder="прогноз, склади, думки…">${esc(s.n)}</textarea></div>`+
       `<div class="sactions">`+
-        `<button class="sbtn spoil" id="sh-news">🔎 Новости</button>`+
-        `<a class="sbtn" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=${mapsQ}">📍 На карте</a>`+
+        `<button class="sbtn spoil" id="sh-news">🔎 Новини</button>`+
+        `<a class="sbtn" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=${mapsQ}">📍 На мапі</a>`+
       `</div>`+
-      `<div class="note" style="padding:10px 0 0">«Новости» открывает внешний поиск и <b>может содержать спойлеры</b> — спросит подтверждение.</div>`+
+      `<div class="note" style="padding:10px 0 0">«Новини» відкривають зовнішній пошук і <b>можуть містити спойлери</b> — спитає підтвердження.</div>`+
     `</div>`;
   $("sheet").innerHTML=h;
-  $("sh-news").onclick=()=>{ if(confirm("⚠️ ВНИМАНИЕ: новости и поиск могут раскрыть СЧЁТ матча.\n\nОткрыть всё равно?")) window.open("https://news.google.com/search?hl=ru&q="+searchQ(a,b),"_blank","noopener"); };
+  $("sh-news").onclick=()=>{ if(confirm("⚠️ УВАГА: новини та пошук можуть розкрити РАХУНОК матчу.\n\nВідкрити все одно?")) window.open("https://news.google.com/search?hl=uk&q="+searchQ(a,b),"_blank","noopener"); };
   $("sh-vid").onchange=e=>{sched(key).vid=e.target.value;save();fillSheet();};
   $("sh-d").oninput=e=>{sched(key).d=e.target.value;save();};
   $("sh-t").oninput=e=>{sched(key).t=e.target.value;save();};
@@ -745,7 +745,7 @@ function fillSheet(){
 
 /* ============ RENDER ============ */
 function render(){
-  const titles={table:"Таблица — ЧМ 2026",matches:"Матчи — ЧМ 2026",venues:"Стадионы ЧМ 2026",calendar:"Календарь — ЧМ 2026",rules:"Правила — ЧМ 2026"};
+  const titles={table:"Таблиця — ЧС 2026",matches:"Матчі — ЧС 2026",venues:"Стадіони ЧС 2026",calendar:"Календар — ЧС 2026",rules:"Правила — ЧС 2026"};
   $("topTitle").textContent=titles[mainView];
   $("navTable").classList.toggle("on",mainView==="table");
   $("navMatches").classList.toggle("on",mainView==="matches");
@@ -753,7 +753,7 @@ function render(){
   $("navVenues").classList.toggle("on",mainView==="venues");
   $("navRules").classList.toggle("on",mainView==="rules");
   const pg=countProgress(), pct=pg.total?Math.round(pg.done/pg.total*100):0;
-  $("progress").innerHTML=`<span>Заполнено</span><div class="bar"><i style="width:${pct}%"></i></div><span class="pc">${pg.done} / ${pg.total}</span>`;
+  $("progress").innerHTML=`<span>Заповнено</span><div class="bar"><i style="width:${pct}%"></i></div><span class="pc">${pg.done} / ${pg.total}</span>`;
   renderSubtabs();
   let html;
   if(mainView==="venues") html=venuesHTML();
@@ -788,11 +788,11 @@ function bind(){
   });
   document.querySelectorAll('.srclink').forEach(b=>b.onclick=()=>{
     const u=b.dataset.url;
-    if(b.classList.contains("spoil") && !confirm("⚠️ Внешний сайт. Во время турнира там могут быть СЧЁТА матчей.\n\nОткрыть всё равно?"))return;
+    if(b.classList.contains("spoil") && !confirm("⚠️ Зовнішній сайт. Під час турніру там можуть бути РАХУНКИ матчів.\n\nВідкрити все одно?"))return;
     window.open(u,"_blank","noopener");
   });
-  const sb=$("seedBtn"); if(sb) sb.onclick=()=>{if(state.koSeed&&!confirm("Пересобрать плей-офф из групп? Введённые счета плей-офф будут стёрты."))return;buildSeed();sub="R32";render();};
-  const rb=$("resetBtn"); if(rb) rb.onclick=()=>{if(confirm("Сбросить все результаты турнира?")){state=blank();save();render();}};
+  const sb=$("seedBtn"); if(sb) sb.onclick=()=>{if(state.koSeed&&!confirm("Перезібрати плей-оф із груп? Введені рахунки плей-оф буде стерто."))return;buildSeed();sub="R32";render();};
+  const rb=$("resetBtn"); if(rb) rb.onclick=()=>{if(confirm("Скинути всі результати турніру?")){state=blank();save();render();}};
 }
 function teamsForKey(key){
   const p=key.split("-");
@@ -817,7 +817,7 @@ $("themeBtn").onclick=()=>{const dark=!document.body.classList.contains("dark");
 applyTheme();
 $("exportBtn").onclick=()=>{const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="wc2026.json";a.click();};
 $("importBtn").onclick=()=>$("importFile").click();
-$("importFile").onchange=e=>{const f=e.target.files[0];if(!f)return;const rd=new FileReader();rd.onload=()=>{try{const d=JSON.parse(rd.result);if(d&&d.g){state=d;if(!state.sched)state.sched={};save();render();}else alert("Неверный файл");}catch(err){alert("Ошибка чтения файла");}};rd.readAsText(f);};
+$("importFile").onchange=e=>{const f=e.target.files[0];if(!f)return;const rd=new FileReader();rd.onload=()=>{try{const d=JSON.parse(rd.result);if(d&&d.g){state=d;if(!state.sched)state.sched={};save();render();}else alert("Невірний файл");}catch(err){alert("Помилка читання файлу");}};rd.readAsText(f);};
 
 /* поделиться через ссылку (данные в #d=base64, без сервера) */
 function packState(){return btoa(unescape(encodeURIComponent(JSON.stringify(state))));}
@@ -827,17 +827,17 @@ function openCodeOut(){
   const code=packState();
   $("sheet").innerHTML=
     `<div class="grip"></div>`+
-    `<div class="shead"><div class="steams">📤 Код для переноса</div></div>`+
+    `<div class="shead"><div class="steams">📤 Код для перенесення</div></div>`+
     `<div class="sbody">`+
-      `<div class="note" style="padding:0 0 10px">Скопируй и отправь себе (напр. в Telegram). На другом девайсе нажми 📥 и вставь.</div>`+
+      `<div class="note" style="padding:0 0 10px">Скопіюй і надішли собі (напр. у Telegram). На іншому пристрої натисни 📥 і встав.</div>`+
       `<div class="fld"><textarea id="code-out" readonly style="min-height:120px;font-size:12px;word-break:break-all">${code}</textarea></div>`+
-      `<div class="sactions"><button class="sbtn" id="code-copy">📋 Копировать</button><button class="sbtn" id="code-close">Закрыть</button></div>`+
+      `<div class="sactions"><button class="sbtn" id="code-copy">📋 Копіювати</button><button class="sbtn" id="code-close">Закрити</button></div>`+
     `</div>`;
   $("scrim").classList.add("on"); $("sheet").classList.add("on");
   const ta=$("code-out"); ta.focus(); ta.select();
   $("code-copy").onclick=()=>{
     ta.select(); ta.setSelectionRange(0,code.length);
-    const done=()=>{$("code-copy").textContent="✓ Скопировано";};
+    const done=()=>{$("code-copy").textContent="✓ Скопійовано";};
     if(navigator.clipboard&&navigator.clipboard.writeText)
       navigator.clipboard.writeText(code).then(done,()=>{try{document.execCommand("copy");}catch(e){} done();});
     else {try{document.execCommand("copy");}catch(e){} done();}
@@ -847,21 +847,21 @@ function openCodeOut(){
 function openCodeIn(){
   $("sheet").innerHTML=
     `<div class="grip"></div>`+
-    `<div class="shead"><div class="steams">📥 Загрузить код</div></div>`+
+    `<div class="shead"><div class="steams">📥 Завантажити код</div></div>`+
     `<div class="sbody">`+
-      `<div class="note" style="padding:0 0 10px">Вставь код, полученный с другого девайса. <b>Текущие данные будут заменены.</b></div>`+
-      `<div class="fld"><textarea id="code-in" placeholder="вставь код сюда…" style="min-height:120px;font-size:12px;word-break:break-all"></textarea></div>`+
-      `<div class="sactions"><button class="sbtn" id="code-load">Загрузить</button><button class="sbtn" id="code-cancel">Отмена</button></div>`+
+      `<div class="note" style="padding:0 0 10px">Встав код, отриманий з іншого пристрою. <b>Поточні дані буде замінено.</b></div>`+
+      `<div class="fld"><textarea id="code-in" placeholder="встав код сюди…" style="min-height:120px;font-size:12px;word-break:break-all"></textarea></div>`+
+      `<div class="sactions"><button class="sbtn" id="code-load">Завантажити</button><button class="sbtn" id="code-cancel">Скасувати</button></div>`+
     `</div>`;
   $("scrim").classList.add("on"); $("sheet").classList.add("on");
   $("code-in").focus();
   $("code-load").onclick=()=>{
     let raw=$("code-in").value.trim();
-    if(!raw){alert("Пусто");return;}
-    if(raw.indexOf("#d=")>=0) raw=raw.split("#d=")[1].trim(); // на случай если вставили целую ссылку
-    let d; try{d=unpackState(raw);}catch(e){alert("Не удалось прочитать код");return;}
-    if(!d||!d.g){alert("Неверный код");return;}
-    if(confirm("Заменить текущие данные загруженными?")){state=d; if(!state.sched)state.sched={}; save(); closeSheet();}
+    if(!raw){alert("Порожньо");return;}
+    if(raw.indexOf("#d=")>=0) raw=raw.split("#d=")[1].trim(); // якщо вставили ціле посилання
+    let d; try{d=unpackState(raw);}catch(e){alert("Не вдалося прочитати код");return;}
+    if(!d||!d.g){alert("Невірний код");return;}
+    if(confirm("Замінити поточні дані завантаженими?")){state=d; if(!state.sched)state.sched={}; save(); closeSheet();}
   };
   $("code-cancel").onclick=closeSheet;
 }
@@ -873,10 +873,10 @@ $("codeInBtn").onclick=openCodeIn;
   if(h&&h.indexOf("#d=")===0){
     try{
       const d=unpackState(h.slice(3));
-      if(d&&d.g&&confirm("Загрузить турнир из ссылки? Текущие данные будут заменены.")){
+      if(d&&d.g&&confirm("Завантажити турнір із посилання? Поточні дані буде замінено.")){
         state=d; if(!state.sched)state.sched={}; save();
       }
-    }catch(e){alert("Не удалось прочитать ссылку");}
+    }catch(e){alert("Не вдалося прочитати посилання");}
     history.replaceState(null,"",location.href.split("#")[0]);
   }
 })();
