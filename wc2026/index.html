@@ -813,16 +813,37 @@ function applyTheme(){const dark=localStorage.getItem(TKEY)==="dark";document.bo
 $("themeBtn").onclick=()=>{const dark=!document.body.classList.contains("dark");localStorage.setItem(TKEY,dark?"dark":"light");applyTheme();};
 applyTheme();
 
-/* поделиться через ссылку (данные в #d=base64, без сервера) */
-function packState(){return btoa(unescape(encodeURIComponent(JSON.stringify(state))));}
-function unpackState(b64){
-  let s=String(b64).replace(/\s+/g,"").replace(/-/g,"+").replace(/_/g,"/"); // прибрати пробіли/переноси + base64url→std
-  while(s.length%4)s+="="; // добити padding
+/* перенос між девайсами: gzip+base64 (коротше) з фолбеком на чистий base64.
+   Формат: "~" + gzip-base64  |  старі коди без "~" = чистий base64 (читаються теж). */
+async function deflate(str){
+  const cs=new CompressionStream("gzip");
+  const w=cs.writable.getWriter(); w.write(new TextEncoder().encode(str)); w.close();
+  const buf=await new Response(cs.readable).arrayBuffer();
+  let bin=""; const u=new Uint8Array(buf); for(let i=0;i<u.length;i++)bin+=String.fromCharCode(u[i]);
+  return btoa(bin);
+}
+async function inflate(b64){
+  const bin=atob(b64); const bytes=new Uint8Array(bin.length);
+  for(let i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);
+  const ds=new DecompressionStream("gzip");
+  const w=ds.writable.getWriter(); w.write(bytes); w.close();
+  const buf=await new Response(ds.readable).arrayBuffer();
+  return new TextDecoder().decode(buf);
+}
+async function packState(){
+  const json=JSON.stringify(state);
+  if(window.CompressionStream){ try{ return "~"+await deflate(json); }catch(e){} }
+  return btoa(unescape(encodeURIComponent(json))); // фолбек: без стиснення
+}
+async function unpackState(raw){
+  let s=String(raw).replace(/\s+/g,""); // прибрати пробіли/переноси
+  if(s[0]==="~"){ return JSON.parse(await inflate(s.slice(1))); } // gzip-формат
+  s=s.replace(/-/g,"+").replace(/_/g,"/"); while(s.length%4)s+="="; // base64url→std + padding
   return JSON.parse(decodeURIComponent(escape(atob(s))));
 }
 /* перенос между девайсами: код наружу / код внутрь (через Telegram и т.п.) */
-function openCodeOut(){
-  const code=packState();
+async function openCodeOut(){
+  const code=await packState();
   $("sheet").innerHTML=
     `<div class="grip"></div>`+
     `<div class="shead"><div class="steams">📤 Код для перенесення</div></div>`+
@@ -853,11 +874,11 @@ function openCodeIn(){
     `</div>`;
   $("scrim").classList.add("on"); $("sheet").classList.add("on");
   $("code-in").focus();
-  $("code-load").onclick=()=>{
+  $("code-load").onclick=async()=>{
     let raw=$("code-in").value.trim();
     if(!raw){alert("Порожньо");return;}
     if(raw.indexOf("#d=")>=0) raw=raw.split("#d=")[1].trim(); // якщо вставили ціле посилання
-    let d; try{d=unpackState(raw);}catch(e){alert("Код неповний або пошкоджений.\n\nЗгенеруй 📤 заново й тисни «📋 Копіювати» (не виділяй пальцем), потім встав сюди повністю.");return;}
+    let d; try{d=await unpackState(raw);}catch(e){alert("Код неповний або пошкоджений.\n\nЗгенеруй 📤 заново й тисни «📋 Копіювати» (не виділяй пальцем), потім встав сюди повністю.");return;}
     if(!d||!d.g){alert("Невірний код");return;}
     if(confirm("Замінити поточні дані завантаженими?")){state=d; if(!state.sched)state.sched={}; save(); closeSheet();}
   };
@@ -866,11 +887,11 @@ function openCodeIn(){
 $("codeOutBtn").onclick=openCodeOut;
 $("codeInBtn").onclick=openCodeIn;
 /* загрузка из ссылки при старте */
-(function(){
+(async function(){
   const h=location.hash;
   if(h&&h.indexOf("#d=")===0){
     try{
-      const d=unpackState(h.slice(3));
+      const d=await unpackState(h.slice(3));
       if(d&&d.g&&confirm("Завантажити турнір із посилання? Поточні дані буде замінено.")){
         state=d; if(!state.sched)state.sched={}; save();
       }
