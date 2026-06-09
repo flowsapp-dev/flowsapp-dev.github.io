@@ -815,7 +815,11 @@ applyTheme();
 
 /* поделиться через ссылку (данные в #d=base64, без сервера) */
 function packState(){return btoa(unescape(encodeURIComponent(JSON.stringify(state))));}
-function unpackState(b64){return JSON.parse(decodeURIComponent(escape(atob(b64))));}
+function unpackState(b64){
+  let s=String(b64).replace(/\s+/g,"").replace(/-/g,"+").replace(/_/g,"/"); // прибрати пробіли/переноси + base64url→std
+  while(s.length%4)s+="="; // добити padding
+  return JSON.parse(decodeURIComponent(escape(atob(s))));
+}
 /* перенос между девайсами: код наружу / код внутрь (через Telegram и т.п.) */
 function openCodeOut(){
   const code=packState();
