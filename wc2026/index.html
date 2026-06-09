@@ -857,8 +857,8 @@ function openCodeIn(){
     let raw=$("code-in").value.trim();
     if(!raw){alert("Порожньо");return;}
     if(raw.indexOf("#d=")>=0) raw=raw.split("#d=")[1].trim(); // якщо вставили ціле посилання
-    let d; try{d=unpackState(raw);}catch(e){alert("DBG ["+e.name+"]: "+e.message+"\nдовжина="+raw.length+"\nпочаток="+raw.slice(0,14)+"\nкінець="+raw.slice(-10));return;}
-    if(!d||!d.g){alert("Невірний код (немає g)");return;}
+    let d; try{d=unpackState(raw);}catch(e){alert("Код неповний або пошкоджений.\n\nЗгенеруй 📤 заново й тисни «📋 Копіювати» (не виділяй пальцем), потім встав сюди повністю.");return;}
+    if(!d||!d.g){alert("Невірний код");return;}
     if(confirm("Замінити поточні дані завантаженими?")){state=d; if(!state.sched)state.sched={}; save(); closeSheet();}
   };
   $("code-cancel").onclick=closeSheet;
