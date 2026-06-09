@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<title>ЧМ 2026 — мой турнир</title>
+<style>
+  :root{
+    --green:#16a34a; --green-d:#15803d; --green-l:#dcfce7;
+    --blue:#2563eb; --gray:#94a3b8;
+    --bg:#fff; --line:#e7eaee; --muted:#94a3b8; --txt:#1e2430; --soft:#f5f7f9;
+    --shadow:0 1px 3px rgba(16,24,40,.06),0 1px 2px rgba(16,24,40,.04);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;font-family:Roboto,"Segoe UI",system-ui,Arial,sans-serif;background:#e9edf1;color:var(--txt);-webkit-tap-highlight-color:transparent}
+  .app{max-width:640px;margin:0 auto;background:var(--bg);min-height:100vh;display:flex;flex-direction:column;position:relative}
+  .topbar{background:linear-gradient(135deg,#0f172a,#1e293b);color:#fff;display:flex;align-items:center;gap:10px;padding:14px 16px;position:sticky;top:0;z-index:20}
+  .topbar .title{font-size:17px;font-weight:700;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.2px}
+  .topbar .ico{font-size:19px;background:rgba(255,255,255,.12);border:0;color:#fff;width:36px;height:36px;border-radius:9px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+  .topbar .ico:active{background:rgba(255,255,255,.24)}
+  .subtabs{display:flex;overflow-x:auto;background:#fafbfc;border-bottom:1px solid var(--line);scrollbar-width:none}
+  .subtabs::-webkit-scrollbar{display:none}
+  .subtabs button{flex:0 0 auto;background:none;border:0;padding:13px 16px;font-size:12.5px;font-weight:700;color:#7b828c;cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;letter-spacing:.3px}
+  .subtabs button.on{color:#0f172a;border-bottom-color:var(--green)}
+  .content{flex:1;padding-bottom:78px}
+
+  /* ===== TABLE ===== */
+  .gcard{border-bottom:8px solid #eef1f3}
+  .ghead{background:#f1f3f5;padding:11px 14px 7px;display:flex;align-items:center;gap:8px}
+  .ghead .gname{font-size:16px;font-weight:800}
+  .colhead,.row{display:grid;grid-template-columns:32px 1fr 28px 28px 28px 28px 40px 34px;align-items:center}
+  .colhead{padding:2px 14px 8px;color:#9aa1ab;font-size:11.5px;background:#f1f3f5;font-weight:600}
+  .colhead span:not(.cstr){text-align:center}
+  .row{padding:9px 14px;border-bottom:1px solid var(--line);font-size:14px}
+  .rank{width:24px;height:24px;border-radius:6px;color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:12.5px}
+  .r1,.r2{background:var(--green)} .r3{background:var(--blue)} .r4{background:var(--gray)}
+  .tname{display:flex;align-items:center;gap:8px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;padding-right:6px;font-weight:500}
+  img.flag{width:26px;height:18px;object-fit:cover;border-radius:3px;flex:0 0 auto;box-shadow:0 0 0 1px rgba(0,0,0,.08);background:#dde2e7;vertical-align:middle}
+  .row span.num{text-align:center;color:#5b6470}
+  .row span.pts{text-align:center;font-weight:800}
+  .row span.gd{text-align:center;color:#5b6470}
+  .third .rank{background:var(--green)}
+  .third .row.out .rank{background:var(--gray)} .third .row.out{opacity:.55}
+
+  /* ===== MATCHES ===== */
+  .mtour{background:#eef1f3;color:#475063;font-weight:800;font-size:12.5px;padding:8px 14px;letter-spacing:.3px}
+  .mcard{border-bottom:1px solid var(--line);background:#fff}
+  .match{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;padding:13px 14px 9px}
+  .match .tm{display:flex;align-items:center;gap:8px;min-width:0}
+  .match .tm.right{justify-content:flex-end;flex-direction:row-reverse;text-align:right}
+  .match .tm .nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:14px;font-weight:600}
+  .score{display:flex;align-items:center;gap:6px}
+  .score input{width:42px;height:42px;text-align:center;font-size:19px;font-weight:700;border:1.5px solid #d4d9de;border-radius:9px;background:#fff;-moz-appearance:textfield;color:#0f172a}
+  .score input:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px var(--green-l)}
+  .score input::-webkit-outer-spin-button,.score input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+  .score .sep{color:#b6bcc4;font-weight:700}
+  .venue{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;border:0;background:#fafbfc;border-top:1px solid var(--line);
+          padding:8px 14px;cursor:pointer;font-size:11.5px;color:#5b6470;text-align:left}
+  .venue:active{background:#f1f3f5}
+  .venue .vleft{display:flex;align-items:center;gap:6px;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+  .venue .vleft b{color:#334155;font-weight:700}
+  .venue .vright{display:flex;align-items:center;gap:6px;color:#8a9199;flex:0 0 auto;font-weight:600}
+  .venue.empty{color:var(--green-d);font-weight:700}
+
+  /* ===== KNOCKOUT ===== */
+  .ko{padding:6px 0}
+  .kmatch{border-bottom:1px solid var(--line)}
+  .ktag{font-size:11px;color:var(--muted);font-weight:700;padding:9px 14px 2px;letter-spacing:.3px}
+  .krow{display:grid;grid-template-columns:1fr 44px;align-items:center;gap:8px;padding:5px 14px}
+  .krow .kt{display:flex;align-items:center;gap:8px;min-width:0}
+  .krow .kt .nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:14px;font-weight:600}
+  .krow input{width:42px;height:38px;text-align:center;font-size:17px;font-weight:700;border:1.5px solid #d4d9de;border-radius:9px;-moz-appearance:textfield}
+  .krow input:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px var(--green-l)}
+  .krow input::-webkit-outer-spin-button,.krow input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+  .win .nm{font-weight:800;color:var(--green-d)} .lose{opacity:.5}
+  .pen{font-size:11px;color:#5b6470;padding:6px 14px 2px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .pen button{border:1.5px solid #d4d9de;background:#fff;border-radius:7px;padding:3px 9px;cursor:pointer;font-size:11px;font-weight:600}
+  .pen button.sel{background:var(--green);color:#fff;border-color:var(--green)}
+  .champ{margin:18px 14px;padding:22px;border:2px solid var(--green);border-radius:16px;text-align:center;background:linear-gradient(160deg,#f0fdf4,#dcfce7)}
+  .champ .lbl{font-size:12px;color:#15803d;letter-spacing:1.5px;font-weight:800}
+  .champ .name{font-size:25px;font-weight:900;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:12px}
+  .champ .cup{font-size:30px}
+
+  /* ===== VENUES SCREEN ===== */
+  .vlist{padding:10px 12px;display:grid;gap:10px}
+  .vcard{background:#fff;border:1px solid var(--line);border-radius:14px;padding:13px 14px;box-shadow:var(--shadow);display:flex;align-items:center;gap:12px}
+  .vcard .vico{font-size:24px;width:46px;height:46px;border-radius:12px;background:var(--soft);display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+  .vcard .vmid{flex:1;min-width:0}
+  .vcard .vn{font-weight:800;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .vcard .vc{font-size:12px;color:#6b7280;display:flex;align-items:center;gap:6px;margin-top:3px}
+  .vcard .vcap{text-align:right;flex:0 0 auto}
+  .vcard .vcap b{font-size:15px;font-weight:800;display:block}
+  .vcard .vcap span{font-size:10.5px;color:#9aa1ab}
+  .vbadge{font-size:10.5px;font-weight:700;color:var(--green-d);background:var(--green-l);border-radius:20px;padding:2px 8px;margin-top:4px;display:inline-block}
+
+  /* ===== TOOLBAR ===== */
+  .toolbar{display:flex;gap:8px;flex-wrap:wrap;padding:12px 14px;background:#fafbfc;border-bottom:1px solid var(--line)}
+  .toolbar button{border:1.5px solid #d4d9de;background:#fff;border-radius:9px;padding:9px 13px;font-size:12.5px;font-weight:600;cursor:pointer}
+  .toolbar button:active{background:#f1f3f5}
+  .toolbar button.primary{background:var(--green);color:#fff;border-color:var(--green)}
+  .toolbar button.warn{color:#dc2626;border-color:#fca5a5}
+  .note{font-size:11.5px;color:var(--muted);padding:10px 14px;line-height:1.5}
+
+  /* ===== PROGRESS ===== */
+  .progress{display:flex;align-items:center;gap:10px;padding:8px 14px;background:#fff;border-bottom:1px solid var(--line);font-size:11px;color:#6b7280;font-weight:700}
+  .progress .bar{flex:1;height:7px;background:#eef1f3;border-radius:6px;overflow:hidden}
+  .progress .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--green-d),#22c55e);border-radius:6px;transition:width .3s}
+  .progress .pc{flex:0 0 auto;color:#334155}
+
+  /* ===== STATUS ===== */
+  .mcard.done{box-shadow:inset 4px 0 0 var(--green)}
+  .kmatch.done{box-shadow:inset 4px 0 0 var(--green)}
+
+  /* ===== BOTTOM NAV ===== */
+  .bottomnav{position:fixed;bottom:0;left:0;right:0;max-width:640px;margin:0 auto;background:#0f172a;display:flex;z-index:30;padding-bottom:env(safe-area-inset-bottom)}
+  .bottomnav button{flex:1;background:none;border:0;color:#7b8494;padding:9px 0 11px;font-size:10.5px;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px}
+  .bottomnav button.on{color:#fff} .bottomnav .bi{font-size:20px}
+
+  /* ===== SHEET ===== */
+  .scrim{position:fixed;inset:0;background:rgba(15,23,42,.5);opacity:0;pointer-events:none;transition:.2s;z-index:40}
+  .scrim.on{opacity:1;pointer-events:auto}
+  .sheet{position:fixed;left:0;right:0;bottom:0;max-width:640px;margin:0 auto;background:#fff;border-radius:20px 20px 0 0;
+         transform:translateY(102%);transition:transform .28s cubic-bezier(.2,.85,.25,1);z-index:50;max-height:90vh;overflow:auto;
+         padding-bottom:calc(24px + env(safe-area-inset-bottom))}
+  .sheet.on{transform:translateY(0)}
+  .grip{width:40px;height:4px;border-radius:4px;background:#d4d9de;margin:10px auto 4px}
+  .shead{padding:8px 18px 14px;border-bottom:1px solid var(--line)}
+  .steams{display:flex;align-items:center;justify-content:center;gap:10px;font-size:15px;font-weight:700;flex-wrap:wrap}
+  .steams .vs{color:var(--muted);font-size:12px;font-weight:600}
+  .sbody{padding:16px 18px}
+  .stadcard{display:flex;align-items:center;gap:12px;background:linear-gradient(160deg,#f8fafc,#eef2f6);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:16px}
+  .stadcard .si{font-size:30px}
+  .stadcard .sn{font-weight:800;font-size:16px}
+  .stadcard .sm{font-size:12.5px;color:#6b7280;display:flex;align-items:center;gap:6px;margin-top:4px;flex-wrap:wrap}
+  .fld{margin-bottom:14px}
+  .fld label{display:block;font-size:11.5px;font-weight:700;color:#6b7280;margin-bottom:6px;letter-spacing:.2px}
+  .fld input,.fld select,.fld textarea{width:100%;border:1.5px solid #d4d9de;border-radius:10px;padding:10px 12px;font-size:14px;background:#fff;font-family:inherit;color:#0f172a}
+  .fld input:focus,.fld select:focus,.fld textarea:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px var(--green-l)}
+  .fld textarea{min-height:64px;resize:vertical}
+  .frow{display:flex;gap:10px} .frow .fld{flex:1}
+  .sactions{display:flex;gap:10px;margin-top:4px}
+  .sbtn{flex:1;text-align:center;text-decoration:none;border:1.5px solid #d4d9de;border-radius:10px;padding:11px;font-size:13px;font-weight:700;color:#0f172a;background:#fff;font-family:inherit;cursor:pointer}
+  .sbtn.spoil{border-color:#fca5a5;color:#dc2626}
+  .sbtn:active{background:#f1f3f5}
+
+  /* ===== CALENDAR (по дням) ===== */
+  .caldate{background:#eef1f3;color:#475063;font-weight:800;font-size:12.5px;padding:8px 14px;letter-spacing:.3px;position:sticky;top:0;z-index:5}
+  .calmatch{display:flex;align-items:center;gap:10px;width:100%;text-align:left;border:0;border-bottom:1px solid var(--line);background:#fff;padding:11px 14px;cursor:pointer}
+  .calmatch.done{box-shadow:inset 4px 0 0 var(--green)}
+  .calmatch:active{background:#f5f7f9}
+  .caltime{font-weight:800;font-size:13px;color:var(--green-d);flex:0 0 46px}
+  .calteams{display:flex;align-items:center;gap:7px;flex:1;min-width:0;font-size:13.5px;font-weight:600;color:var(--txt)}
+  .calteams .cn{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:38%}
+  .calteams .cvs{color:var(--muted);font-size:11px;flex:0 0 auto}
+  .caltag{flex:0 0 auto;font-size:10.5px;color:var(--muted);font-weight:700;text-align:right;max-width:30%;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+
+  /* ===== BRACKET TREE (сетка) ===== */
+  .bracket{display:flex;gap:10px;overflow-x:auto;padding:12px;-webkit-overflow-scrolling:touch}
+  .bracket::-webkit-scrollbar{height:6px} .bracket::-webkit-scrollbar-thumb{background:#cbd2da;border-radius:6px}
+  .bcol{flex:0 0 134px;display:flex;flex-direction:column;min-height:540px}
+  .bcells{flex:1;display:flex;flex-direction:column;justify-content:space-around;gap:8px}
+  .bcolh{font-size:11px;font-weight:800;color:var(--muted);text-align:center;letter-spacing:.5px}
+  .bcell{display:flex;flex-direction:column;gap:3px;border:1px solid var(--line);border-radius:9px;background:#fff;padding:6px 7px;cursor:pointer;width:100%;text-align:left}
+  .bcell:active{background:#f5f7f9}
+  .bteam{display:flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600;white-space:nowrap;overflow:hidden}
+  .bteam span{overflow:hidden;text-overflow:ellipsis}
+  .bteam img.flag{width:18px;height:12px}
+  .bteam.bw{color:var(--green-d);font-weight:800}
+  .bteam.bl{opacity:.42}
+  .bchamp{border:2px solid var(--green);border-radius:12px;padding:14px 8px;text-align:center;font-weight:800;font-size:13px;line-height:1.5;background:linear-gradient(160deg,#f0fdf4,#dcfce7)}
+  /* двусторонняя сетка (фланги → центр) */
+  .bracket2{display:flex;align-items:stretch;gap:6px;overflow-x:auto;padding:12px;min-height:560px;-webkit-overflow-scrolling:touch}
+  .bracket2::-webkit-scrollbar{height:6px} .bracket2::-webkit-scrollbar-thumb{background:#cbd2da;border-radius:6px}
+  .bside{display:flex;gap:6px}
+  .bracket2 .bcol{flex:0 0 122px}
+  .bcenter{display:flex;flex-direction:column;align-items:center;flex:0 0 152px;padding:0 4px}
+  .bcenter .bcells{justify-content:center;align-items:center;gap:10px}
+  .bcenter .bcell{width:144px}
+  .bcenter .bchamp{width:144px}
+
+  /* ===== ПРАВИЛА ===== */
+  .rules{padding:14px 16px;font-size:13.5px;line-height:1.55;color:var(--txt)}
+  .rules h2{font-size:14.5px;font-weight:800;margin:20px 0 9px;display:flex;align-items:center;gap:8px}
+  .rules h2:first-of-type{margin-top:6px}
+  .rule{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:11px 13px;margin-bottom:9px}
+  .rule b{font-weight:800}
+  .rule .tag{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.4px;color:var(--green-d);background:var(--green-l);border-radius:20px;padding:2px 9px;margin-bottom:6px}
+  .rule .tag.chg{color:#b45309;background:#fef3c7}
+  .rules .muted{color:var(--muted);font-size:12px;line-height:1.5}
+  body.dark .rule .tag{color:#4ade80} body.dark .rule .tag.chg{color:#fbbf24;background:#3a2e0a}
+  .srclink{display:block;width:100%;text-align:left;border:0;background:none;color:#2563eb;font-size:13px;font-weight:600;padding:6px 0;cursor:pointer;font-family:inherit}
+  .srclink.spoil{color:#dc2626}
+  body.dark .srclink{color:#60a5fa} body.dark .srclink.spoil{color:#f87171}
+
+  /* ===== DARK THEME ===== */
+  body.dark{--bg:#121821;--line:#283442;--muted:#8a93a0;--txt:#e4e8ee;--soft:#1c2531;--green-l:#0e2a1c;background:#0a0e14}
+  body.dark .subtabs{background:#121821}
+  body.dark .subtabs button.on{color:#e4e8ee}
+  body.dark .gcard{border-bottom-color:#0a0e14}
+  body.dark .ghead,body.dark .colhead{background:#1a2230}
+  body.dark .mtour,body.dark .caldate{background:#1a2230;color:#aab3c0}
+  body.dark .mcard,body.dark .calmatch{background:#121821}
+  body.dark .calmatch:active,body.dark .bcell:active,body.dark .venue:active{background:#1a2230}
+  body.dark .score input,body.dark .krow input{background:#1a2230;border-color:#33404f;color:#e4e8ee}
+  body.dark .venue{background:#161e28}
+  body.dark .venue .vleft b{color:#cbd5e1}
+  body.dark .toolbar{background:#161e28}
+  body.dark .toolbar button,body.dark .pen button,body.dark .sbtn,body.dark .bcell{background:#1a2230;border-color:#33404f;color:#e4e8ee}
+  body.dark .progress{background:#121821} body.dark .progress .bar{background:#283442} body.dark .progress .pc{color:#cbd5e1}
+  body.dark .vcard{background:#1a2230;border-color:#283442} body.dark .vcard .vn{color:#e4e8ee}
+  body.dark .sheet{background:#121821}
+  body.dark .fld input,body.dark .fld select,body.dark .fld textarea{background:#1a2230;border-color:#33404f;color:#e4e8ee}
+  body.dark .stadcard{background:linear-gradient(160deg,#1a2230,#161e28);border-color:#283442}
+  body.dark .champ,body.dark .bchamp{background:linear-gradient(160deg,#0e2a1c,#0a1f14)}
+  body.dark img.flag{box-shadow:0 0 0 1px rgba(255,255,255,.1)}
+  /* тёмный календарь — зелёный акцент (как остальное приложение) */
+  body.dark .caltime{color:#22c55e}
+
+  /* шире вьюха на ПК (мобайл <700px не трогаем). В конце стилей — чтобы
+     перебить max-width:640 у .bottomnav/.sheet, объявленных выше. */
+  @media(min-width:700px){ .app,.bottomnav,.sheet{max-width:880px} }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="title" id="topTitle">Чемпионат мира 2026</div>
+    <button class="ico" id="themeBtn" title="тема">🌙</button>
+    <button class="ico" id="codeOutBtn" title="код: отправить">📤</button>
+    <button class="ico" id="codeInBtn" title="код: загрузить">📥</button>
+    <button class="ico" id="importBtn" title="импорт файла">⤒</button>
+    <button class="ico" id="exportBtn" title="экспорт файла">⤓</button>
+    <input type="file" id="importFile" accept="application/json" hidden>
+  </div>
+  <div class="progress" id="progress"></div>
+  <div class="subtabs" id="subtabs"></div>
+  <div class="content" id="content"></div>
+  <div class="bottomnav">
+    <button id="navMatches"><span class="bi">⚽</span>Матчи</button>
+    <button id="navTable" class="on"><span class="bi">▦</span>Таблица</button>
+    <button id="navCalendar"><span class="bi">🗓</span>Календарь</button>
+    <button id="navVenues"><span class="bi">🏟</span>Стадионы</button>
+    <button id="navRules"><span class="bi">📋</span>Правила</button>
+  </div>
+</div>
+<div class="scrim" id="scrim"></div>
+<div class="sheet" id="sheet"></div>
+<script>
+/* ============ DATA ============ */
+const ISO={
+ "Мексика":"mx","Южно-Африканская Республика":"za","Республика Корея":"kr","Чехия":"cz",
+ "Канада":"ca","Босния и Герцеговина":"ba","Швейцария":"ch","Катар":"qa",
+ "Бразилия":"br","Марокко":"ma","Гаити":"ht","Шотландия":"gb-sct",
+ "Соединённые Штаты":"us","Парагвай":"py","Австралия":"au","Турция":"tr",
+ "Германия":"de","Кюрасао":"cw","Кот-д’Ивуар":"ci","Эквадор":"ec",
+ "Нидерланды":"nl","Япония":"jp","Швеция":"se","Тунис":"tn",
+ "Бельгия":"be","Египет":"eg","Иран":"ir","Новая Зеландия":"nz",
+ "Испания":"es","Кабо-Верде":"cv","Саудовская Аравия":"sa","Уругвай":"uy",
+ "Франция":"fr","Сенегал":"sn","Норвегия":"no","Ирак":"iq",
+ "Аргентина":"ar","Алжир":"dz","Австрия":"at","Иордания":"jo",
+ "Португалия":"pt","Конго — Киншаса":"cd","Узбекистан":"uz","Колумбия":"co",
+ "Англия":"gb-eng","Хорватия":"hr","Гана":"gh","Панама":"pa"
+};
+const GROUPS={
+ A:["Мексика","Южно-Африканская Республика","Республика Корея","Чехия"],
+ B:["Канада","Босния и Герцеговина","Катар","Швейцария"],
+ C:["Бразилия","Марокко","Гаити","Шотландия"],
+ D:["Соединённые Штаты","Парагвай","Австралия","Турция"],
+ E:["Германия","Кюрасао","Кот-д’Ивуар","Эквадор"],
+ F:["Нидерланды","Япония","Швеция","Тунис"],
+ G:["Бельгия","Египет","Иран","Новая Зеландия"],
+ H:["Испания","Кабо-Верде","Саудовская Аравия","Уругвай"],
+ I:["Франция","Сенегал","Ирак","Норвегия"],
+ J:["Аргентина","Алжир","Австрия","Иордания"],
+ K:["Португалия","Конго — Киншаса","Узбекистан","Колумбия"],
+ L:["Англия","Хорватия","Гана","Панама"]
+};
+const GKEYS=Object.keys(GROUPS);
+const PAIRS=[[0,1],[2,3],[0,2],[1,3],[0,3],[1,2]];
+const TOUR_OF=[1,1,2,2,3,3];
+
+/* 16 реальных арен ЧМ-2026 */
+const VENUES=[
+ {id:"azteca",   n:"Estadio Azteca",          city:"Мехико",         cc:"mx",cap:87523},
+ {id:"akron",    n:"Estadio Akron",           city:"Гвадалахара",    cc:"mx",cap:49850},
+ {id:"bbva",     n:"Estadio BBVA",            city:"Монтеррей",      cc:"mx",cap:53500},
+ {id:"bmo",      n:"BMO Field",               city:"Торонто",        cc:"ca",cap:45000},
+ {id:"bcplace",  n:"BC Place",                city:"Ванкувер",       cc:"ca",cap:54500},
+ {id:"metlife",  n:"MetLife Stadium",         city:"Нью-Йорк",       cc:"us",cap:82500},
+ {id:"sofi",     n:"SoFi Stadium",            city:"Лос-Анджелес",   cc:"us",cap:70240},
+ {id:"att",      n:"AT&T Stadium",            city:"Даллас",         cc:"us",cap:80000},
+ {id:"mercedes", n:"Mercedes-Benz Stadium",   city:"Атланта",        cc:"us",cap:71000},
+ {id:"nrg",      n:"NRG Stadium",             city:"Хьюстон",        cc:"us",cap:72220},
+ {id:"arrowhead",n:"Arrowhead Stadium",       city:"Канзас-Сити",    cc:"us",cap:76416},
+ {id:"linc",     n:"Lincoln Financial Field", city:"Филадельфия",    cc:"us",cap:69176},
+ {id:"gillette", n:"Gillette Stadium",        city:"Бостон",         cc:"us",cap:65878},
+ {id:"lumen",    n:"Lumen Field",             city:"Сиэтл",          cc:"us",cap:68740},
+ {id:"levis",    n:"Levi's Stadium",          city:"Сан-Франциско",  cc:"us",cap:68500},
+ {id:"hardrock", n:"Hard Rock Stadium",       city:"Майами",         cc:"us",cap:65326}
+];
+const VMAP={}; VENUES.forEach(v=>VMAP[v.id]=v);
+
+/* ПОЛНОЕ расписание группового этапа (все 72 матча). Источник: ESPN.
+   Время задаём в ET (US Eastern, EDT=UTC-4); SCHED_DEF строится в коде с конверсией
+   в львовское/киевское EEST (UTC+3) = ET + 7ч. Индекс пары = PAIRS:
+   0=[0-1] 1=[2-3] 2=[0-2] 3=[1-3] 4=[0-3] 5=[1-2]. MD3 (пары 4,5) — одновременно. */
+const FIX=[
+ // [группа, индекс пары 0..5, день июня (по ET), "ЧЧ:ММ" ET, арена]
+ ["A",0,11,"15:00","azteca"],["A",1,11,"22:00","akron"],["A",3,18,"12:00","mercedes"],["A",2,18,"23:00","akron"],["A",4,24,"21:00","azteca"],["A",5,24,"21:00","bbva"],
+ ["B",0,12,"15:00","bmo"],["B",1,13,"15:00","levis"],["B",2,18,"18:00","bcplace"],["B",3,18,"15:00","sofi"],["B",4,24,"15:00","bcplace"],["B",5,24,"15:00","lumen"],
+ ["C",0,13,"18:00","metlife"],["C",1,13,"21:00","gillette"],["C",3,19,"18:00","gillette"],["C",2,19,"21:00","linc"],["C",4,24,"18:00","hardrock"],["C",5,24,"18:00","mercedes"],
+ ["D",0,12,"21:00","sofi"],["D",1,13,"00:00","bcplace"],["D",2,19,"15:00","lumen"],["D",3,19,"00:00","levis"],["D",4,25,"22:00","sofi"],["D",5,25,"22:00","levis"],
+ ["E",0,14,"13:00","nrg"],["E",1,14,"19:00","linc"],["E",2,20,"16:00","bmo"],["E",3,20,"20:00","arrowhead"],["E",4,25,"16:00","metlife"],["E",5,25,"16:00","linc"],
+ ["F",0,14,"16:00","att"],["F",1,14,"22:00","bbva"],["F",2,20,"13:00","nrg"],["F",3,20,"00:00","bbva"],["F",4,25,"19:00","arrowhead"],["F",5,25,"19:00","att"],
+ ["G",0,15,"18:00","lumen"],["G",1,15,"00:00","sofi"],["G",2,21,"15:00","sofi"],["G",3,21,"21:00","bcplace"],["G",4,26,"23:00","bcplace"],["G",5,26,"23:00","lumen"],
+ ["H",0,15,"13:00","mercedes"],["H",1,15,"18:00","hardrock"],["H",2,21,"12:00","mercedes"],["H",3,21,"18:00","hardrock"],["H",4,26,"20:00","akron"],["H",5,26,"20:00","nrg"],
+ ["I",0,16,"15:00","metlife"],["I",1,16,"18:00","gillette"],["I",2,22,"17:00","linc"],["I",3,22,"20:00","metlife"],["I",4,26,"15:00","gillette"],["I",5,26,"15:00","bmo"],
+ ["J",0,16,"21:00","arrowhead"],["J",1,16,"00:00","levis"],["J",2,22,"13:00","att"],["J",3,22,"23:00","levis"],["J",4,27,"22:00","att"],["J",5,27,"22:00","arrowhead"],
+ ["K",0,17,"13:00","nrg"],["K",1,17,"22:00","azteca"],["K",2,23,"13:00","nrg"],["K",3,23,"22:00","akron"],["K",4,27,"19:30","hardrock"],["K",5,27,"19:30","mercedes"],
+ ["L",0,17,"16:00","att"],["L",1,17,"19:00","bmo"],["L",2,23,"16:00","gillette"],["L",3,23,"19:00","bmo"],["L",4,27,"17:00","metlife"],["L",5,27,"17:00","linc"]
+];
+/* плей-офф: даты/арены реальны (ET→EEST как у групп). Слот сетки ↔ конкретный
+   реальный матч — ПРИБЛИЗИТЕЛЬНО (app сеет плей-офф по очкам, не по офиц. таблице),
+   так что дата/арена в слоте — корректный «скелет расписания», команды могут отличаться.
+   Месяц: 5=июнь, 6=июль. Слоты в хронологическом порядке. */
+const KFIX=[
+ ["k-R32-0",5,28,"15:00","sofi"],["k-R32-1",5,29,"13:00","nrg"],["k-R32-2",5,29,"16:30","gillette"],["k-R32-3",5,29,"21:00","bbva"],
+ ["k-R32-4",5,30,"13:00","att"],["k-R32-5",5,30,"17:00","metlife"],["k-R32-6",5,30,"21:00","azteca"],["k-R32-7",6,1,"12:00","mercedes"],
+ ["k-R32-8",6,1,"16:00","lumen"],["k-R32-9",6,1,"20:00","levis"],["k-R32-10",6,2,"15:00","sofi"],["k-R32-11",6,2,"19:00","bmo"],
+ ["k-R32-12",6,2,"23:00","bcplace"],["k-R32-13",6,3,"14:00","att"],["k-R32-14",6,3,"18:00","hardrock"],["k-R32-15",6,3,"21:30","arrowhead"],
+ ["k-R16-0",6,4,"13:00","nrg"],["k-R16-1",6,4,"17:00","linc"],["k-R16-2",6,5,"16:00","metlife"],["k-R16-3",6,5,"20:00","azteca"],
+ ["k-R16-4",6,6,"15:00","att"],["k-R16-5",6,6,"17:00","lumen"],["k-R16-6",6,7,"12:00","mercedes"],["k-R16-7",6,7,"16:00","bcplace"],
+ ["k-QF-0",6,9,"16:00","gillette"],["k-QF-1",6,10,"15:00","sofi"],["k-QF-2",6,11,"17:00","hardrock"],["k-QF-3",6,11,"21:00","arrowhead"],
+ ["k-SF-0",6,14,"15:00","att"],["k-SF-1",6,15,"15:00","mercedes"],
+ ["k-TP-0",6,18,"17:00","hardrock"],["k-F-0",6,19,"15:00","metlife"]
+];
+const SCHED_DEF={};
+(function buildSched(){
+  const DOW=["вс","пн","вт","ср","чт","пт","сб"];
+  const MON=["января","февраля","марта","апреля","мая","июня","июля","августа","сентября","октября","ноября","декабря"];
+  // ET(EDT)=UTC-4 → UTC=ET+4ч; EEST=UTC+3ч  ⇒  EEST = ET + 7ч (с переносом даты)
+  function mk(mo,day,et,vid){
+    const [hh,mm]=et.split(":").map(Number);
+    const e=new Date(Date.UTC(2026,mo,day,hh+4,mm)+3*3600000);
+    return {d:`${DOW[e.getUTCDay()]} ${e.getUTCDate()} ${MON[e.getUTCMonth()]}`,
+            t:String(e.getUTCHours()).padStart(2,"0")+":"+String(e.getUTCMinutes()).padStart(2,"0"), vid};
+  }
+  FIX.forEach(([g,pi,day,et,vid])=>{ SCHED_DEF[`g-${g}-${pi}`]=mk(5,day,et,vid); });
+  KFIX.forEach(([key,mo,day,et,vid])=>{ SCHED_DEF[key]=mk(mo,day,et,vid); });
+})();
+
+/* ============ STATE ============ */
+const LS="wc2026_v2";
+let state=load();
+function blank(){
+  const g={}; GKEYS.forEach(k=>g[k]=PAIRS.map(()=>["",""]));
+  const ko={R32:arr(16),R16:arr(8),QF:arr(4),SF:arr(2),F:arr(1),TP:arr(1)};
+  return {g, koSeed:null, ko, sched:{}};
+}
+function arr(n){return Array.from({length:n},()=>({sa:"",sb:"",pen:null}));}
+function load(){
+  let s;
+  try{s=JSON.parse(localStorage.getItem(LS));}catch(e){}
+  if(!s){ // миграция из v1
+    try{const old=JSON.parse(localStorage.getItem("wc2026_v1")); if(old&&old.g)s=old;}catch(e){}
+  }
+  if(!s||!s.g)s=blank();
+  if(!s.sched)s.sched={};
+  return s;
+}
+function save(){localStorage.setItem(LS,JSON.stringify(state));}
+function sched(key){
+  if(!state.sched[key]) state.sched[key]=SCHED_DEF[key]?{...SCHED_DEF[key],n:""}:{d:"",t:"",vid:"",n:""};
+  const s=state.sched[key]; if(s.n==null)s.n=""; if(s.vid==null)s.vid="";
+  return s;
+}
+
+/* ============ COMPUTE ============ */
+function computeGroup(key){
+  const teams=GROUPS[key];
+  const st=teams.map((t,i)=>({i,team:t,p:0,w:0,d:0,l:0,gf:0,ga:0,pts:0}));
+  state.g[key].forEach((m,mi)=>{
+    const a=m[0],b=m[1]; if(a===""||b===""||a==null||b==null)return;
+    const x=+a,y=+b; if(isNaN(x)||isNaN(y))return;
+    const [ia,ib]=PAIRS[mi]; const A=st[ia],B=st[ib];
+    A.p++;B.p++;A.gf+=x;A.ga+=y;B.gf+=y;B.ga+=x;
+    if(x>y){A.w++;B.l++;A.pts+=3;}else if(x<y){B.w++;A.l++;B.pts+=3;}else{A.d++;B.d++;A.pts++;B.pts++;}
+  });
+  st.forEach(s=>s.gd=s.gf-s.ga); return sortStandings(key,st);
+}
+function cmp(a,b){return b.pts-a.pts||b.gd-a.gd||b.gf-a.gf||a.team.localeCompare(b.team,"ru");}
+/* Офиц. тай-брейк ЧМ-2026: при равенстве очков — ЛИЧНЫЕ ВСТРЕЧИ (мини-таблица только
+   матчей между равными командами), затем общие показатели. Карточек (fair-play) приложение
+   не хранит → этот шаг пропущен. cmp() остаётся для МЕЖгруппового сравнения (третьи места,
+   посев) — там личные встречи не применимы (команды не играли). */
+function h2hAcc(key,idxs){
+  const acc={}; idxs.forEach(i=>acc[i]={hp:0,hgd:0,hgf:0});
+  state.g[key].forEach((m,mi)=>{
+    const [ia,ib]=PAIRS[mi];
+    if(idxs.indexOf(ia)<0||idxs.indexOf(ib)<0)return; // только матчи внутри кластера
+    const a=m[0],b=m[1]; if(a===""||b===""||a==null||b==null)return;
+    const x=+a,y=+b; if(isNaN(x)||isNaN(y))return;
+    acc[ia].hgf+=x;acc[ia].hgd+=x-y;acc[ib].hgf+=y;acc[ib].hgd+=y-x;
+    if(x>y)acc[ia].hp+=3;else if(y>x)acc[ib].hp+=3;else{acc[ia].hp++;acc[ib].hp++;}
+  });
+  return acc;
+}
+function sortStandings(key,st){
+  st.sort((a,b)=>b.pts-a.pts); // 1) очки
+  let out=[];
+  for(let i=0;i<st.length;){
+    let j=i; while(j<st.length&&st[j].pts===st[i].pts)j++;
+    const cl=st.slice(i,j);
+    if(cl.length>1){ // 2) внутри равных по очкам — личные встречи, потом общие
+      const h=h2hAcc(key,cl.map(s=>s.i));
+      cl.sort((a,b)=> h[b.i].hp-h[a.i].hp || h[b.i].hgd-h[a.i].hgd || h[b.i].hgf-h[a.i].hgf
+                      || b.gd-a.gd || b.gf-a.gf || a.team.localeCompare(b.team,"ru"));
+    }
+    out=out.concat(cl); i=j;
+  }
+  return out; // редкий FIFA-кейс (после h2h часть снова равна → рекурсия по подмножеству) не покрыт
+}
+function thirds(){const list=GKEYS.map(k=>{const s=computeGroup(k);return {...s[2],group:k};});list.sort(cmp);return list;}
+function isFilled(sa,sb){return sa!==""&&sb!==""&&sa!=null&&sb!=null&&!isNaN(+sa)&&!isNaN(+sb);}
+function countProgress(){
+  let done=0,total=0;
+  GKEYS.forEach(k=>state.g[k].forEach(m=>{total++;if(isFilled(m[0],m[1]))done++;}));
+  ["R32","R16","QF","SF","F","TP"].forEach(r=>state.ko[r].forEach(m=>{total++;if(isFilled(m.sa,m.sb))done++;}));
+  return {done,total};
+}
+
+/* ============ KNOCKOUT ============ */
+function seedOrder(n){let r=[1,2];while(r.length<n){const m=r.length*2,nr=[];r.forEach(s=>{nr.push(s);nr.push(m+1-s);});r=nr;}return r;}
+function buildSeed(){
+  const winners=[],runners=[];
+  GKEYS.forEach(k=>{const s=computeGroup(k);winners.push({...s[0],group:k});runners.push({...s[1],group:k});});
+  const t=thirds().slice(0,8); const pool=[...winners,...runners,...t]; pool.sort(cmp);
+  const order=seedOrder(32); state.koSeed=order.map(s=>pool[s-1].team);
+  state.ko={R32:arr(16),R16:arr(8),QF:arr(4),SF:arr(2),F:arr(1),TP:arr(1)}; save();
+}
+function roundTeams(r){
+  if(r==="R32"){const o=[];for(let i=0;i<16;i++)o.push([state.koSeed?state.koSeed[2*i]:null,state.koSeed?state.koSeed[2*i+1]:null]);return o;}
+  if(r==="TP")return [[loser("SF",0),loser("SF",1)]];
+  const prev={R16:"R32",QF:"R16",SF:"QF",F:"SF"}[r];
+  const n={R16:8,QF:4,SF:2,F:1}[r]; const o=[];
+  for(let i=0;i<n;i++)o.push([winner(prev,2*i),winner(prev,2*i+1)]); return o;
+}
+function result(r,i){const m=state.ko[r][i];if(!m)return null;const sa=m.sa,sb=m.sb;
+  if(sa===""||sb===""||sa==null||sb==null)return null;const x=+sa,y=+sb;if(isNaN(x)||isNaN(y))return null;
+  if(x>y)return "a";if(y>x)return "b";return m.pen;}
+function teamsOf(r,i){return roundTeams(r)[i];}
+function winner(r,i){const t=teamsOf(r,i),w=result(r,i);return w==="a"?t[0]:w==="b"?t[1]:null;}
+function loser(r,i){const t=teamsOf(r,i),w=result(r,i);return w==="a"?t[1]:w==="b"?t[0]:null;}
+
+/* ============ HELPERS ============ */
+let mainView="table", sub="groups";
+const $=id=>document.getElementById(id);
+function flag(t){const c=ISO[t];return c?`<img class="flag" src="https://flagcdn.com/w40/${c}.png" alt="" loading="lazy">`:`<span class="flag" style="display:inline-block;width:26px;height:18px;background:#dde2e7;border-radius:3px"></span>`;}
+function flagCC(cc){return `<img class="flag" src="https://flagcdn.com/w40/${cc}.png" alt="" loading="lazy" style="width:20px;height:14px">`;}
+function esc(s){return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+function fmtCap(n){return n.toLocaleString("ru-RU");}
+function searchQ(a,b){return encodeURIComponent([a,b].filter(Boolean).join(" ")+" ЧМ 2026 футбол");}
+
+/* ============ SUBTABS ============ */
+function renderSubtabs(){
+  const box=$("subtabs");box.innerHTML="";
+  if(mainView==="venues"||mainView==="calendar"||mainView==="rules"){return;}
+  let tabs = mainView==="table"
+    ? [["groups","ГРУППЫ"],["thirds","ТРЕТЬИ МЕСТА"]]
+    : [["t1","1 ТУР"],["t2","2 ТУР"],["t3","3 ТУР"],["R32","1/16"],["R16","1/8"],["QF","ЧЕТВЕРТЬ"],["SF","ПОЛУФИНАЛ"],["F","ФИНАЛ"],["tree","🗂 СЕТКА"]];
+  if(!tabs.find(t=>t[0]===sub)) sub=tabs[0][0];
+  tabs.forEach(([k,lbl])=>{const b=document.createElement("button");b.textContent=lbl;if(k===sub)b.className="on";b.onclick=()=>{sub=k;render();};box.appendChild(b);});
+}
+
+/* ============ TABLE VIEWS ============ */
+function groupTableHTML(){
+  let h="";
+  GKEYS.forEach(k=>{
+    const st=computeGroup(k);
+    h+=`<div class="gcard"><div class="ghead"><div class="gname">Группа ${k}</div></div>`;
+    h+=`<div class="colhead"><span></span><span class="cstr">Страна</span><span>И</span><span>В</span><span>Н</span><span>П</span><span>+/-</span><span>О</span></div>`;
+    st.forEach((s,idx)=>{const rk=idx+1;
+      h+=`<div class="row"><span class="rank r${rk}">${rk}</span><span class="tname">${flag(s.team)}${s.team}</span>`+
+         `<span class="num">${s.p}</span><span class="num">${s.w}</span><span class="num">${s.d}</span><span class="num">${s.l}</span>`+
+         `<span class="gd">${s.gd>0?"+"+s.gd:s.gd}</span><span class="pts">${s.pts}</span></div>`;});
+    h+=`</div>`;
+  });
+  return h;
+}
+function thirdsHTML(){
+  const list=thirds();
+  let h=`<div class="gcard third"><div class="ghead"><div class="gname">Рейтинг третьих мест</div></div>`;
+  h+=`<div class="colhead"><span></span><span class="cstr">Страна</span><span>И</span><span>В</span><span>Н</span><span>П</span><span>+/-</span><span>О</span></div>`;
+  list.forEach((s,idx)=>{const out=idx>=8?"out":"";
+    h+=`<div class="row ${out}"><span class="rank">${idx+1}</span><span class="tname">${flag(s.team)}${s.team} <small style="color:#9aa1ab">(${s.group})</small></span>`+
+       `<span class="num">${s.p}</span><span class="num">${s.w}</span><span class="num">${s.d}</span><span class="num">${s.l}</span>`+
+       `<span class="gd">${s.gd>0?"+"+s.gd:s.gd}</span><span class="pts">${s.pts}</span></div>`;});
+  h+=`<div class="note">Зелёные (1–8) выходят в плей-офф. Серые — выбывают.</div></div>`;
+  return h;
+}
+
+/* ============ VENUE CHIP ============ */
+function venueChip(key){
+  const s=sched(key), v=s.vid?VMAP[s.vid]:null;
+  const dt=[s.d,s.t].filter(Boolean).join(" ");
+  if(!v && !dt){
+    return `<button class="venue empty" data-key="${key}">＋ стадион, дата, заметки<span class="vright">›</span></button>`;
+  }
+  const left = v
+    ? `🏟 <b>${v.n}</b> · ${v.city}`
+    : `🗓 матч`;
+  return `<button class="venue" data-key="${key}"><span class="vleft">${left}</span><span class="vright">${dt} ›</span></button>`;
+}
+
+/* ============ MATCHES VIEW ============ */
+function tourHTML(tour){
+  let h=`<div class="toolbar"><button class="primary" id="seedBtn">⚙️ Сформировать плей-офф</button><button class="warn" id="resetBtn">Сбросить</button></div>`;
+  const mis=[]; TOUR_OF.forEach((t,i)=>{if(t===tour)mis.push(i);});
+  GKEYS.forEach(k=>{
+    const teams=GROUPS[k];
+    h+=`<div class="mtour">Группа ${k}</div>`;
+    mis.forEach(mi=>{
+      const p=PAIRS[mi],a=teams[p[0]],b=teams[p[1]],sc=state.g[k][mi],key=`g-${k}-${mi}`;
+      h+=matchBlock(key,a,b,sc[0],sc[1]);
+    });
+  });
+  return h;
+}
+function matchBlock(id,a,b,sa,sb){
+  return `<div class="mcard${isFilled(sa,sb)?" done":""}"><div class="match">`+
+    `<div class="tm right"><span class="nm">${a}</span>${flag(a)}</div>`+
+    `<div class="score"><input id="${id}-a" type="number" min="0" inputmode="numeric" value="${sa}"><span class="sep">:</span><input id="${id}-b" type="number" min="0" inputmode="numeric" value="${sb}"></div>`+
+    `<div class="tm">${flag(b)}<span class="nm">${b}</span></div>`+
+  `</div>`+venueChip(id)+`</div>`;
+}
+function koHTML(round){
+  if(!state.koSeed){
+    return `<div class="toolbar"><button class="primary" id="seedBtn">⚙️ Сформировать плей-офф</button></div><div class="note">Сначала заполни группы и нажми «Сформировать плей-офф». Сетка соберётся из 24 команд (1–2 места) + 8 лучших третьих, посев по очкам.</div>`;
+  }
+  let h=`<div class="toolbar"><button class="primary" id="seedBtn">⚙️ Пересобрать плей-офф</button></div>`;
+  const teams=roundTeams(round);
+  const labels={R32:"1/16 финала",R16:"1/8 финала",QF:"Четвертьфинал",SF:"Полуфинал",F:"Финал"};
+  h+=`<div class="ko">`;
+  teams.forEach((pair,i)=>h+=koMatch(round,i,pair,result(round,i),labels[round]+" · М"+(i+1)));
+  if(round==="F"){
+    const tp=roundTeams("TP")[0];
+    h+=koMatch("TP",0,tp,result("TP",0),"Матч за 3-е место");
+    const champ=winner("F",0);
+    h+=`<div class="champ"><div class="lbl">ЧЕМПИОН МИРА 2026</div><div class="name"><span class="cup">🏆</span>${champ?flag(champ)+" "+champ:"—"}</div></div>`;
+  }
+  h+=`</div>`;
+  return h;
+}
+function koMatch(round,i,pair,res,tag){
+  const a=pair[0],b=pair[1],m=state.ko[round][i],key=`k-${round}-${i}`;
+  const aw=res==="a",bw=res==="b";
+  const tie=(m.sa!==""&&m.sb!==""&&m.sa!=null&&m.sb!=null&&!isNaN(+m.sa)&&!isNaN(+m.sb)&&+m.sa===+m.sb);
+  let h=`<div class="kmatch${isFilled(m.sa,m.sb)?" done":""}"><div class="ktag">${tag}</div>`;
+  h+=`<div class="krow ${aw?'win':(res?'lose':'')}"><div class="kt">${flag(a)}<span class="nm">${a||"—"}</span></div><input id="k-${round}-${i}-a" type="number" min="0" inputmode="numeric" value="${m.sa}" ${a?'':'disabled'}></div>`;
+  h+=`<div class="krow ${bw?'win':(res?'lose':'')}"><div class="kt">${flag(b)}<span class="nm">${b||"—"}</span></div><input id="k-${round}-${i}-b" type="number" min="0" inputmode="numeric" value="${m.sb}" ${b?'':'disabled'}></div>`;
+  if(tie){
+    h+=`<div class="pen">Пенальти: `+
+       `<button class="pn ${m.pen==='a'?'sel':''}" data-r="${round}" data-i="${i}" data-w="a">${a}</button>`+
+       `<button class="pn ${m.pen==='b'?'sel':''}" data-r="${round}" data-i="${i}" data-w="b">${b}</button></div>`;
+  }
+  h+=venueChip(key)+`</div>`;
+  return h;
+}
+
+/* ============ VENUES SCREEN ============ */
+function venuesHTML(){
+  // подсчёт назначенных матчей на арену
+  const cnt={};
+  Object.keys(state.sched).forEach(key=>{const vid=state.sched[key].vid;if(vid)cnt[vid]=(cnt[vid]||0)+1;});
+  SCHED_DEF && Object.keys(SCHED_DEF).forEach(key=>{if(!state.sched[key]){const vid=SCHED_DEF[key].vid;cnt[vid]=(cnt[vid]||0)+1;}});
+  let h=`<div class="note">16 арен ЧМ-2026 в США, Канаде и Мексике. Назначай стадион матчу в карточке матча.</div><div class="vlist">`;
+  VENUES.forEach(v=>{
+    const c=cnt[v.id]||0;
+    h+=`<div class="vcard"><div class="vico">🏟</div>`+
+       `<div class="vmid"><div class="vn">${v.n}</div><div class="vc">${flagCC(v.cc)} ${v.city}</div>`+
+       (c?`<span class="vbadge">${c} ${matchWord(c)}</span>`:``)+`</div>`+
+       `<div class="vcap"><b>${fmtCap(v.cap)}</b><span>мест</span></div></div>`;
+  });
+  h+=`</div>`;
+  return h;
+}
+function matchWord(n){const a=n%10,b=n%100;if(a===1&&b!==11)return "матч";if(a>=2&&a<=4&&(b<10||b>=20))return "матча";return "матчей";}
+
+/* ============ CALENDAR (по дням) ============ */
+const MONTHS={"январ":1,"феврал":2,"март":3,"апрел":4,"ма":5,"июн":6,"июл":7,"август":8,"сентябр":9,"октябр":10,"ноябр":11,"декабр":12};
+function allMatchKeys(){
+  const keys=[];
+  GKEYS.forEach(k=>state.g[k].forEach((m,mi)=>keys.push(`g-${k}-${mi}`)));
+  ["R32","R16","QF","SF","F","TP"].forEach(r=>state.ko[r].forEach((m,i)=>keys.push(`k-${r}-${i}`)));
+  return keys;
+}
+function schedRead(key){ // как sched(), но БЕЗ мутации state (для обзорных экранов)
+  const s=state.sched[key]; if(s)return s;
+  return SCHED_DEF[key]?{...SCHED_DEF[key],n:""}:null;
+}
+function filledByKey(key){
+  const p=key.split("-");
+  if(p[0]==="g"){const m=state.g[p[1]][+p[2]];return isFilled(m[0],m[1]);}
+  const m=state.ko[p[1]][+p[2]];return m?isFilled(m.sa,m.sb):false;
+}
+function timeMin(t){if(!t||!/^\d/.test(t))return 99999;const p=t.split(":");return (+p[0])*60+(+(p[1]||0));}
+function dateSortKey(d,t){
+  if(!d)return 9e9;
+  const day=(d.match(/\d+/)||[99])[0]*1;
+  let mon=13; const dl=d.toLowerCase();
+  for(const k in MONTHS){ if(dl.indexOf(k)>=0){mon=MONTHS[k];break;} }
+  return mon*1e6+day*1e4+timeMin(t);
+}
+function calTag(key){
+  const p=key.split("-");
+  if(p[0]==="g")return "Гр. "+p[1];
+  return ({R32:"1/16",R16:"1/8",QF:"1/4",SF:"1/2",F:"Финал",TP:"3-е место"})[p[1]]||p[1];
+}
+function calendarHTML(){
+  const days=new Map();
+  allMatchKeys().forEach(key=>{
+    const sr=schedRead(key); if(!sr||!sr.d)return;
+    if(!days.has(sr.d))days.set(sr.d,{sk:dateSortKey(sr.d,sr.t),items:[]});
+    days.get(sr.d).items.push({key,t:sr.t||""});
+  });
+  if(days.size===0)return `<div class="note">Пока нет матчей с датой. Открой матч → задай дату/время — и он появится здесь по дням. (Все 72 матча групп уже с расписанием; плей-офф добавишь вручную.)</div>`;
+  const sorted=[...days.entries()].sort((a,b)=>a[1].sk-b[1].sk);
+  let h="";
+  sorted.forEach(([d,obj])=>{
+    obj.items.sort((x,y)=>timeMin(x.t)-timeMin(y.t));
+    h+=`<div class="caldate">🗓 ${esc(d)}</div>`;
+    obj.items.forEach(it=>{
+      const tt=teamsForKey(it.key),a=tt[0]||"—",b=tt[1]||"—";
+      const sr=schedRead(it.key),v=sr&&sr.vid?VMAP[sr.vid]:null;
+      h+=`<button class="calmatch${filledByKey(it.key)?" done":""}" data-key="${it.key}">`+
+         `<span class="caltime">${esc(it.t)||"--:--"}</span>`+
+         `<span class="calteams">${flag(a)}<span class="cn">${a}</span><span class="cvs">—</span><span class="cn">${b}</span>${flag(b)}</span>`+
+         `<span class="caltag">${calTag(it.key)}${v?" · "+v.city:""}</span></button>`;
+    });
+  });
+  return h;
+}
+
+/* ============ BRACKET TREE (сетка) ============ */
+function bracketTreeHTML(){
+  if(!state.koSeed)return `<div class="note">Сначала сформируй плей-офф: вкладка «1/16» → «Сформировать плей-офф».</div>`;
+  // ячейка одного матча
+  const cell=(r,i)=>{
+    const pair=roundTeams(r)[i],res=result(r,i),a=pair[0],b=pair[1];
+    return `<button class="bcell" data-key="k-${r}-${i}">`+
+      `<div class="bteam ${res==="a"?"bw":(res?"bl":"")}">${flag(a)}<span>${a||"—"}</span></div>`+
+      `<div class="bteam ${res==="b"?"bw":(res?"bl":"")}">${flag(b)}<span>${b||"—"}</span></div></button>`;
+  };
+  // колонка с диапазоном слотов раунда [from..to]; заголовок вне .bcells → ячейки центрируются мат-точно
+  const col=(label,r,from,to)=>{
+    let h=`<div class="bcol"><div class="bcolh">${label}</div><div class="bcells">`;
+    for(let i=from;i<=to;i++)h+=cell(r,i);
+    return h+`</div></div>`;
+  };
+  const champ=winner("F",0);
+  // wiring симметричен: R32 0-7 → SF0 (левый фланг), R32 8-15 → SF1 (правый)
+  return `<div class="bracket2">`+
+    `<div class="bside">`+col("1/16","R32",0,7)+col("1/8","R16",0,3)+col("1/4","QF",0,1)+col("1/2","SF",0,0)+`</div>`+
+    `<div class="bcenter"><div class="bcolh">ФИНАЛ</div><div class="bcells">${cell("F",0)}`+
+      `<div class="bchamp">${champ?flag(champ)+"<br>"+champ:"🏆<br>—"}</div></div></div>`+
+    `<div class="bside">`+col("1/2","SF",1,1)+col("1/4","QF",2,3)+col("1/8","R16",4,7)+col("1/16","R32",8,15)+`</div>`+
+  `</div>`;
+}
+
+/* ============ ПРАВИЛА ЧМ-2026 ============ */
+function rulesHTML(){
+  return `<div class="rules">
+    <div class="muted">Главное про формат и правила именно ЧМ-2026 — и что нового против прошлых турниров. Источники: FIFA, IFAB, ESPN (проверено по нескольким, июнь 2026).</div>
+
+    <h2>🌍 Формат</h2>
+    <div class="rule"><span class="tag chg">НОВОЕ</span><br><b>48 команд</b> вместо 32 — впервые с 1998 года (+16 сборных).</div>
+    <div class="rule"><b>12 групп по 4 команды.</b> Каждая играет 3 матча в группе. Дальше проходят <b>топ-2 из группы</b> + <b>8 лучших третьих мест</b> из 12 → итого 32 команды в плей-офф.</div>
+    <div class="rule"><span class="tag chg">НОВОЕ</span><br><b>Плей-офф стартует с 1/16 финала</b> (Round of 32). Раньше начинался с 1/8. Дальше: 1/16 → 1/8 → 1/4 → 1/2 → финал (+ матч за 3-е место).</div>
+    <div class="rule"><b>104 матча</b> (было 64): 72 в группах + 32 на вылет. Победитель сыграет <b>8 матчей</b> (раньше 7). Турнир идёт 39 дней — 11 июня … 19 июля 2026.</div>
+    <div class="rule"><span class="tag chg">НОВОЕ</span><br><b>3 страны-хозяина</b> впервые в истории: США (11 городов), Мексика (3), Канада (2) — всего 16 стадионов.</div>
+
+    <h2>⚖️ Тай-брейк в группах</h2>
+    <div class="rule"><span class="tag chg">ИЗМЕНЕНИЕ</span><br>При равенстве очков <b>первым считают личные встречи</b>, а не общую разницу мячей как раньше. Порядок:<br>1) очки в матчах между этими командами → 2) разница мячей в них → 3) голы в них → 4) fair-play (меньше карточек) → затем по всем матчам группы: 5) общая разница → 6) голы → 7) fair-play → 8) рейтинг ФИФА.</div>
+    <div class="rule"><b>8 лучших третьих мест.</b> Все третьи команды ранжируют: очки → разница → голы → fair-play → рейтинг ФИФА. Топ-8 проходят, 4 вылетают.</div>
+
+    <h2>🥅 Новое правило игры (IFAB 2025/26)</h2>
+    <div class="rule"><span class="tag chg">НОВОЕ</span><br><b>Правило 8 секунд для вратаря.</b> Держит мяч в руках дольше 8 секунд (судья показывает отсчёт последних 5 сек поднятой рукой) → <b>угловой</b> сопернику. Раньше было 6 секунд и свободный удар — теперь жёстче, против затяжки времени.</div>
+
+    <h2>🏆 Плей-офф</h2>
+    <div class="rule">Ничья после 90 минут → <b>дополнительное время 2×15 мин</b> → если снова ничья, <b>серия пенальти</b>. Переигровок нет.</div>
+
+    <div class="muted" style="margin-top:14px">ℹ️ Приложение считает таблицы по официальному тай-брейку (личные встречи первыми). Карточек оно не хранит — шаг fair-play пропускается; посев плей-офф остаётся упрощённым (по очкам, не по офиц. слот-таблице третьих мест).</div>
+
+    <h2>🔗 Источники</h2>
+    <div class="rule">
+      <button class="srclink" data-url="https://www.theifab.com/law-changes/latest/">IFAB — изменения правил 2025/26 (правило 8 секунд)</button>
+      <button class="srclink spoil" data-url="https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/groups-how-teams-qualify-tie-breakers">FIFA — формат, выход из групп, тай-брейки ⚠</button>
+      <button class="srclink spoil" data-url="https://en.wikipedia.org/wiki/2026_FIFA_World_Cup">Wikipedia — 2026 FIFA World Cup ⚠</button>
+      <div class="muted" style="margin-top:6px">⚠ = во время турнира на странице могут быть счёта матчей. Откроется только после подтверждения.</div>
+    </div>
+  </div>`;
+}
+
+/* ============ SHEET ============ */
+let sheetKey=null, sheetA="", sheetB="";
+function openSheet(key,a,b){
+  sheetKey=key; sheetA=a||""; sheetB=b||"";
+  fillSheet();
+  $("scrim").classList.add("on"); $("sheet").classList.add("on");
+}
+function closeSheet(){
+  $("scrim").classList.remove("on"); $("sheet").classList.remove("on");
+  sheetKey=null; render();
+}
+function fillSheet(){
+  const key=sheetKey,a=sheetA,b=sheetB,s=sched(key),v=s.vid?VMAP[s.vid]:null;
+  const stad = v
+    ? `<div class="stadcard"><div class="si">🏟</div><div><div class="sn">${v.n}</div><div class="sm">${flagCC(v.cc)} ${v.city} · вместимость ${fmtCap(v.cap)}</div></div></div>`
+    : `<div class="stadcard"><div class="si">🏟</div><div><div class="sn">Стадион не выбран</div><div class="sm">выбери арену ниже</div></div></div>`;
+  let opts=`<option value="">— не выбран —</option>`;
+  VENUES.forEach(vn=>{opts+=`<option value="${vn.id}" ${s.vid===vn.id?"selected":""}>${vn.n} · ${vn.city} (${fmtCap(vn.cap)})</option>`;});
+  const mapsQ=encodeURIComponent(v?(v.n+", "+v.city):(a+" "+b));
+  const h=
+    `<div class="grip"></div>`+
+    `<div class="shead"><div class="steams">${flag(a)}<span>${a||"—"}</span><span class="vs">vs</span><span>${b||"—"}</span>${flag(b)}</div></div>`+
+    `<div class="sbody">`+
+      stad+
+      `<div class="fld"><label>Стадион</label><select id="sh-vid">${opts}</select></div>`+
+      `<div class="frow"><div class="fld"><label>Дата</label><input id="sh-d" placeholder="напр. сб 13 июня" value="${esc(s.d)}"></div>`+
+      `<div class="fld" style="flex:0 0 110px"><label>Время</label><input id="sh-t" placeholder="--:--" value="${esc(s.t)}"></div></div>`+
+      `<div class="fld"><label>Заметки</label><textarea id="sh-n" placeholder="прогноз, составы, мысли…">${esc(s.n)}</textarea></div>`+
+      `<div class="sactions">`+
+        `<button class="sbtn spoil" id="sh-news">🔎 Новости</button>`+
+        `<a class="sbtn" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=${mapsQ}">📍 На карте</a>`+
+      `</div>`+
+      `<div class="note" style="padding:10px 0 0">«Новости» открывает внешний поиск и <b>может содержать спойлеры</b> — спросит подтверждение.</div>`+
+    `</div>`;
+  $("sheet").innerHTML=h;
+  $("sh-news").onclick=()=>{ if(confirm("⚠️ ВНИМАНИЕ: новости и поиск могут раскрыть СЧЁТ матча.\n\nОткрыть всё равно?")) window.open("https://news.google.com/search?hl=ru&q="+searchQ(a,b),"_blank","noopener"); };
+  $("sh-vid").onchange=e=>{sched(key).vid=e.target.value;save();fillSheet();};
+  $("sh-d").oninput=e=>{sched(key).d=e.target.value;save();};
+  $("sh-t").oninput=e=>{sched(key).t=e.target.value;save();};
+  $("sh-n").oninput=e=>{sched(key).n=e.target.value;save();};
+}
+
+/* ============ RENDER ============ */
+function render(){
+  const titles={table:"Таблица — ЧМ 2026",matches:"Матчи — ЧМ 2026",venues:"Стадионы ЧМ 2026",calendar:"Календарь — ЧМ 2026",rules:"Правила — ЧМ 2026"};
+  $("topTitle").textContent=titles[mainView];
+  $("navTable").classList.toggle("on",mainView==="table");
+  $("navMatches").classList.toggle("on",mainView==="matches");
+  $("navCalendar").classList.toggle("on",mainView==="calendar");
+  $("navVenues").classList.toggle("on",mainView==="venues");
+  $("navRules").classList.toggle("on",mainView==="rules");
+  const pg=countProgress(), pct=pg.total?Math.round(pg.done/pg.total*100):0;
+  $("progress").innerHTML=`<span>Заполнено</span><div class="bar"><i style="width:${pct}%"></i></div><span class="pc">${pg.done} / ${pg.total}</span>`;
+  renderSubtabs();
+  let html;
+  if(mainView==="venues") html=venuesHTML();
+  else if(mainView==="rules") html=rulesHTML();
+  else if(mainView==="calendar") html=calendarHTML();
+  else if(mainView==="table") html = sub==="thirds"?thirdsHTML():groupTableHTML();
+  else if(sub==="tree") html = bracketTreeHTML();
+  else if(sub==="t1"||sub==="t2"||sub==="t3") html = tourHTML(+sub[1]);
+  else html = koHTML(sub);
+  $("content").innerHTML=html; bind();
+}
+
+/* ============ BIND ============ */
+function bind(){
+  document.querySelectorAll('input[id^="g-"]').forEach(inp=>inp.addEventListener("input",e=>{
+    const [,k,mi,side]=e.target.id.split("-"); state.g[k][+mi][side==="a"?0:1]=e.target.value; save(); soft(e.target.id);
+  }));
+  document.querySelectorAll('input[id^="k-"]').forEach(inp=>inp.addEventListener("input",e=>{
+    const [,r,i,side]=e.target.id.split("-"); state.ko[r][+i][side==="a"?"sa":"sb"]=e.target.value; save(); soft(e.target.id);
+  }));
+  document.querySelectorAll('button.pn').forEach(b=>b.onclick=()=>{
+    const r=b.dataset.r,i=+b.dataset.i,w=b.dataset.w; state.ko[r][i].pen=state.ko[r][i].pen===w?null:w; save(); render();
+  });
+  document.querySelectorAll('.venue').forEach(btn=>btn.onclick=()=>{
+    const key=btn.dataset.key, a=teamsForKey(key)[0], b=teamsForKey(key)[1]; openSheet(key,a,b);
+  });
+  document.querySelectorAll('.calmatch').forEach(btn=>btn.onclick=()=>{
+    const key=btn.dataset.key,t=teamsForKey(key); openSheet(key,t[0],t[1]);
+  });
+  document.querySelectorAll('.bcell').forEach(btn=>btn.onclick=()=>{
+    sub=btn.dataset.key.split("-")[1]; render(); // тап по ячейке сетки → к раунду для ввода счёта
+  });
+  document.querySelectorAll('.srclink').forEach(b=>b.onclick=()=>{
+    const u=b.dataset.url;
+    if(b.classList.contains("spoil") && !confirm("⚠️ Внешний сайт. Во время турнира там могут быть СЧЁТА матчей.\n\nОткрыть всё равно?"))return;
+    window.open(u,"_blank","noopener");
+  });
+  const sb=$("seedBtn"); if(sb) sb.onclick=()=>{if(state.koSeed&&!confirm("Пересобрать плей-офф из групп? Введённые счета плей-офф будут стёрты."))return;buildSeed();sub="R32";render();};
+  const rb=$("resetBtn"); if(rb) rb.onclick=()=>{if(confirm("Сбросить все результаты турнира?")){state=blank();save();render();}};
+}
+function teamsForKey(key){
+  const p=key.split("-");
+  if(p[0]==="g"){const k=p[1],mi=+p[2],pr=PAIRS[mi];return [GROUPS[k][pr[0]],GROUPS[k][pr[1]]];}
+  // k-ROUND-i
+  const round=p[1],i=+p[2];const t=roundTeams(round)[i];return [t[0],t[1]];
+}
+function soft(focusId){render();const el=$(focusId);if(el){el.focus();try{el.setSelectionRange(el.value.length,el.value.length);}catch(e){}}}
+
+/* ============ NAV / IO ============ */
+$("navTable").onclick=()=>{mainView="table";sub="groups";render();};
+$("navMatches").onclick=()=>{mainView="matches";sub="t1";render();};
+$("navCalendar").onclick=()=>{mainView="calendar";render();};
+$("navVenues").onclick=()=>{mainView="venues";render();};
+$("navRules").onclick=()=>{mainView="rules";render();};
+$("scrim").onclick=closeSheet;
+
+/* тёмная тема — per-device pref, НЕ входит в state/код переноса */
+const TKEY="wc2026_theme";
+function applyTheme(){const dark=localStorage.getItem(TKEY)==="dark";document.body.classList.toggle("dark",dark);$("themeBtn").textContent=dark?"☀️":"🌙";}
+$("themeBtn").onclick=()=>{const dark=!document.body.classList.contains("dark");localStorage.setItem(TKEY,dark?"dark":"light");applyTheme();};
+applyTheme();
+$("exportBtn").onclick=()=>{const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="wc2026.json";a.click();};
+$("importBtn").onclick=()=>$("importFile").click();
+$("importFile").onchange=e=>{const f=e.target.files[0];if(!f)return;const rd=new FileReader();rd.onload=()=>{try{const d=JSON.parse(rd.result);if(d&&d.g){state=d;if(!state.sched)state.sched={};save();render();}else alert("Неверный файл");}catch(err){alert("Ошибка чтения файла");}};rd.readAsText(f);};
+
+/* поделиться через ссылку (данные в #d=base64, без сервера) */
+function packState(){return btoa(unescape(encodeURIComponent(JSON.stringify(state))));}
+function unpackState(b64){return JSON.parse(decodeURIComponent(escape(atob(b64))));}
+/* перенос между девайсами: код наружу / код внутрь (через Telegram и т.п.) */
+function openCodeOut(){
+  const code=packState();
+  $("sheet").innerHTML=
+    `<div class="grip"></div>`+
+    `<div class="shead"><div class="steams">📤 Код для переноса</div></div>`+
+    `<div class="sbody">`+
+      `<div class="note" style="padding:0 0 10px">Скопируй и отправь себе (напр. в Telegram). На другом девайсе нажми 📥 и вставь.</div>`+
+      `<div class="fld"><textarea id="code-out" readonly style="min-height:120px;font-size:12px;word-break:break-all">${code}</textarea></div>`+
+      `<div class="sactions"><button class="sbtn" id="code-copy">📋 Копировать</button><button class="sbtn" id="code-close">Закрыть</button></div>`+
+    `</div>`;
+  $("scrim").classList.add("on"); $("sheet").classList.add("on");
+  const ta=$("code-out"); ta.focus(); ta.select();
+  $("code-copy").onclick=()=>{
+    ta.select(); ta.setSelectionRange(0,code.length);
+    const done=()=>{$("code-copy").textContent="✓ Скопировано";};
+    if(navigator.clipboard&&navigator.clipboard.writeText)
+      navigator.clipboard.writeText(code).then(done,()=>{try{document.execCommand("copy");}catch(e){} done();});
+    else {try{document.execCommand("copy");}catch(e){} done();}
+  };
+  $("code-close").onclick=closeSheet;
+}
+function openCodeIn(){
+  $("sheet").innerHTML=
+    `<div class="grip"></div>`+
+    `<div class="shead"><div class="steams">📥 Загрузить код</div></div>`+
+    `<div class="sbody">`+
+      `<div class="note" style="padding:0 0 10px">Вставь код, полученный с другого девайса. <b>Текущие данные будут заменены.</b></div>`+
+      `<div class="fld"><textarea id="code-in" placeholder="вставь код сюда…" style="min-height:120px;font-size:12px;word-break:break-all"></textarea></div>`+
+      `<div class="sactions"><button class="sbtn" id="code-load">Загрузить</button><button class="sbtn" id="code-cancel">Отмена</button></div>`+
+    `</div>`;
+  $("scrim").classList.add("on"); $("sheet").classList.add("on");
+  $("code-in").focus();
+  $("code-load").onclick=()=>{
+    let raw=$("code-in").value.trim();
+    if(!raw){alert("Пусто");return;}
+    if(raw.indexOf("#d=")>=0) raw=raw.split("#d=")[1].trim(); // на случай если вставили целую ссылку
+    let d; try{d=unpackState(raw);}catch(e){alert("Не удалось прочитать код");return;}
+    if(!d||!d.g){alert("Неверный код");return;}
+    if(confirm("Заменить текущие данные загруженными?")){state=d; if(!state.sched)state.sched={}; save(); closeSheet();}
+  };
+  $("code-cancel").onclick=closeSheet;
+}
+$("codeOutBtn").onclick=openCodeOut;
+$("codeInBtn").onclick=openCodeIn;
+/* загрузка из ссылки при старте */
+(function(){
+  const h=location.hash;
+  if(h&&h.indexOf("#d=")===0){
+    try{
+      const d=unpackState(h.slice(3));
+      if(d&&d.g&&confirm("Загрузить турнир из ссылки? Текущие данные будут заменены.")){
+        state=d; if(!state.sched)state.sched={}; save();
+      }
+    }catch(e){alert("Не удалось прочитать ссылку");}
+    history.replaceState(null,"",location.href.split("#")[0]);
+  }
+})();
+
+render();
+</script>
+</body>
+</html>
