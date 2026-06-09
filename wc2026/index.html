@@ -228,9 +228,6 @@
     <button class="ico" id="themeBtn" title="тема">🌙</button>
     <button class="ico" id="codeOutBtn" title="код: надіслати">📤</button>
     <button class="ico" id="codeInBtn" title="код: завантажити">📥</button>
-    <button class="ico" id="importBtn" title="імпорт файлу">⤒</button>
-    <button class="ico" id="exportBtn" title="експорт файлу">⤓</button>
-    <input type="file" id="importFile" accept="application/json" hidden>
   </div>
   <div class="progress" id="progress"></div>
   <div class="subtabs" id="subtabs"></div>
@@ -810,14 +807,11 @@ $("navVenues").onclick=()=>{mainView="venues";render();};
 $("navRules").onclick=()=>{mainView="rules";render();};
 $("scrim").onclick=closeSheet;
 
-/* тёмная тема — per-device pref, НЕ входит в state/код переноса */
+/* тёмная тема — per-device pref (тёмная тема не входит в state/код переноса) */
 const TKEY="wc2026_theme";
 function applyTheme(){const dark=localStorage.getItem(TKEY)==="dark";document.body.classList.toggle("dark",dark);$("themeBtn").textContent=dark?"☀️":"🌙";}
 $("themeBtn").onclick=()=>{const dark=!document.body.classList.contains("dark");localStorage.setItem(TKEY,dark?"dark":"light");applyTheme();};
 applyTheme();
-$("exportBtn").onclick=()=>{const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="wc2026.json";a.click();};
-$("importBtn").onclick=()=>$("importFile").click();
-$("importFile").onchange=e=>{const f=e.target.files[0];if(!f)return;const rd=new FileReader();rd.onload=()=>{try{const d=JSON.parse(rd.result);if(d&&d.g){state=d;if(!state.sched)state.sched={};save();render();}else alert("Невірний файл");}catch(err){alert("Помилка читання файлу");}};rd.readAsText(f);};
 
 /* поделиться через ссылку (данные в #d=base64, без сервера) */
 function packState(){return btoa(unescape(encodeURIComponent(JSON.stringify(state))));}
