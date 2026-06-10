@@ -371,6 +371,17 @@ function sched(key){
   const s=state.sched[key]; if(s.n==null)s.n=""; if(s.vid==null)s.vid="";
   return s;
 }
+/* міграція: старі рос-дати в state.sched → укр (одноразово, для вже збережених даних) */
+function migrateSched(){
+  const MO={"января":"січня","февраля":"лютого","марта":"березня","апреля":"квітня","мая":"травня","июня":"червня","июля":"липня","августа":"серпня","сентября":"вересня","октября":"жовтня","ноября":"листопада","декабря":"грудня"};
+  let ch=false;
+  for(const k in state.sched){const s=state.sched[k]; if(!s||!s.d)continue;
+    let d=s.d.replace(/^вс /,"нд ");
+    for(const ru in MO) if(d.indexOf(ru)>=0) d=d.replace(ru,MO[ru]);
+    if(d!==s.d){s.d=d;ch=true;}
+  }
+  if(ch)save();
+}
 
 /* ============ COMPUTE ============ */
 function computeGroup(key){
@@ -498,7 +509,7 @@ function thirdsHTML(){
 
 /* ============ VENUE CHIP ============ */
 function venueChip(key){
-  const s=sched(key), v=s.vid?VMAP[s.vid]:null;
+  const s=schedRead(key)||{}, v=s.vid?VMAP[s.vid]:null; // schedRead — без мутації state
   const dt=[s.d,s.t].filter(Boolean).join(" ");
   if(!v && !dt){
     return `<button class="venue empty" data-key="${key}">＋ стадіон, дата, нотатки<span class="vright">›</span></button>`;
@@ -900,6 +911,7 @@ $("codeInBtn").onclick=openCodeIn;
   }
 })();
 
+migrateSched();
 render();
 </script>
 </body>
