@@ -720,6 +720,39 @@ function closeSheet(){
   $("scrim").classList.remove("on"); $("sheet").classList.remove("on");
   sheetKey=null; render();
 }
+/* Match stats store. Filled on owner's request, per match key (g-<grp>-<pair> | k-<round>-<i>).
+   side "a"=first team (sheetA), "b"=second (sheetB). card type: "y"=yellow, "r"=red.
+   stat row: [label, valueA, valueB, unitOptional]. Missing data -> omit the row, never invent. */
+const MSTATS={
+  "g-A-0":{
+    score:[2,0],
+    goals:[["9'","Хуліан Кіньйонес","a"],["67'","Рауль Хіменес","a"]],
+    cards:[["17'","Teboho Mokoena","y","b"],["23'","Brian Gutiérrez","y","a"],["50'","Sphephelo Sithole","r","b"],
+           ["74'","Nkosinathi Sibisi","y","b"],["84'","Themba Zwane","r","b"],["90+2'","César Montes","r","a"]],
+    stats:[["Володіння",60,40,"%"],["Удари",16,5],["У створ",4,2],["xG",1.41,0.07],
+           ["Точні паси",467,272],["Точність паса",90,81,"%"],["Фоли",12,11],["Сейви",2,2]]
+  }
+};
+function statHTML(key,a,b){
+  const m=MSTATS[key];
+  if(!m) return `<div class="note" style="padding:14px 4px;text-align:center">📊 Статистики для цього матчу поки немає.</div>`;
+  const goals=(m.goals||[]).map(g=>`<div style="display:flex;gap:10px;padding:2px 0"><b style="min-width:48px">${esc(g[0])}</b><span>${g[2]==="a"?flag(a):flag(b)} ${esc(g[1])}</span></div>`).join("");
+  const cards=(m.cards||[]).map(c=>`<div style="display:flex;gap:10px;padding:2px 0"><b style="min-width:48px">${esc(c[0])}</b><span>${c[2]==="r"?"🟥":"🟨"} ${c[3]==="a"?flag(a):flag(b)} ${esc(c[1])}</span></div>`).join("");
+  const rows=(m.stats||[]).map(r=>{
+    const u=r[3]||"", av=r[1], bv=r[2];
+    const aw=av>bv?"color:var(--green);font-weight:700":"", bw=bv>av?"color:var(--green);font-weight:700":"";
+    return `<div style="display:flex;align-items:center;gap:10px;padding:5px 0;border-top:1px solid var(--line)">`+
+      `<span style="flex:0 0 60px;text-align:right;${aw}">${av}${u}</span>`+
+      `<span style="flex:1;text-align:center;color:var(--muted);font-size:13px">${esc(r[0])}</span>`+
+      `<span style="flex:0 0 60px;${bw}">${bv}${u}</span></div>`;
+  }).join("");
+  return `<div style="margin-top:12px;padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--soft)">`+
+    `<div style="display:flex;justify-content:center;align-items:center;gap:14px;font-size:24px;font-weight:800;margin-bottom:12px">${flag(a)}<span>${m.score[0]} : ${m.score[1]}</span>${flag(b)}</div>`+
+    (goals?`<div style="margin-bottom:10px">⚽ <b>Голи</b>${goals}</div>`:"")+
+    (cards?`<div style="margin-bottom:10px">🟨🟥 <b>Картки</b>${cards}</div>`:"")+
+    (rows?`<div style="margin-top:8px"><div style="text-align:center;color:var(--muted);font-size:12px;margin-bottom:4px">📊 Командна статистика</div>${rows}</div>`:"")+
+  `</div>`;
+}
 function fillSheet(){
   const key=sheetKey,a=sheetA,b=sheetB,s=sched(key),v=s.vid?VMAP[s.vid]:null;
   const stad = v
@@ -739,12 +772,21 @@ function fillSheet(){
       `<div class="fld"><label>Нотатки</label><textarea id="sh-n" placeholder="прогноз, склади, думки…">${esc(s.n)}</textarea></div>`+
       `<div class="sactions">`+
         `<button class="sbtn spoil" id="sh-news">🔎 Новини</button>`+
+        `<button class="sbtn spoil" id="sh-stats">📊 Статистика</button>`+
         `<a class="sbtn" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=${mapsQ}">📍 На мапі</a>`+
       `</div>`+
-      `<div class="note" style="padding:10px 0 0">«Новини» відкривають зовнішній пошук і <b>можуть містити спойлери</b> — спитає підтвердження.</div>`+
+      `<div class="note" style="padding:10px 0 0">«Новини»/«Статистика» — зовнішній пошук або дані матчу, <b>можуть містити спойлери</b> — спитає підтвердження.</div>`+
+      `<div id="sh-statbox" style="display:none"></div>`+
     `</div>`;
   $("sheet").innerHTML=h;
   $("sh-news").onclick=()=>{ if(confirm("⚠️ УВАГА: новини та пошук можуть розкрити РАХУНОК матчу.\n\nВідкрити все одно?")) window.open("https://news.google.com/search?hl=uk&q="+searchQ(a,b),"_blank","noopener"); };
+  $("sh-stats").onclick=()=>{
+    const box=$("sh-statbox");
+    if(box.dataset.open==="1"){ box.style.display="none"; box.dataset.open="0"; return; }
+    if(!MSTATS[key]){ alert("📊 Статистики для цього матчу поки немає."); return; }
+    if(!confirm("⚠️ УВАГА: статистика покаже РАХУНОК і події матчу.\n\nПоказати все одно?"))return;
+    box.innerHTML=statHTML(key,a,b); box.style.display="block"; box.dataset.open="1";
+  };
   $("sh-vid").onchange=e=>{sched(key).vid=e.target.value;save();fillSheet();};
   $("sh-d").oninput=e=>{sched(key).d=e.target.value;save();};
   $("sh-t").oninput=e=>{sched(key).t=e.target.value;save();};
