@@ -524,18 +524,27 @@ function venueChip(key){
 function tourHTML(tour){
   let h=`<div class="toolbar"><button class="primary" id="seedBtn">⚙️ Сформувати плей-оф</button><button class="warn" id="resetBtn">Скинути</button></div>`;
   const mis=[]; TOUR_OF.forEach((t,i)=>{if(t===tour)mis.push(i);});
+  // collect this tour's matches across all groups, then group by date (like calendar)
+  const days=new Map();
   GKEYS.forEach(k=>{
     const teams=GROUPS[k];
-    h+=`<div class="mtour">Група ${k}</div>`;
     mis.forEach(mi=>{
-      const p=PAIRS[mi],a=teams[p[0]],b=teams[p[1]],sc=state.g[k][mi],key=`g-${k}-${mi}`;
-      h+=matchBlock(key,a,b,sc[0],sc[1]);
+      const p=PAIRS[mi],key=`g-${k}-${mi}`,sr=schedRead(key),d=sr&&sr.d?sr.d:"Без дати",t=sr&&sr.t?sr.t:"";
+      if(!days.has(d))days.set(d,{sk:(sr&&sr.d)?dateSortKey(sr.d,t):9e9,items:[]});
+      days.get(d).items.push({k,key,a:teams[p[0]],b:teams[p[1]],sc:state.g[k][mi],t});
     });
+  });
+  [...days.entries()].sort((a,b)=>a[1].sk-b[1].sk).forEach(([d,obj])=>{
+    obj.items.sort((x,y)=>timeMin(x.t)-timeMin(y.t));
+    h+=`<div class="caldate">🗓 ${esc(d)}</div>`;
+    obj.items.forEach(it=>{ h+=matchBlock(it.key,it.a,it.b,it.sc[0],it.sc[1],`Гр. ${it.k}${it.t?" · "+it.t:""}`); });
   });
   return h;
 }
-function matchBlock(id,a,b,sa,sb){
-  return `<div class="mcard${isFilled(sa,sb)?" done":""}"><div class="match">`+
+function matchBlock(id,a,b,sa,sb,tag){
+  return `<div class="mcard${isFilled(sa,sb)?" done":""}">`+
+    (tag?`<div style="font-size:11px;color:var(--muted);padding:6px 14px 0;font-weight:600">${esc(tag)}</div>`:"")+
+    `<div class="match">`+
     `<div class="tm right"><span class="nm">${a}</span>${flag(a)}</div>`+
     `<div class="score"><input id="${id}-a" type="number" min="0" inputmode="numeric" value="${sa}"><span class="sep">:</span><input id="${id}-b" type="number" min="0" inputmode="numeric" value="${sb}"></div>`+
     `<div class="tm">${flag(b)}<span class="nm">${b}</span></div>`+
