@@ -720,6 +720,42 @@ function closeSheet(){
   $("scrim").classList.remove("on"); $("sheet").classList.remove("on");
   sheetKey=null; render();
 }
+/* Pre-match store (no-spoiler: no result data). Per match key. side "a"=sheetA, "b"=sheetB.
+   rank:[fifaRankA, fifaRankB]; pred:[winA%, draw%, winB%] (Opta); h2h:[played, winsA, draws, winsB]. */
+const PREMATCH={
+  "g-A-0":{ rank:[14,60], pred:[67.1,19.4,13.5], h2h:[4,2,1,1] }
+};
+function preHTML(key,a,b){
+  const p=PREMATCH[key];
+  if(!p) return `<div class="note" style="padding:14px 4px;text-align:center">🔮 Даних перед матчем поки немає.</div>`;
+  let out="";
+  if(p.rank){
+    out+=`<div style="display:flex;justify-content:center;align-items:center;gap:14px;padding:4px 0 10px;font-weight:600">`+
+      `<span>${flag(a)} <span style="color:var(--muted)">FIFA</span> #${p.rank[0]}</span>`+
+      `<span style="color:var(--muted)">·</span>`+
+      `<span>#${p.rank[1]} <span style="color:var(--muted)">FIFA</span> ${flag(b)}</span></div>`;
+  }
+  if(p.pred){
+    const [wa,d,wb]=p.pred;
+    out+=`<div style="color:var(--muted);font-size:12px;text-align:center;margin-bottom:4px">Прогноз Opta (10k симуляцій)</div>`+
+      `<div style="display:flex;height:14px;border-radius:7px;overflow:hidden">`+
+        `<div style="width:${wa}%;background:var(--green)"></div>`+
+        `<div style="width:${d}%;background:var(--gray)"></div>`+
+        `<div style="width:${wb}%;background:var(--blue)"></div></div>`+
+      `<div style="display:flex;justify-content:space-between;font-size:12px;margin-top:4px">`+
+        `<span style="color:var(--green);font-weight:700">П1 ${wa}%</span>`+
+        `<span style="color:var(--gray)">Нічия ${d}%</span>`+
+        `<span style="color:var(--blue);font-weight:700">П2 ${wb}%</span></div>`;
+  }
+  if(p.h2h){
+    const [g,wa,dr,wb]=p.h2h;
+    out+=`<div style="text-align:center;margin-top:12px;padding-top:10px;border-top:1px solid var(--line);font-size:13px">`+
+      `<div style="color:var(--muted);margin-bottom:2px">Очні зустрічі (${g})</div>`+
+      `<span>${flag(a)} <b>${wa}</b> · ${dr} нічиї · <b>${wb}</b> ${flag(b)}</span></div>`;
+  }
+  return `<div style="margin-top:12px;padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--soft)">`+
+    `<div style="text-align:center;font-weight:800;margin-bottom:8px">🔮 Перед матчем</div>${out}</div>`;
+}
 /* Match stats store. Filled on owner's request, per match key (g-<grp>-<pair> | k-<round>-<i>).
    side "a"=first team (sheetA), "b"=second (sheetB). card type: "y"=yellow, "r"=red.
    stat row: [label, valueA, valueB, unitOptional]. Missing data -> omit the row, never invent. */
@@ -782,9 +818,11 @@ function fillSheet(){
       `<div class="sactions">`+
         `<button class="sbtn spoil" id="sh-news">🔎 Новини</button>`+
         `<button class="sbtn spoil" id="sh-stats">📊 Статистика</button>`+
+        `<button class="sbtn" id="sh-pre">🔮 Перед матчем</button>`+
         `<a class="sbtn" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=${mapsQ}">📍 На мапі</a>`+
       `</div>`+
-      `<div class="note" style="padding:10px 0 0">«Новини»/«Статистика» — зовнішній пошук або дані матчу, <b>можуть містити спойлери</b> — спитає підтвердження.</div>`+
+      `<div class="note" style="padding:10px 0 0">«Новини»/«Статистика» — зовнішній пошук або підсумок матчу, <b>можуть містити спойлери</b>. «Перед матчем» — прогноз/рейтинг до гри, без спойлерів.</div>`+
+      `<div id="sh-prebox" style="display:none"></div>`+
       `<div id="sh-statbox" style="display:none"></div>`+
     `</div>`;
   $("sheet").innerHTML=h;
@@ -795,6 +833,12 @@ function fillSheet(){
     if(!MSTATS[key]){ alert("📊 Статистики для цього матчу поки немає."); return; }
     if(!confirm("⚠️ УВАГА: статистика покаже РАХУНОК і події матчу.\n\nПоказати все одно?"))return;
     box.innerHTML=statHTML(key,a,b); box.style.display="block"; box.dataset.open="1";
+  };
+  $("sh-pre").onclick=()=>{
+    const box=$("sh-prebox");
+    if(box.dataset.open==="1"){ box.style.display="none"; box.dataset.open="0"; return; }
+    if(!PREMATCH[key]){ alert("🔮 Даних перед матчем для цього матчу поки немає."); return; }
+    box.innerHTML=preHTML(key,a,b); box.style.display="block"; box.dataset.open="1";
   };
   $("sh-vid").onchange=e=>{sched(key).vid=e.target.value;save();fillSheet();};
   $("sh-d").oninput=e=>{sched(key).d=e.target.value;save();};
