@@ -145,6 +145,9 @@
 
   /* ===== CALENDAR (по дням) ===== */
   .caldate{background:#eef1f3;color:#475063;font-weight:800;font-size:12.5px;padding:8px 14px;letter-spacing:.3px;position:sticky;top:0;z-index:5}
+  .mday{border:1px solid var(--line);border-radius:14px;overflow:hidden;margin:12px 10px;background:var(--bg);box-shadow:var(--shadow)}
+  .mday-h{background:var(--soft);color:var(--txt);font-weight:800;font-size:13px;padding:10px 14px;border-bottom:1px solid var(--line);letter-spacing:.2px}
+  .mday .mcard:last-child{border-bottom:0}
   .calmatch{display:flex;align-items:center;gap:10px;width:100%;text-align:left;border:0;border-bottom:1px solid var(--line);background:#fff;padding:11px 14px;cursor:pointer}
   .calmatch.done{box-shadow:inset 4px 0 0 var(--green)}
   .calmatch:active{background:#f5f7f9}
@@ -536,8 +539,9 @@ function tourHTML(tour){
   });
   [...days.entries()].sort((a,b)=>a[1].sk-b[1].sk).forEach(([d,obj])=>{
     obj.items.sort((x,y)=>timeMin(x.t)-timeMin(y.t));
-    h+=`<div class="caldate">🗓 ${esc(d)}</div>`;
+    h+=`<div class="mday"><div class="mday-h">🗓 ${esc(d)}</div>`;
     obj.items.forEach(it=>{ h+=matchBlock(it.key,it.a,it.b,it.sc[0],it.sc[1],`Гр. ${it.k}${it.t?" · "+it.t:""}`); });
+    h+=`</div>`;
   });
   return h;
 }
