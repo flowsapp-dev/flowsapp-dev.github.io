@@ -109,6 +109,7 @@
 
   /* ===== STATUS ===== */
   .mcard.done{box-shadow:inset 4px 0 0 var(--green)}
+  .mcard.due,.calmatch.due{box-shadow:inset 4px 0 0 #ef4444}
   .kmatch.done{box-shadow:inset 4px 0 0 var(--green)}
 
   /* ===== BOTTOM NAV ===== */
@@ -341,9 +342,10 @@ const SCHED_DEF={};
   // ET(EDT)=UTC-4 → UTC=ET+4ч; EEST=UTC+3ч  ⇒  EEST = ET + 7ч (с переносом даты)
   function mk(mo,day,et,vid){
     const [hh,mm]=et.split(":").map(Number);
-    const e=new Date(Date.UTC(2026,mo,day,hh+4,mm)+3*3600000);
+    const ko=Date.UTC(2026,mo,day,hh+4,mm); // true kickoff instant (ET=UTC-4 → UTC=ET+4)
+    const e=new Date(ko+3*3600000);          // shifted to Lviv wall-clock for display
     return {d:`${DOW[e.getUTCDay()]} ${e.getUTCDate()} ${MON[e.getUTCMonth()]}`,
-            t:String(e.getUTCHours()).padStart(2,"0")+":"+String(e.getUTCMinutes()).padStart(2,"0"), vid};
+            t:String(e.getUTCHours()).padStart(2,"0")+":"+String(e.getUTCMinutes()).padStart(2,"0"), vid, ko};
   }
   FIX.forEach(([g,pi,day,et,vid])=>{ SCHED_DEF[`g-${g}-${pi}`]=mk(5,day,et,vid); });
   KFIX.forEach(([key,mo,day,et,vid])=>{ SCHED_DEF[key]=mk(mo,day,et,vid); });
@@ -549,7 +551,7 @@ function tourHTML(tour){
   return h;
 }
 function matchBlock(id,a,b,sa,sb,tag){
-  return `<div class="mcard${isFilled(sa,sb)?" done":""}">`+
+  return `<div class="mcard${isFilled(sa,sb)?" done":(isPastMatch(id)?" due":"")}">`+
     (tag?`<div style="font-size:11px;color:var(--muted);padding:6px 14px 0;font-weight:600">${esc(tag)}</div>`:"")+
     `<div class="match">`+
     `<div class="tm right"><span class="nm">${a}</span>${flag(a)}</div>`+
@@ -622,6 +624,7 @@ function schedRead(key){ // как sched(), но БЕЗ мутации state (д
   const s=state.sched[key]; if(s)return s;
   return SCHED_DEF[key]?{...SCHED_DEF[key],n:""}:null;
 }
+function isPastMatch(key){ const s=SCHED_DEF[key]; return !!(s && s.ko && Date.now() > s.ko + 150*60000); } // finished ≈ kickoff +2.5h
 function filledByKey(key){
   const p=key.split("-");
   if(p[0]==="g"){const m=state.g[p[1]][+p[2]];return isFilled(m[0],m[1]);}
@@ -656,7 +659,7 @@ function calendarHTML(){
     obj.items.forEach(it=>{
       const tt=teamsForKey(it.key),a=tt[0]||"—",b=tt[1]||"—";
       const sr=schedRead(it.key),v=sr&&sr.vid?VMAP[sr.vid]:null;
-      h+=`<button class="calmatch${filledByKey(it.key)?" done":""}" data-key="${it.key}">`+
+      h+=`<button class="calmatch${filledByKey(it.key)?" done":(isPastMatch(it.key)?" due":"")}" data-key="${it.key}">`+
          `<span class="caltime">${esc(it.t)||"--:--"}</span>`+
          `<span class="calteams">${flag(a)}<span class="cn">${a}</span><span class="cvs">—</span><span class="cn">${b}</span>${flag(b)}</span>`+
          `<span class="caltag">${calTag(it.key)}${v?" · "+v.city:""}</span></button>`;
