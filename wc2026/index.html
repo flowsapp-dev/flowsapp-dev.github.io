@@ -366,6 +366,9 @@ function load(){
   }
   if(!s||!s.g)s=blank();
   if(!s.sched)s.sched={};
+  // self-heal: date/time always mirror code's SCHED_DEF (fixes stale frozen copies in localStorage).
+  // Scores live in s.g/s.ko; notes (.n) and venue (.vid) overrides are preserved.
+  for(const k in s.sched){ if(SCHED_DEF[k]){ s.sched[k].d=SCHED_DEF[k].d; s.sched[k].t=SCHED_DEF[k].t; } }
   return s;
 }
 function save(){localStorage.setItem(LS,JSON.stringify(state));}
