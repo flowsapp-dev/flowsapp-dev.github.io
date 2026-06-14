@@ -742,30 +742,30 @@ function closeSheet(){
 /* Pre-match store (no-spoiler: no result data). Per match key. side "a"=sheetA, "b"=sheetB.
    rank:[fifaRankA, fifaRankB]; pred:[winA%, draw%, winB%] (Opta); h2h:[played, winsA, draws, winsB]. */
 const PREMATCH={
-  "g-A-0":{ rank:[14,60], pred:[67.1,19.4,13.5], h2h:[4,2,1,1] },
-  "g-A-1":{ rank:[25,40], pred:[42.9,26.0,31.1], h2h:[3,1,1,1] },
-  "g-B-0":{ rank:[30,64], pred:[52.7,25.3,22.0], h2h:[0,0,0,0] },
-  "g-B-1":{ rank:[56,19], pred:[9.1,14.9,76.0], h2h:[1,1,0,0] },
-  "g-C-0":{ rank:[6,8], pred:[57.7,23.5,18.8], h2h:[3,2,0,1] },
-  "g-C-1":{ rank:[83,42], h2h:[0,0,0,0] },
-  "g-D-0":{ rank:[17,41], pred:[39.6,26.6,33.8], h2h:[9,5,2,2] },
-  "g-D-1":{ rank:[27,22], pred:[20.5,24.1,55.3], h2h:[2,0,0,2] },
-  "g-E-0":{ rank:[10,82], h2h:[0,0,0,0] },
-  "g-E-1":{ rank:[33,23], h2h:[0,0,0,0] },
-  "g-F-0":{ rank:[8,18], h2h:[3,2,1,0] },
-  "g-F-1":{ rank:[38,45], h2h:[4,2,1,1] },
-  "g-G-0":{ rank:[9,29], h2h:[4,1,0,3] },
-  "g-G-1":{ rank:[20,85], h2h:[2,1,1,0] },
-  "g-H-0":{ rank:[2,67], h2h:[0,0,0,0] },
-  "g-H-1":{ rank:[61,16], h2h:[3,1,1,1] },
-  "g-I-0":{ rank:[3,15], h2h:[1,0,0,1] },
-  "g-I-1":{ rank:[57,31], h2h:[0,0,0,0] },
-  "g-J-0":{ rank:[1,28], h2h:[3,2,1,0] },
-  "g-J-1":{ rank:[24,63], h2h:[1,0,1,0] },
-  "g-K-0":{ rank:[5,46], h2h:[0,0,0,0] },
-  "g-K-1":{ rank:[50,13], h2h:[0,0,0,0] },
-  "g-L-0":{ rank:[4,11], pred:[56.3,24.5,19.2], h2h:[9,5,1,3] },
-  "g-L-1":{ rank:[73,34], pred:[40.4,26.1,33.5], h2h:[0,0,0,0] }
+  "g-A-0":{ rank:[14,60], pred:[67.1,19.4,13.5], h2h:[4,2,1,1], prev:["Груповий етап","Не брали участь"] },
+  "g-A-1":{ rank:[25,40], pred:[42.9,26.0,31.1], h2h:[3,1,1,1], prev:["1/8 фіналу","Не брали участь"], euro:[null,"Груповий етап"] },
+  "g-B-0":{ rank:[30,64], pred:[52.7,25.3,22.0], h2h:[0,0,0,0], prev:["Груповий етап","Не брали участь"], euro:[null,"Не кваліфікувались"] },
+  "g-B-1":{ rank:[56,19], pred:[9.1,14.9,76.0], h2h:[1,1,0,0], prev:["Груповий етап","1/8 фіналу"], euro:[null,"1/4 фіналу"] },
+  "g-C-0":{ rank:[6,8], pred:[57.7,23.5,18.8], h2h:[3,2,0,1], prev:["1/4 фіналу","4-те місце"] },
+  "g-C-1":{ rank:[83,42], h2h:[0,0,0,0], prev:["Не брали участь","Не брали участь"], euro:[null,"Груповий етап"] },
+  "g-D-0":{ rank:[17,41], pred:[39.6,26.6,33.8], h2h:[9,5,2,2], prev:["1/8 фіналу","Не брали участь"] },
+  "g-D-1":{ rank:[27,22], pred:[20.5,24.1,55.3], h2h:[2,0,0,2], prev:["1/8 фіналу","Не брали участь"], euro:[null,"1/4 фіналу"] },
+  "g-E-0":{ rank:[10,82], h2h:[0,0,0,0], prev:["Груповий етап","Не брали участь"], euro:["1/4 фіналу",null] },
+  "g-E-1":{ rank:[33,23], h2h:[0,0,0,0], prev:["Не брали участь","Груповий етап"] },
+  "g-F-0":{ rank:[8,18], h2h:[3,2,1,0], prev:["1/4 фіналу","1/8 фіналу"], euro:["1/2 фіналу",null] },
+  "g-F-1":{ rank:[38,45], h2h:[4,2,1,1], prev:["Не брали участь","Груповий етап"], euro:["Не кваліфікувались",null] },
+  "g-G-0":{ rank:[9,29], h2h:[4,1,0,3], prev:["Груповий етап","Не брали участь"], euro:["1/8 фіналу",null] },
+  "g-G-1":{ rank:[20,85], h2h:[2,1,1,0], prev:["Груповий етап","Не брали участь"] },
+  "g-H-0":{ rank:[2,67], h2h:[0,0,0,0], prev:["1/8 фіналу","Не брали участь"], euro:["Чемпіон",null] },
+  "g-H-1":{ rank:[61,16], h2h:[3,1,1,1], prev:["Груповий етап","Груповий етап"] },
+  "g-I-0":{ rank:[3,15], h2h:[1,0,0,1], prev:["Фіналіст","1/8 фіналу"], euro:["1/2 фіналу",null] },
+  "g-I-1":{ rank:[57,31], h2h:[0,0,0,0], prev:["Не брали участь","Не брали участь"], euro:[null,"Не кваліфікувались"] },
+  "g-J-0":{ rank:[1,28], h2h:[3,2,1,0], prev:["Чемпіон","Не брали участь"] },
+  "g-J-1":{ rank:[24,63], h2h:[1,0,1,0], prev:["Не брали участь","Не брали участь"], euro:["1/8 фіналу",null] },
+  "g-K-0":{ rank:[5,46], h2h:[0,0,0,0], prev:["1/4 фіналу","Не брали участь"], euro:["1/4 фіналу",null] },
+  "g-K-1":{ rank:[50,13], h2h:[0,0,0,0], prev:["Не брали участь","Не брали участь"] },
+  "g-L-0":{ rank:[4,11], pred:[56.3,24.5,19.2], h2h:[9,5,1,3], prev:["1/4 фіналу","3-тє місце"], euro:["Фіналіст","Груповий етап"] },
+  "g-L-1":{ rank:[73,34], pred:[40.4,26.1,33.5], h2h:[0,0,0,0], prev:["Груповий етап","Не брали участь"] }
 };
 function preHTML(key,a,b){
   const p=PREMATCH[key];
@@ -788,6 +788,18 @@ function preHTML(key,a,b){
         `<span style="color:var(--green);font-weight:700">П1 ${wa}%</span>`+
         `<span style="color:var(--gray)">Нічия ${d}%</span>`+
         `<span style="color:var(--blue);font-weight:700">П2 ${wb}%</span></div>`;
+  }
+  if(p.prev){
+    out+=`<div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--line)">`+
+      `<div style="text-align:center;color:var(--muted);font-size:12px;margin-bottom:4px">ЧС-2022</div>`+
+      `<div style="display:flex;justify-content:space-between;font-size:13px">`+
+        `<span>${flag(a)} ${esc(p.prev[0])}</span><span>${esc(p.prev[1])} ${flag(b)}</span></div></div>`;
+  }
+  if(p.euro && (p.euro[0]||p.euro[1])){
+    out+=`<div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--line)">`+
+      `<div style="text-align:center;color:var(--muted);font-size:12px;margin-bottom:4px">Євро-2024</div>`+
+      `<div style="display:flex;justify-content:space-between;font-size:13px">`+
+        `<span>${flag(a)} ${p.euro[0]?esc(p.euro[0]):"—"}</span><span>${p.euro[1]?esc(p.euro[1]):"—"} ${flag(b)}</span></div></div>`;
   }
   if(p.h2h){
     const [g,wa,dr,wb]=p.h2h;
