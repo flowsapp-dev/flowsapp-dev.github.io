@@ -478,6 +478,18 @@ function fmtCap(n){return n.toLocaleString("uk-UA");}
 function searchQ(a,b){return encodeURIComponent([a,b].filter(Boolean).join(" ")+" ЧС 2026 футбол");}
 
 /* ============ SUBTABS ============ */
+function defaultMatchSub(){ // latest round that has already started, by real date
+  const now=Date.now(), tmin={};
+  GKEYS.forEach(k=>PAIRS.forEach((p,mi)=>{
+    const s=SCHED_DEF[`g-${k}-${mi}`]; if(s&&s.ko){const id="t"+TOUR_OF[mi]; tmin[id]=Math.min(tmin[id]??Infinity,s.ko);}
+  }));
+  ["R32","R16","QF","SF","F"].forEach(r=>{
+    Object.keys(SCHED_DEF).forEach(key=>{ if(key.indexOf("k-"+r+"-")===0){const s=SCHED_DEF[key]; if(s&&s.ko) tmin[r]=Math.min(tmin[r]??Infinity,s.ko);} });
+  });
+  let pick="t1";
+  ["t1","t2","t3","R32","R16","QF","SF","F"].forEach(id=>{ if(tmin[id]!=null && now>=tmin[id]) pick=id; });
+  return pick;
+}
 function renderSubtabs(){
   const box=$("subtabs");box.innerHTML="";
   if(mainView==="venues"||mainView==="calendar"||mainView==="rules"){return;}
@@ -1138,7 +1150,7 @@ function soft(focusId){render();const el=$(focusId);if(el){el.focus();try{el.set
 
 /* ============ NAV / IO ============ */
 $("navTable").onclick=()=>{mainView="table";sub="groups";render();};
-$("navMatches").onclick=()=>{mainView="matches";sub="t1";render();};
+$("navMatches").onclick=()=>{mainView="matches";sub=defaultMatchSub();render();};
 $("navCalendar").onclick=()=>{mainView="calendar";render();};
 $("navVenues").onclick=()=>{mainView="venues";render();};
 $("navRules").onclick=()=>{mainView="rules";render();};
