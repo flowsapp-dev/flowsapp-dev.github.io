@@ -128,6 +128,7 @@
   .shead{padding:8px 18px 14px;border-bottom:1px solid var(--line)}
   .steams{display:flex;align-items:center;justify-content:center;gap:10px;font-size:15px;font-weight:700;flex-wrap:wrap}
   .steams .vs{color:var(--muted);font-size:12px;font-weight:600}
+  .team-link{background:none;border:0;color:var(--txt);font:inherit;font-weight:700;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;text-underline-offset:3px;padding:0}
   .sbody{padding:16px 18px}
   .stadcard{display:flex;align-items:center;gap:12px;background:linear-gradient(160deg,#f8fafc,#eef2f6);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:16px}
   .stadcard .si{font-size:30px}
@@ -1021,6 +1022,29 @@ const MSTATS={
     cards:[["16'","Caleb Yirenkyi","y","a"]]
   }
 };
+function teamResultsHTML(team){ // team's finished matches, derived from MSTATS (auto-updates with the loader)
+  const rows=[];
+  GKEYS.forEach(k=>PAIRS.forEach((p,mi)=>{
+    const ta=GROUPS[k][p[0]], tb=GROUPS[k][p[1]];
+    if(ta!==team && tb!==team) return;
+    const m=MSTATS[`g-${k}-${mi}`]; if(!m||!m.score) return;
+    const isA=ta===team, gf=isA?m.score[0]:m.score[1], ga=isA?m.score[1]:m.score[0];
+    const sr=SCHED_DEF[`g-${k}-${mi}`];
+    rows.push({ko:sr&&sr.ko?sr.ko:0, opp:isA?tb:ta, gf, ga});
+  }));
+  if(!rows.length) return null;
+  rows.sort((x,y)=>x.ko-y.ko);
+  const body=rows.map(r=>{
+    const tag=r.gf>r.ga?'<span style="color:var(--green);font-weight:700">В</span>'
+      :(r.gf===r.ga?'<span style="color:var(--gray);font-weight:700">Н</span>':'<span style="color:#ef4444;font-weight:700">П</span>');
+    return `<div style="display:flex;align-items:center;gap:10px;padding:5px 0;border-top:1px solid var(--line)">`+
+      `<span style="flex:0 0 16px;text-align:center">${tag}</span>`+
+      `<span style="flex:1">проти ${flag(r.opp)} ${esc(r.opp)}</span>`+
+      `<span style="font-weight:700">${r.gf}:${r.ga}</span></div>`;
+  }).join("");
+  return `<div style="margin-top:12px;padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--soft)">`+
+    `<div style="text-align:center;font-weight:800;margin-bottom:6px">${flag(team)} ${esc(team)} — попередні матчі</div>${body}</div>`;
+}
 function statHTML(key,a,b){
   const m=MSTATS[key];
   if(!m) return `<div class="note" style="padding:14px 4px;text-align:center">📊 Статистики для цього матчу поки немає.</div>`;
@@ -1051,7 +1075,7 @@ function fillSheet(){
   const mapsQ=encodeURIComponent(v?(v.n+", "+v.city):(a+" "+b));
   const h=
     `<div class="grip"></div>`+
-    `<div class="shead"><div class="steams">${flag(a)}<span>${a||"—"}</span><span class="vs">vs</span><span>${b||"—"}</span>${flag(b)}</div></div>`+
+    `<div class="shead"><div class="steams">${flag(a)}${a&&a!=="—"?`<button class="team-link" data-team="${esc(a)}">${esc(a)}</button>`:`<span>—</span>`}<span class="vs">vs</span>${b&&b!=="—"?`<button class="team-link" data-team="${esc(b)}">${esc(b)}</button>`:`<span>—</span>`}${flag(b)}</div></div>`+
     `<div class="sbody">`+
       stad+
       `<div class="fld"><label>Стадіон</label><select id="sh-vid">${opts}</select></div>`+
@@ -1064,8 +1088,9 @@ function fillSheet(){
         `<button class="sbtn" id="sh-pre">🔮 Перед матчем</button>`+
         `<a class="sbtn" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=${mapsQ}">📍 На мапі</a>`+
       `</div>`+
-      `<div class="note" style="padding:10px 0 0">«Новини»/«Статистика» — зовнішній пошук або підсумок матчу, <b>можуть містити спойлери</b>. «Перед матчем» — прогноз/рейтинг до гри, без спойлерів.</div>`+
+      `<div class="note" style="padding:10px 0 0">«Новини»/«Статистика» — зовнішній пошук або підсумок матчу, <b>можуть містити спойлери</b>. «Перед матчем» — прогноз/рейтинг до гри, без спойлерів. Тап по назві команди — її попередні матчі (за підтвердженням).</div>`+
       `<div id="sh-prebox" style="display:none"></div>`+
+      `<div id="sh-resbox" style="display:none"></div>`+
       `<div id="sh-statbox" style="display:none"></div>`+
     `</div>`;
   $("sheet").innerHTML=h;
@@ -1083,6 +1108,14 @@ function fillSheet(){
     if(!PREMATCH[key]){ alert("🔮 Даних перед матчем для цього матчу поки немає."); return; }
     box.innerHTML=preHTML(key,a,b); box.style.display="block"; box.dataset.open="1";
   };
+  document.querySelectorAll("#sheet .team-link").forEach(btn=>btn.onclick=()=>{
+    const team=btn.dataset.team, box=$("sh-resbox");
+    if(box.dataset.open==="1" && box.dataset.team===team){ box.style.display="none"; box.dataset.open="0"; return; }
+    const html=teamResultsHTML(team);
+    if(!html){ alert("📋 У цієї команди ще немає завершених матчів."); return; }
+    if(!confirm("⚠️ УВАГА: попередні результати команди покажуть РАХУНКИ зіграних матчів.\n\nПоказати все одно?"))return;
+    box.innerHTML=html; box.style.display="block"; box.dataset.open="1"; box.dataset.team=team;
+  });
   $("sh-vid").onchange=e=>{sched(key).vid=e.target.value;save();fillSheet();};
   $("sh-d").oninput=e=>{sched(key).d=e.target.value;save();};
   $("sh-t").oninput=e=>{sched(key).t=e.target.value;save();};
