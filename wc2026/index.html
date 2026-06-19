@@ -230,6 +230,7 @@
 <div class="app">
   <div class="topbar">
     <div class="title" id="topTitle">Чемпіонат світу 2026</div>
+    <button class="ico" id="gateBtn" title="спойлери">🛡</button>
     <button class="ico" id="themeBtn" title="тема">🌙</button>
     <button class="ico" id="codeOutBtn" title="код: надіслати">📤</button>
     <button class="ico" id="codeInBtn" title="код: завантажити">📥</button>
@@ -471,6 +472,8 @@ function loser(r,i){const t=teamsOf(r,i),w=result(r,i);return w==="a"?t[1]:w==="
 
 /* ============ HELPERS ============ */
 let mainView="matches", sub=defaultMatchSub();
+let noGate=localStorage.getItem("wc2026_nogate")==="1"; // true = ignore spoiler gate (show everything, no confirm)
+function confirmSpoiler(m){return noGate||confirm(m);}
 const $=id=>document.getElementById(id);
 function flag(t){const c=ISO[t];return c?`<img class="flag" src="https://flagcdn.com/w40/${c}.png" alt="" loading="lazy">`:`<span class="flag" style="display:inline-block;width:26px;height:18px;background:#dde2e7;border-radius:3px"></span>`;}
 function flagCC(cc){return `<img class="flag" src="https://flagcdn.com/w40/${cc}.png" alt="" loading="lazy" style="width:20px;height:14px">`;}
@@ -1099,12 +1102,12 @@ function fillSheet(){
       `<div id="sh-statbox" style="display:none"></div>`+
     `</div>`;
   $("sheet").innerHTML=h;
-  $("sh-news").onclick=()=>{ if(confirm("⚠️ УВАГА: новини та пошук можуть розкрити РАХУНОК матчу.\n\nВідкрити все одно?")) window.open("https://news.google.com/search?hl=uk&q="+searchQ(a,b),"_blank","noopener"); };
+  $("sh-news").onclick=()=>{ if(confirmSpoiler("⚠️ УВАГА: новини та пошук можуть розкрити РАХУНОК матчу.\n\nВідкрити все одно?")) window.open("https://news.google.com/search?hl=uk&q="+searchQ(a,b),"_blank","noopener"); };
   $("sh-stats").onclick=()=>{
     const box=$("sh-statbox");
     if(box.dataset.open==="1"){ box.style.display="none"; box.dataset.open="0"; return; }
     if(!MSTATS[key]){ alert("📊 Статистики для цього матчу поки немає."); return; }
-    if(!confirm("⚠️ УВАГА: статистика покаже РАХУНОК і події матчу.\n\nПоказати все одно?"))return;
+    if(!confirmSpoiler("⚠️ УВАГА: статистика покаже РАХУНОК і події матчу.\n\nПоказати все одно?"))return;
     box.innerHTML=statHTML(key,a,b); box.style.display="block"; box.dataset.open="1";
   };
   $("sh-pre").onclick=()=>{
@@ -1119,7 +1122,7 @@ function fillSheet(){
     if(box.dataset.open==="1" && box.dataset.team===team){ box.style.display="none"; box.dataset.open="0"; return; }
     const html=teamResultsHTML(team);
     if(!html){ alert("📋 У цієї команди ще немає завершених матчів."); return; }
-    if(!confirm("⚠️ УВАГА: попередні результати команди покажуть РАХУНКИ зіграних матчів.\n\nПоказати все одно?"))return;
+    if(!confirmSpoiler("⚠️ УВАГА: попередні результати команди покажуть РАХУНКИ зіграних матчів.\n\nПоказати все одно?"))return;
     box.innerHTML=html; box.style.display="block"; box.dataset.open="1"; box.dataset.team=team;
   };
   $("sh-vid").onchange=e=>{sched(key).vid=e.target.value;save();fillSheet();};
@@ -1176,7 +1179,7 @@ function bind(){
   });
   document.querySelectorAll('.srclink').forEach(b=>b.onclick=()=>{
     const u=b.dataset.url;
-    if(b.classList.contains("spoil") && !confirm("⚠️ Зовнішній сайт. Під час турніру там можуть бути РАХУНКИ матчів.\n\nВідкрити все одно?"))return;
+    if(b.classList.contains("spoil") && !confirmSpoiler("⚠️ Зовнішній сайт. Під час турніру там можуть бути РАХУНКИ матчів.\n\nВідкрити все одно?"))return;
     window.open(u,"_blank","noopener");
   });
   const sb=$("seedBtn"); if(sb) sb.onclick=()=>{if(state.koSeed&&!confirm("Перезібрати плей-оф із груп? Введені рахунки плей-оф буде стерто."))return;buildSeed();sub="R32";render();};
@@ -1202,6 +1205,9 @@ $("scrim").onclick=closeSheet;
 const TKEY="wc2026_theme";
 function applyTheme(){const dark=localStorage.getItem(TKEY)==="dark";document.body.classList.toggle("dark",dark);$("themeBtn").textContent=dark?"☀️":"🌙";}
 $("themeBtn").onclick=()=>{const dark=!document.body.classList.contains("dark");localStorage.setItem(TKEY,dark?"dark":"light");applyTheme();};
+function applyGate(){$("gateBtn").textContent=noGate?"👁":"🛡";$("gateBtn").title=noGate?"спойлери: показ без попередження (тап — увімкнути захист)":"спойлери: за підтвердженням (тап — ігнорувати)";}
+$("gateBtn").onclick=()=>{noGate=!noGate;localStorage.setItem("wc2026_nogate",noGate?"1":"0");applyGate();};
+applyGate();
 applyTheme();
 
 /* перенос між девайсами: gzip+base64 (коротше) з фолбеком на чистий base64.
