@@ -1044,7 +1044,7 @@ function teamResultsHTML(team){ // team's finished matches, derived from MSTATS 
       :(r.gf===r.ga?'<span style="color:var(--gray);font-weight:700">Н</span>':'<span style="color:#ef4444;font-weight:700">П</span>');
     return `<div style="display:flex;align-items:center;gap:10px;padding:5px 0;border-top:1px solid var(--line)">`+
       `<span style="flex:0 0 16px;text-align:center">${tag}</span>`+
-      `<span style="flex:1">проти ${flag(r.opp)} ${esc(r.opp)}</span>`+
+      `<span style="flex:1">проти ${flag(r.opp)} <button class="team-link" data-team="${esc(r.opp)}">${esc(r.opp)}</button></span>`+
       `<span style="font-weight:700">${r.gf}:${r.ga}</span></div>`;
   }).join("");
   return `<div style="margin-top:12px;padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--soft)">`+
@@ -1113,14 +1113,15 @@ function fillSheet(){
     if(!PREMATCH[key]){ alert("🔮 Даних перед матчем для цього матчу поки немає."); return; }
     box.innerHTML=preHTML(key,a,b); box.style.display="block"; box.dataset.open="1";
   };
-  document.querySelectorAll("#sheet .team-link").forEach(btn=>btn.onclick=()=>{
+  $("sheet").onclick=(e)=>{ // delegated: header teams + opponent links inside the results panel
+    const btn=e.target.closest(".team-link"); if(!btn) return;
     const team=btn.dataset.team, box=$("sh-resbox");
     if(box.dataset.open==="1" && box.dataset.team===team){ box.style.display="none"; box.dataset.open="0"; return; }
     const html=teamResultsHTML(team);
     if(!html){ alert("📋 У цієї команди ще немає завершених матчів."); return; }
     if(!confirm("⚠️ УВАГА: попередні результати команди покажуть РАХУНКИ зіграних матчів.\n\nПоказати все одно?"))return;
     box.innerHTML=html; box.style.display="block"; box.dataset.open="1"; box.dataset.team=team;
-  });
+  };
   $("sh-vid").onchange=e=>{sched(key).vid=e.target.value;save();fillSheet();};
   $("sh-d").oninput=e=>{sched(key).d=e.target.value;save();};
   $("sh-t").oninput=e=>{sched(key).t=e.target.value;save();};
