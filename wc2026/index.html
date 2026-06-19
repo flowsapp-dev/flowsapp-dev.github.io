@@ -470,7 +470,7 @@ function winner(r,i){const t=teamsOf(r,i),w=result(r,i);return w==="a"?t[0]:w===
 function loser(r,i){const t=teamsOf(r,i),w=result(r,i);return w==="a"?t[1]:w==="b"?t[0]:null;}
 
 /* ============ HELPERS ============ */
-let mainView="table", sub="groups";
+let mainView="matches", sub=defaultMatchSub();
 const $=id=>document.getElementById(id);
 function flag(t){const c=ISO[t];return c?`<img class="flag" src="https://flagcdn.com/w40/${c}.png" alt="" loading="lazy">`:`<span class="flag" style="display:inline-block;width:26px;height:18px;background:#dde2e7;border-radius:3px"></span>`;}
 function flagCC(cc){return `<img class="flag" src="https://flagcdn.com/w40/${cc}.png" alt="" loading="lazy" style="width:20px;height:14px">`;}
@@ -565,11 +565,11 @@ function tourHTML(tour){
 }
 function matchBlock(id,a,b,sa,sb,tag){
   return `<div class="mcard${isFilled(sa,sb)?" done":(isPastMatch(id)?" due":"")}">`+
-    (tag?`<div style="font-size:11px;color:var(--muted);padding:6px 14px 0;font-weight:600">${esc(tag)}</div>`:"")+
+    (tag?`<div class="mopen" data-mkey="${id}" style="font-size:11px;color:var(--muted);padding:6px 14px 0;font-weight:600;cursor:pointer">${esc(tag)} ›</div>`:"")+
     `<div class="match">`+
-    `<div class="tm right"><span class="nm">${a}</span>${flag(a)}</div>`+
+    `<div class="tm right mopen" data-mkey="${id}" style="cursor:pointer"><span class="nm">${a}</span>${flag(a)}</div>`+
     `<div class="score"><input id="${id}-a" type="number" min="0" inputmode="numeric" value="${sa}"><span class="sep">:</span><input id="${id}-b" type="number" min="0" inputmode="numeric" value="${sb}"></div>`+
-    `<div class="tm">${flag(b)}<span class="nm">${b}</span></div>`+
+    `<div class="tm mopen" data-mkey="${id}" style="cursor:pointer">${flag(b)}<span class="nm">${b}</span></div>`+
   `</div>`+venueChip(id)+`</div>`;
 }
 function koHTML(round){
@@ -1161,6 +1161,9 @@ function bind(){
   });
   document.querySelectorAll('.calmatch').forEach(btn=>btn.onclick=()=>{
     const key=btn.dataset.key,t=teamsForKey(key); openSheet(key,t[0],t[1]);
+  });
+  document.querySelectorAll('.mopen').forEach(el=>el.onclick=()=>{
+    const key=el.dataset.mkey,t=teamsForKey(key); openSheet(key,t[0],t[1]);
   });
   document.querySelectorAll('.bcell').forEach(btn=>btn.onclick=()=>{
     sub=btn.dataset.key.split("-")[1]; render(); // тап по ячейке сетки → к раунду для ввода счёта
