@@ -34,6 +34,7 @@
   .colhead{padding:2px 14px 8px;color:#9aa1ab;font-size:11.5px;background:#f1f3f5;font-weight:600}
   .colhead span:not(.cstr){text-align:center}
   .row{padding:9px 14px;border-bottom:1px solid var(--line);font-size:14px}
+  .trow-detail{padding:10px 16px;background:var(--soft);border-bottom:1px solid var(--line);font-size:13px;line-height:1.5}
   .row.rdue{box-shadow:inset 3px 0 0 #ef4444}
   .row.rmis{box-shadow:inset 3px 0 0 #f59e0b}
   .rank{width:24px;height:24px;border-radius:6px;color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:12.5px}
@@ -480,6 +481,7 @@ function loser(r,i){const t=teamsOf(r,i),w=result(r,i);return w==="a"?t[1]:w==="
 /* ============ HELPERS ============ */
 let mainView="matches", sub=defaultMatchSub();
 let noGate=localStorage.getItem("wc2026_nogate")==="1"; // true = ignore spoiler gate (show everything, no confirm)
+let tblTeam=null; // team whose WC-history panel is open in the group table
 function confirmSpoiler(m){return noGate||confirm(m);}
 const $=id=>document.getElementById(id);
 function flag(t){const c=ISO[t];return c?`<img class="flag" src="https://flagcdn.com/w40/${c}.png" alt="" loading="lazy">`:`<span class="flag" style="display:inline-block;width:26px;height:18px;background:#dde2e7;border-radius:3px"></span>`;}
@@ -530,9 +532,10 @@ function groupTableHTML(){
       PAIRS.forEach((p,mi)=>{ if(p[0]!==ti&&p[1]!==ti)return; const key=`g-${k}-${mi}`,sc=state.g[k][mi];
         if(scoreMismatch(key))rmis++; else if(isPastMatch(key)&&!isFilled(sc[0],sc[1]))rdue++; });
       const rcls=rdue?" rdue":(rmis?" rmis":"");
-      h+=`<div class="row${rcls}"><span class="rank r${rk}">${rk}</span><span class="tname">${flag(s.team)}${s.team}</span>`+
+      h+=`<div class="row${rcls}" data-team="${esc(s.team)}" style="cursor:pointer"><span class="rank r${rk}">${rk}</span><span class="tname">${flag(s.team)}${s.team}</span>`+
          `<span class="num">${s.p}</span><span class="num">${s.w}</span><span class="num">${s.d}</span><span class="num">${s.l}</span>`+
-         `<span class="gd">${s.gd>0?"+"+s.gd:s.gd}</span><span class="pts">${s.pts}</span></div>`;});
+         `<span class="gd">${s.gd>0?"+"+s.gd:s.gd}</span><span class="pts">${s.pts}</span></div>`+
+         (tblTeam===s.team?`<div class="trow-detail">${wcHistHTML(s.team)}</div>`:"");});
     h+=`</div>`;
   });
   return h;
@@ -1104,6 +1107,64 @@ const MSTATS={
     stats:[["Володіння",63,37,"%"]]
   }
 };
+const WCHIST={ // FIFA World Cup history through 2022 (apps, titles, best result). Static historical data — no spoiler.
+  "Мексика":{apps:17,titles:0,best:"1/4 фіналу (1970, 1986)"},
+  "Південно-Африканська Республіка":{apps:3,titles:0,best:"Груповий етап"},
+  "Республіка Корея":{apps:11,titles:0,best:"4-те місце (2002)"},
+  "Чехія":{apps:1,titles:0,best:"Груповий етап (2006); як ЧССР — фіналіст (1934, 1962)"},
+  "Канада":{apps:1,titles:0,best:"Груповий етап (1986)"},
+  "Боснія і Герцеговина":{apps:1,titles:0,best:"Груповий етап (2014)"},
+  "Катар":{apps:1,titles:0,best:"Груповий етап (2022)"},
+  "Швейцарія":{apps:12,titles:0,best:"1/4 фіналу (1934, 1938, 1954)"},
+  "Бразилія":{apps:22,titles:5,best:"Чемпіон (1958, 1962, 1970, 1994, 2002)"},
+  "Марокко":{apps:6,titles:0,best:"4-те місце (2022)"},
+  "Гаїті":{apps:1,titles:0,best:"Груповий етап (1974)"},
+  "Шотландія":{apps:8,titles:0,best:"Груповий етап"},
+  "Сполучені Штати":{apps:11,titles:0,best:"3-тє місце (1930)"},
+  "Парагвай":{apps:8,titles:0,best:"1/4 фіналу (2010)"},
+  "Австралія":{apps:6,titles:0,best:"1/8 фіналу (2006, 2022)"},
+  "Туреччина":{apps:2,titles:0,best:"3-тє місце (2002)"},
+  "Німеччина":{apps:20,titles:4,best:"Чемпіон (1954, 1974, 1990, 2014)"},
+  "Кюрасао":{apps:0,titles:0,best:"Дебют"},
+  "Кот-д’Івуар":{apps:3,titles:0,best:"Груповий етап"},
+  "Еквадор":{apps:4,titles:0,best:"1/8 фіналу (2006)"},
+  "Нідерланди":{apps:11,titles:0,best:"Фіналіст (1974, 1978, 2010)"},
+  "Японія":{apps:7,titles:0,best:"1/8 фіналу (2002, 2010, 2018, 2022)"},
+  "Швеція":{apps:12,titles:0,best:"Фіналіст (1958)"},
+  "Туніс":{apps:6,titles:0,best:"Груповий етап"},
+  "Бельгія":{apps:13,titles:0,best:"3-тє місце (2018)"},
+  "Єгипет":{apps:2,titles:0,best:"Груповий етап"},
+  "Іран":{apps:6,titles:0,best:"Груповий етап"},
+  "Нова Зеландія":{apps:2,titles:0,best:"Груповий етап"},
+  "Іспанія":{apps:16,titles:1,best:"Чемпіон (2010)"},
+  "Кабо-Верде":{apps:0,titles:0,best:"Дебют"},
+  "Саудівська Аравія":{apps:6,titles:0,best:"1/8 фіналу (1994)"},
+  "Уругвай":{apps:14,titles:2,best:"Чемпіон (1930, 1950)"},
+  "Франція":{apps:16,titles:2,best:"Чемпіон (1998, 2018)"},
+  "Сенегал":{apps:3,titles:0,best:"1/4 фіналу (2002)"},
+  "Ірак":{apps:1,titles:0,best:"Груповий етап"},
+  "Норвегія":{apps:3,titles:0,best:"1/8 фіналу (1998)"},
+  "Аргентина":{apps:18,titles:3,best:"Чемпіон (1978, 1986, 2022)"},
+  "Алжир":{apps:4,titles:0,best:"1/8 фіналу (2014)"},
+  "Австрія":{apps:7,titles:0,best:"3-тє місце (1954)"},
+  "Йорданія":{apps:0,titles:0,best:"Дебют"},
+  "Португалія":{apps:8,titles:0,best:"3-тє місце (1966)"},
+  "Конго — Кіншаса":{apps:1,titles:0,best:"Груповий етап (1974, як Заїр)"},
+  "Узбекистан":{apps:0,titles:0,best:"Дебют"},
+  "Колумбія":{apps:6,titles:0,best:"1/4 фіналу (2014)"},
+  "Англія":{apps:16,titles:1,best:"Чемпіон (1966)"},
+  "Хорватія":{apps:6,titles:0,best:"Фіналіст (2018)"},
+  "Гана":{apps:4,titles:0,best:"1/4 фіналу (2010)"},
+  "Панама":{apps:1,titles:0,best:"Груповий етап (2018)"}
+};
+function wcHistHTML(team){
+  const w=WCHIST[team]; if(!w) return `<span style="color:var(--muted)">немає даних</span>`;
+  const head=`<div style="font-weight:800;margin-bottom:4px">${flag(team)} ${esc(team)} — історія на ЧС</div>`;
+  if(w.apps===0) return head+`<div>🆕 Дебютант ЧС-2026</div>`;
+  return head+
+    `<div>Участей на ЧС: <b>${w.apps}</b>${w.titles>0?` · Титулів: <b>${w.titles}</b> 🏆`:""}</div>`+
+    `<div style="margin-top:2px">Найкраще: <b>${esc(w.best)}</b></div>`;
+}
 function teamResultsHTML(team){ // team's finished matches, derived from MSTATS (auto-updates with the loader)
   const rows=[];
   GKEYS.forEach(k=>PAIRS.forEach((p,mi)=>{
@@ -1243,6 +1304,7 @@ function bind(){
   document.querySelectorAll('.venue').forEach(btn=>btn.onclick=()=>{
     const key=btn.dataset.key, a=teamsForKey(key)[0], b=teamsForKey(key)[1]; openSheet(key,a,b);
   });
+  document.querySelectorAll('.row[data-team]').forEach(r=>r.onclick=()=>{ const t=r.dataset.team; tblTeam=(tblTeam===t?null:t); render(); });
   document.querySelectorAll('.calmatch').forEach(btn=>btn.onclick=()=>{
     const key=btn.dataset.key,t=teamsForKey(key); openSheet(key,t[0],t[1]);
   });
