@@ -110,6 +110,7 @@
   /* ===== STATUS ===== */
   .mcard.done{box-shadow:inset 4px 0 0 var(--green)}
   .mcard.due,.calmatch.due{box-shadow:inset 4px 0 0 #ef4444}
+  .mcard.mismatch,.calmatch.mismatch{box-shadow:inset 4px 0 0 #f59e0b}
   .kmatch.done{box-shadow:inset 4px 0 0 var(--green)}
 
   /* ===== BOTTOM NAV ===== */
@@ -567,8 +568,9 @@ function tourHTML(tour){
   return h;
 }
 function matchBlock(id,a,b,sa,sb,tag){
-  return `<div class="mcard${isFilled(sa,sb)?" done":(isPastMatch(id)?" due":"")}">`+
-    (tag?`<div class="mopen" data-mkey="${id}" style="font-size:11px;color:var(--muted);padding:6px 14px 0;font-weight:600;cursor:pointer">${esc(tag)} ›</div>`:"")+
+  const mm=scoreMismatch(id);
+  return `<div class="mcard${mm?" mismatch":(isFilled(sa,sb)?" done":(isPastMatch(id)?" due":""))}">`+
+    (tag?`<div class="mopen" data-mkey="${id}" style="font-size:11px;color:var(--muted);padding:6px 14px 0;font-weight:600;cursor:pointer">${esc(tag)}${mm?' · ⚠ не збігається з реальним':''} ›</div>`:"")+
     `<div class="match">`+
     `<div class="tm right mopen" data-mkey="${id}" style="cursor:pointer"><span class="nm">${a}</span>${flag(a)}</div>`+
     `<div class="score"><input id="${id}-a" type="number" min="0" inputmode="numeric" value="${sa}"><span class="sep">:</span><input id="${id}-b" type="number" min="0" inputmode="numeric" value="${sb}"></div>`+
@@ -641,6 +643,13 @@ function schedRead(key){ // как sched(), но БЕЗ мутации state (д
   return SCHED_DEF[key]?{...SCHED_DEF[key],n:""}:null;
 }
 function isPastMatch(key){ const s=SCHED_DEF[key]; return !!(s && s.ko && Date.now() > s.ko + 150*60000); } // finished ≈ kickoff +2.5h
+function scoreMismatch(key){ // owner-entered group score differs from real MSTATS result -> badge (no spoiler of the real number)
+  const m=MSTATS[key]; if(!m||!m.score) return false;
+  const p=key.split("-"); if(p[0]!=="g") return false;
+  const g=state.g[p[1]]&&state.g[p[1]][+p[2]]; if(!g) return false;
+  if(g[0]===""||g[1]===""||g[0]==null||g[1]==null) return false;
+  return (+g[0]!==m.score[0])||(+g[1]!==m.score[1]);
+}
 function filledByKey(key){
   const p=key.split("-");
   if(p[0]==="g"){const m=state.g[p[1]][+p[2]];return isFilled(m[0],m[1]);}
@@ -675,10 +684,11 @@ function calendarHTML(){
     obj.items.forEach(it=>{
       const tt=teamsForKey(it.key),a=tt[0]||"—",b=tt[1]||"—";
       const sr=schedRead(it.key),v=sr&&sr.vid?VMAP[sr.vid]:null;
-      h+=`<button class="calmatch${filledByKey(it.key)?" done":(isPastMatch(it.key)?" due":"")}" data-key="${it.key}">`+
+      const mm=scoreMismatch(it.key);
+      h+=`<button class="calmatch${mm?" mismatch":(filledByKey(it.key)?" done":(isPastMatch(it.key)?" due":""))}" data-key="${it.key}">`+
          `<span class="caltime">${esc(it.t)||"--:--"}</span>`+
          `<span class="calteams">${flag(a)}<span class="cn">${a}</span><span class="cvs">—</span><span class="cn">${b}</span>${flag(b)}</span>`+
-         `<span class="caltag">${calTag(it.key)}${v?" · "+v.city:""}</span></button>`;
+         `<span class="caltag">${calTag(it.key)}${v?" · "+v.city:""}${mm?" · ⚠":""}</span></button>`;
     });
   });
   return h;
