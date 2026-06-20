@@ -26,6 +26,8 @@
 
   /* ===== TABLE ===== */
   .gcard{border-bottom:8px solid #eef1f3}
+  .gcard.gdue{box-shadow:inset 4px 0 0 #ef4444}
+  .gcard.gmis{box-shadow:inset 4px 0 0 #f59e0b}
   .ghead{background:#f1f3f5;padding:11px 14px 7px;display:flex;align-items:center;gap:8px}
   .ghead .gname{font-size:16px;font-weight:800}
   .colhead,.row{display:grid;grid-template-columns:32px 1fr 28px 28px 28px 28px 40px 34px;align-items:center}
@@ -510,7 +512,15 @@ function groupTableHTML(){
   let h="";
   GKEYS.forEach(k=>{
     const st=computeGroup(k);
-    h+=`<div class="gcard"><div class="ghead"><div class="gname">Група ${k}</div></div>`;
+    let due=0,mis=0;
+    PAIRS.forEach((p,mi)=>{ const key=`g-${k}-${mi}`, sc=state.g[k][mi];
+      if(scoreMismatch(key)) mis++;
+      else if(isPastMatch(key) && !isFilled(sc[0],sc[1])) due++;
+    });
+    const gcls=due?" gdue":(mis?" gmis":"");
+    const inner=(due?`<span style="color:#ef4444">⚠ ${due} проп.</span>`:"")+(mis?`<span style="color:#f59e0b;margin-left:8px">⚠ ${mis} помилк.</span>`:"");
+    const badge=inner?`<span style="margin-left:auto;font-weight:700;font-size:12px">${inner}</span>`:"";
+    h+=`<div class="gcard${gcls}"><div class="ghead"><div class="gname">Група ${k}</div>${badge}</div>`;
     h+=`<div class="colhead"><span></span><span class="cstr">Країна</span><span>І</span><span>В</span><span>Н</span><span>П</span><span>+/-</span><span>О</span></div>`;
     st.forEach((s,idx)=>{const rk=idx+1;
       h+=`<div class="row"><span class="rank r${rk}">${rk}</span><span class="tname">${flag(s.team)}${s.team}</span>`+
