@@ -105,8 +105,9 @@
 
   /* ===== PROGRESS ===== */
   .progress{display:flex;align-items:center;gap:10px;padding:8px 14px;background:#fff;border-bottom:1px solid var(--line);font-size:11px;color:#6b7280;font-weight:700}
-  .progress .bar{flex:1;height:7px;background:#eef1f3;border-radius:6px;overflow:hidden}
-  .progress .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--green-d),#22c55e);border-radius:6px;transition:width .3s}
+  .progress .bar{flex:1;height:7px;background:#eef1f3;border-radius:6px;overflow:hidden;display:flex}
+  .progress .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--green-d),#22c55e);transition:width .3s}
+  .progress .bar i.miss{background:#ef4444}
   .progress .pc{flex:0 0 auto;color:#334155}
 
   /* ===== STATUS ===== */
@@ -445,9 +446,10 @@ function thirds(){const list=GKEYS.map(k=>{const s=computeGroup(k);return {...s[
 function isFilled(sa,sb){return sa!==""&&sb!==""&&sa!=null&&sb!=null&&!isNaN(+sa)&&!isNaN(+sb);}
 function countProgress(){
   let done=0,total=0;
-  GKEYS.forEach(k=>state.g[k].forEach(m=>{total++;if(isFilled(m[0],m[1]))done++;}));
-  ["R32","R16","QF","SF","F","TP"].forEach(r=>state.ko[r].forEach(m=>{total++;if(isFilled(m.sa,m.sb))done++;}));
-  return {done,total};
+  let missed=0;
+  GKEYS.forEach(k=>state.g[k].forEach((m,mi)=>{total++;if(isFilled(m[0],m[1]))done++;else if(isPastMatch(`g-${k}-${mi}`))missed++;}));
+  ["R32","R16","QF","SF","F","TP"].forEach(r=>state.ko[r].forEach((m,i)=>{total++;if(isFilled(m.sa,m.sb))done++;else if(isPastMatch(`k-${r}-${i}`))missed++;}));
+  return {done,total,missed};
 }
 
 /* ============ KNOCKOUT ============ */
@@ -1207,8 +1209,9 @@ function render(){
   $("navCalendar").classList.toggle("on",mainView==="calendar");
   $("navVenues").classList.toggle("on",mainView==="venues");
   $("navRules").classList.toggle("on",mainView==="rules");
-  const pg=countProgress(), pct=pg.total?Math.round(pg.done/pg.total*100):0;
-  $("progress").innerHTML=`<span>Заповнено</span><div class="bar"><i style="width:${pct}%"></i></div><span class="pc">${pg.done} / ${pg.total}</span>`;
+  const pg=countProgress(), tot=pg.total||1;
+  const gpct=Math.round(pg.done/tot*100), rpct=Math.round((pg.missed||0)/tot*100);
+  $("progress").innerHTML=`<span>Заповнено</span><div class="bar"><i style="width:${gpct}%"></i><i class="miss" style="width:${rpct}%" title="пропущено: ${pg.missed||0}"></i></div><span class="pc">${pg.done} / ${pg.total}</span>`;
   renderSubtabs();
   let html;
   if(mainView==="venues") html=venuesHTML();
