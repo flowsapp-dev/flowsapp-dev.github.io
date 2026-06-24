@@ -569,7 +569,7 @@ function venueChip(key){
 
 /* ============ MATCHES VIEW ============ */
 function tourHTML(tour){
-  let h=`<div class="toolbar"><button class="primary" id="seedBtn">⚙️ Сформувати плей-оф</button><button class="warn" id="resetBtn">Скинути</button></div>`;
+  let h=`<div class="toolbar"><button class="primary" id="seedBtn">⚙️ Сформувати плей-оф</button><button class="warn" id="resetBtn">Скинути</button><button class="primary" id="fillAllBtn" style="margin-left:auto;background:var(--green-d)">✅ Заповнити всі</button></div>`;
   const mis=[]; TOUR_OF.forEach((t,i)=>{if(t===tour)mis.push(i);});
   // collect this tour's matches across all groups, then group by date (like calendar)
   const days=new Map();
@@ -1440,6 +1440,13 @@ function bind(){
   });
   const sb=$("seedBtn"); if(sb) sb.onclick=()=>{if(state.koSeed&&!confirm("Перезібрати плей-оф із груп? Введені рахунки плей-оф буде стерто."))return;buildSeed();sub="R32";render();};
   const rb=$("resetBtn"); if(rb) rb.onclick=()=>{if(confirm("Скинути всі результати турніру?")){state=blank();save();render();}};
+  const fab=$("fillAllBtn"); if(fab) fab.onclick=()=>{
+    let avail=0; GKEYS.forEach(k=>PAIRS.forEach((p,mi)=>{ if(MSTATS[`g-${k}-${mi}`]&&MSTATS[`g-${k}-${mi}`].score) avail++; }));
+    if(!avail){ alert("✅ Немає завершених матчів з даними для заповнення."); return; }
+    if(!confirmSpoiler(`⚠️ Заповнити РЕАЛЬНИМИ рахунками всі ${avail} зіграних матчів (і виправити неправильні)?`)) return;
+    GKEYS.forEach(k=>PAIRS.forEach((p,mi)=>{ const m=MSTATS[`g-${k}-${mi}`]; if(m&&m.score) state.g[k][mi]=[String(m.score[0]),String(m.score[1])]; }));
+    save(); render();
+  };
 }
 function teamsForKey(key){
   const p=key.split("-");
