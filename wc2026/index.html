@@ -50,6 +50,8 @@
   /* ===== MATCHES ===== */
   .mtour{background:#eef1f3;color:#475063;font-weight:800;font-size:12.5px;padding:8px 14px;letter-spacing:.3px}
   .mcard{border-bottom:1px solid var(--line);background:#fff}
+  .fillbtn{font-size:11px;font-weight:700;color:var(--green-d);background:none;border:1px solid var(--line);border-radius:7px;padding:3px 9px;cursor:pointer;white-space:nowrap}
+  .fillbtn:active{background:var(--soft)}
   .match{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;padding:13px 14px 9px}
   .match .tm{display:flex;align-items:center;gap:8px;min-width:0}
   .match .tm.right{justify-content:flex-end;flex-direction:row-reverse;text-align:right}
@@ -590,7 +592,10 @@ function tourHTML(tour){
 function matchBlock(id,a,b,sa,sb,tag){
   const mm=scoreMismatch(id);
   return `<div class="mcard${mm?" mismatch":(isFilled(sa,sb)?" done":(isPastMatch(id)?" due":""))}">`+
-    (tag?`<div class="mopen" data-mkey="${id}" style="font-size:11px;color:var(--muted);padding:6px 14px 0;font-weight:600;cursor:pointer">${esc(tag)}${mm?' · ⚠ не збігається з реальним':''} ›</div>`:"")+
+    `<div style="display:flex;align-items:center;gap:8px;padding:6px 14px 0">`+
+      `<div class="mopen" data-mkey="${id}" style="flex:1;min-width:0;font-size:11px;color:var(--muted);font-weight:600;cursor:pointer">${tag?esc(tag):""}${mm?' · ⚠ не збігається':''} ›</div>`+
+      `<button class="fillbtn" data-fkey="${id}">⤵ результат</button>`+
+    `</div>`+
     `<div class="match">`+
     `<div class="tm right mopen" data-mkey="${id}" style="cursor:pointer"><span class="nm">${a}</span>${flag(a)}</div>`+
     `<div class="score"><input id="${id}-a" type="number" min="0" inputmode="numeric" value="${sa}"><span class="sep">:</span><input id="${id}-b" type="number" min="0" inputmode="numeric" value="${sb}"></div>`+
@@ -1314,6 +1319,14 @@ function render(){
 
 /* ============ BIND ============ */
 function bind(){
+  document.querySelectorAll('.fillbtn').forEach(b=>b.onclick=(e)=>{
+    e.stopPropagation();
+    const key=b.dataset.fkey, m=MSTATS[key];
+    if(!m||!m.score){ alert("⤵ Немає даних для авто-заповнення цього матчу."); return; }
+    if(!confirmSpoiler("⚠️ Авто-заповнення впише РЕАЛЬНИЙ рахунок матчу.\n\nЗаповнити?")) return;
+    const p=key.split("-"); if(p[0]!=="g") return;
+    state.g[p[1]][+p[2]]=[String(m.score[0]),String(m.score[1])]; save(); render();
+  });
   document.querySelectorAll('input[id^="g-"]').forEach(inp=>inp.addEventListener("input",e=>{
     const [,k,mi,side]=e.target.id.split("-"); state.g[k][+mi][side==="a"?0:1]=e.target.value; save(); soft(e.target.id);
   }));
