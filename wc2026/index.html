@@ -23,6 +23,8 @@
   .subtabs button{flex:0 0 auto;background:none;border:0;padding:13px 16px;font-size:12.5px;font-weight:700;color:#7b828c;cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;letter-spacing:.3px}
   .subtabs button.on{color:#0f172a;border-bottom-color:var(--green)}
   .content{flex:1;padding-bottom:78px}
+  #nowAnchor{scroll-margin-top:150px}
+  .vmeta{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.4}
 
   /* ===== TABLE ===== */
   .gcard{border-bottom:8px solid #eef1f3}
@@ -293,22 +295,22 @@ const TOUR_OF=[1,1,2,2,3,3];
 
 /* 16 реальных арен ЧМ-2026 */
 const VENUES=[
- {id:"azteca",   n:"Estadio Azteca",          city:"Мехіко",         cc:"mx",cap:87523},
- {id:"akron",    n:"Estadio Akron",           city:"Гвадалахара",    cc:"mx",cap:49850},
- {id:"bbva",     n:"Estadio BBVA",            city:"Монтеррей",      cc:"mx",cap:53500},
- {id:"bmo",      n:"BMO Field",               city:"Торонто",        cc:"ca",cap:45000},
- {id:"bcplace",  n:"BC Place",                city:"Ванкувер",       cc:"ca",cap:54500},
- {id:"metlife",  n:"MetLife Stadium",         city:"Нью-Йорк",       cc:"us",cap:82500},
- {id:"sofi",     n:"SoFi Stadium",            city:"Лос-Анджелес",   cc:"us",cap:70240},
- {id:"att",      n:"AT&T Stadium",            city:"Даллас",         cc:"us",cap:80000},
- {id:"mercedes", n:"Mercedes-Benz Stadium",   city:"Атланта",        cc:"us",cap:71000},
- {id:"nrg",      n:"NRG Stadium",             city:"Х’юстон",        cc:"us",cap:72220},
- {id:"arrowhead",n:"Arrowhead Stadium",       city:"Канзас-Сіті",    cc:"us",cap:76416},
- {id:"linc",     n:"Lincoln Financial Field", city:"Філадельфія",    cc:"us",cap:69176},
- {id:"gillette", n:"Gillette Stadium",        city:"Бостон",         cc:"us",cap:65878},
- {id:"lumen",    n:"Lumen Field",             city:"Сіетл",          cc:"us",cap:68740},
- {id:"levis",    n:"Levi's Stadium",          city:"Сан-Франциско",  cc:"us",cap:68500},
- {id:"hardrock", n:"Hard Rock Stadium",       city:"Маямі",          cc:"us",cap:65326}
+ {id:"azteca",   n:"Estadio Azteca",          city:"Мехіко",         cc:"mx",cap:87523,built:1966,roof:"Відкритий",surf:"Гібридна трава"},
+ {id:"akron",    n:"Estadio Akron",           city:"Гвадалахара",    cc:"mx",cap:49850,built:2010,roof:"Відкритий",surf:"Натуральна трава"},
+ {id:"bbva",     n:"Estadio BBVA",            city:"Монтеррей",      cc:"mx",cap:53500,built:2015,roof:"Відкритий",surf:"Гібридна трава"},
+ {id:"bmo",      n:"BMO Field",               city:"Торонто",        cc:"ca",cap:45000,built:2007,roof:"Відкритий",surf:"Гібридна трава"},
+ {id:"bcplace",  n:"BC Place",                city:"Ванкувер",       cc:"ca",cap:54500,built:1983,roof:"Розсувний дах",surf:"Тимчасова трава"},
+ {id:"metlife",  n:"MetLife Stadium",         city:"Нью-Йорк",       cc:"us",cap:82500,built:2010,roof:"Відкритий",surf:"Тимчасова трава"},
+ {id:"sofi",     n:"SoFi Stadium",            city:"Лос-Анджелес",   cc:"us",cap:70240,built:2020,roof:"Критий",surf:"Тимчасова трава"},
+ {id:"att",      n:"AT&T Stadium",            city:"Даллас",         cc:"us",cap:80000,built:2009,roof:"Розсувний дах",surf:"Тимчасова трава"},
+ {id:"mercedes", n:"Mercedes-Benz Stadium",   city:"Атланта",        cc:"us",cap:71000,built:2017,roof:"Розсувний дах",surf:"Тимчасова трава"},
+ {id:"nrg",      n:"NRG Stadium",             city:"Х’юстон",        cc:"us",cap:72220,built:2002,roof:"Розсувний дах",surf:"Тимчасова трава"},
+ {id:"arrowhead",n:"Arrowhead Stadium",       city:"Канзас-Сіті",    cc:"us",cap:76416,built:1972,roof:"Відкритий",surf:"Гібридна трава"},
+ {id:"linc",     n:"Lincoln Financial Field", city:"Філадельфія",    cc:"us",cap:69176,built:2003,roof:"Відкритий",surf:"Гібридна трава"},
+ {id:"gillette", n:"Gillette Stadium",        city:"Бостон",         cc:"us",cap:65878,built:2002,roof:"Відкритий",surf:"Тимчасова трава"},
+ {id:"lumen",    n:"Lumen Field",             city:"Сіетл",          cc:"us",cap:68740,built:2002,roof:"Відкритий",surf:"Тимчасова трава"},
+ {id:"levis",    n:"Levi's Stadium",          city:"Сан-Франциско",  cc:"us",cap:68500,built:2014,roof:"Відкритий",surf:"Гібридна трава"},
+ {id:"hardrock", n:"Hard Rock Stadium",       city:"Маямі",          cc:"us",cap:65326,built:1987,roof:"Відкритий",surf:"Натуральна трава"}
 ];
 const VMAP={}; VENUES.forEach(v=>VMAP[v.id]=v);
 
@@ -512,7 +514,7 @@ function renderSubtabs(){
     ? [["groups","ГРУПИ"],["thirds","ТРЕТІ МІСЦЯ"]]
     : [["t1","1 ТУР"],["t2","2 ТУР"],["t3","3 ТУР"],["R32","1/16"],["R16","1/8"],["QF","ЧВЕРТЬ"],["SF","ПІВФІНАЛ"],["F","ФІНАЛ"],["tree","🗂 СІТКА"]];
   if(!tabs.find(t=>t[0]===sub)) sub=tabs[0][0];
-  tabs.forEach(([k,lbl])=>{const b=document.createElement("button");b.textContent=lbl;if(k===sub)b.className="on";b.onclick=()=>{sub=k;render();};box.appendChild(b);});
+  tabs.forEach(([k,lbl])=>{const b=document.createElement("button");b.textContent=lbl;if(k===sub)b.className="on";b.onclick=()=>{sub=k;render();applyScroll();};box.appendChild(b);});
 }
 
 /* ============ TABLE VIEWS ============ */
@@ -581,9 +583,11 @@ function tourHTML(tour){
       days.get(d).items.push({k,key,a:teams[p[0]],b:teams[p[1]],sc:state.g[k][mi],t});
     });
   });
+  let anc=false;
   [...days.entries()].sort((a,b)=>a[1].sk-b[1].sk).forEach(([d,obj])=>{
     obj.items.sort((x,y)=>timeMin(x.t)-timeMin(y.t));
-    h+=`<div class="mday"><div class="mday-h">🗓 ${esc(d)}</div>`;
+    const cur=!anc && obj.items.some(it=>!isPastMatch(it.key)); if(cur)anc=true;
+    h+=`<div class="mday"${cur?' id="nowAnchor"':''}><div class="mday-h">🗓 ${esc(d)}</div>`;
     obj.items.forEach(it=>{ h+=matchBlock(it.key,it.a,it.b,it.sc[0],it.sc[1],`Гр. ${it.k}${it.t?" · "+it.t:""}`); });
     h+=`</div>`;
   });
@@ -647,6 +651,7 @@ function venuesHTML(){
     const c=cnt[v.id]||0;
     h+=`<div class="vcard"><div class="vico">🏟</div>`+
        `<div class="vmid"><div class="vn">${v.n}</div><div class="vc">${flagCC(v.cc)} ${v.city}</div>`+
+       `<div class="vmeta">📅 ${v.built} · 🛖 ${esc(v.roof)} · 🌱 ${esc(v.surf)}</div>`+
        (c?`<span class="vbadge">${c} ${matchWord(c)}</span>`:``)+`</div>`+
        `<div class="vcap"><b>${fmtCap(v.cap)}</b><span>місць</span></div></div>`;
   });
@@ -703,9 +708,11 @@ function calendarHTML(){
   if(days.size===0)return `<div class="note">Поки немає матчів з датою. Відкрий матч → задай дату/час — і він зʼявиться тут за днями. (Усі 104 матчі вже з розкладом.)</div>`;
   const sorted=[...days.entries()].sort((a,b)=>a[1].sk-b[1].sk);
   let h="";
+  let anc=false;
   sorted.forEach(([d,obj])=>{
     obj.items.sort((x,y)=>timeMin(x.t)-timeMin(y.t));
-    h+=`<div class="caldate">🗓 ${esc(d)}</div>`;
+    const cur=!anc && obj.items.some(it=>!isPastMatch(it.key)); if(cur)anc=true;
+    h+=`<div class="caldate"${cur?' id="nowAnchor"':''}>🗓 ${esc(d)}</div>`;
     obj.items.forEach(it=>{
       const tt=teamsForKey(it.key),a=tt[0]||"—",b=tt[1]||"—";
       const sr=schedRead(it.key),v=sr&&sr.vid?VMAP[sr.vid]:null;
@@ -1423,6 +1430,13 @@ function render(){
   else html = koHTML(sub);
   $("content").innerHTML=html; bind();
 }
+function applyScroll(){ // on tab/subtab switch: jump to current matchday (Matches/Calendar), else top
+  if(mainView==="matches"||mainView==="calendar"){
+    const a=document.getElementById("nowAnchor");
+    if(a){ a.scrollIntoView({block:"start"}); return; }
+  }
+  window.scrollTo(0,0);
+}
 
 /* ============ BIND ============ */
 function bind(){
@@ -1480,11 +1494,11 @@ function teamsForKey(key){
 function soft(focusId){render();const el=$(focusId);if(el){el.focus();try{el.setSelectionRange(el.value.length,el.value.length);}catch(e){}}}
 
 /* ============ NAV / IO ============ */
-$("navTable").onclick=()=>{mainView="table";sub="groups";render();};
-$("navMatches").onclick=()=>{mainView="matches";sub=defaultMatchSub();render();};
-$("navCalendar").onclick=()=>{mainView="calendar";render();};
-$("navVenues").onclick=()=>{mainView="venues";render();};
-$("navRules").onclick=()=>{mainView="rules";render();};
+$("navTable").onclick=()=>{mainView="table";sub="groups";render();applyScroll();};
+$("navMatches").onclick=()=>{mainView="matches";sub=defaultMatchSub();render();applyScroll();};
+$("navCalendar").onclick=()=>{mainView="calendar";render();applyScroll();};
+$("navVenues").onclick=()=>{mainView="venues";render();applyScroll();};
+$("navRules").onclick=()=>{mainView="rules";render();applyScroll();};
 $("scrim").onclick=closeSheet;
 
 /* тёмная тема — per-device pref (тёмная тема не входит в state/код переноса) */
@@ -1584,7 +1598,7 @@ $("codeInBtn").onclick=openCodeIn;
 })();
 
 migrateSched();
-render();
+render();applyScroll();
 </script>
 </body>
 </html>
