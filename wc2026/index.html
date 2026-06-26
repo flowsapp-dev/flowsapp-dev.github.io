@@ -1537,7 +1537,10 @@ const TKEY="wc2026_theme";
 function applyTheme(){const dark=localStorage.getItem(TKEY)==="dark";document.body.classList.toggle("dark",dark);$("themeBtn").textContent=dark?"☀️":"🌙";}
 $("themeBtn").onclick=()=>{const dark=!document.body.classList.contains("dark");localStorage.setItem(TKEY,dark?"dark":"light");applyTheme();};
 function applyGate(){$("gateBtn").textContent=noGate?"👁":"🛡";$("gateBtn").title=noGate?"спойлери: показ без попередження (тап — увімкнути захист)":"спойлери: за підтвердженням (тап — ігнорувати)";}
-$("gateBtn").onclick=()=>{noGate=!noGate;localStorage.setItem("wc2026_nogate",noGate?"1":"0");applyGate();};
+$("gateBtn").onclick=()=>{
+  if(!noGate && !confirm("⚠️ Вимкнути захист від спойлерів?\n\nРахунки й результати показуватимуться БЕЗ попередження.")) return;
+  noGate=!noGate;localStorage.setItem("wc2026_nogate",noGate?"1":"0");applyGate();
+};
 applyGate();
 applyTheme();
 
