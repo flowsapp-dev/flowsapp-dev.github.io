@@ -253,6 +253,7 @@
     <button id="navMatches"><span class="bi">⚽</span>Матчі</button>
     <button id="navTable" class="on"><span class="bi">▦</span>Таблиця</button>
     <button id="navCalendar"><span class="bi">🗓</span>Календар</button>
+    <button id="navScorers"><span class="bi">👟</span>Голи</button>
     <button id="navVenues"><span class="bi">🏟</span>Стадіони</button>
     <button id="navRules"><span class="bi">📋</span>Правила</button>
   </div>
@@ -486,6 +487,7 @@ function loser(r,i){const t=teamsOf(r,i),w=result(r,i);return w==="a"?t[1]:w==="
 let mainView="matches", sub=defaultMatchSub();
 let noGate=localStorage.getItem("wc2026_nogate")==="1"; // true = ignore spoiler gate (show everything, no confirm)
 let tblTeam=null; // team whose WC-history panel is open in the group table
+let scorersShown=false; // top-scorers spoiler gate revealed this session
 function confirmSpoiler(m){return noGate||confirm(m);}
 const $=id=>document.getElementById(id);
 function flag(t){const c=ISO[t];return c?`<img class="flag" src="https://flagcdn.com/w40/${c}.png" alt="" loading="lazy">`:`<span class="flag" style="display:inline-block;width:26px;height:18px;background:#dde2e7;border-radius:3px"></span>`;}
@@ -509,7 +511,7 @@ function defaultMatchSub(){ // latest round that has already started, by real da
 }
 function renderSubtabs(){
   const box=$("subtabs");box.innerHTML="";
-  if(mainView==="venues"||mainView==="calendar"||mainView==="rules"){return;}
+  if(mainView==="venues"||mainView==="calendar"||mainView==="rules"||mainView==="scorers"){return;}
   let tabs = mainView==="table"
     ? [["groups","ГРУПИ"],["thirds","ТРЕТІ МІСЦЯ"]]
     : [["t1","1 ТУР"],["t2","2 ТУР"],["t3","3 ТУР"],["R32","1/16"],["R16","1/8"],["QF","ЧВЕРТЬ"],["SF","ПІВФІНАЛ"],["F","ФІНАЛ"],["tree","🗂 СІТКА"]];
@@ -641,6 +643,39 @@ function koMatch(round,i,pair,res,tag){
 }
 
 /* ============ VENUES SCREEN ============ */
+const CCNAME={ar:"Аргентина",fr:"Франція",br:"Бразилія",no:"Норвегія",de:"Німеччина",ch:"Швейцарія",nl:"Нідерланди",ma:"Марокко",ca:"Канада",sn:"Сенегал",us:"США",gb:"Англія",es:"Іспанія",pt:"Португалія",jp:"Японія",hr:"Хорватія",be:"Бельгія",mx:"Мексика",ko:"Республіка Корея",sa:"Саудівська Аравія",uy:"Уругвай",co:"Колумбія",eg:"Єгипет",dz:"Алжир"};
+function ccName(cc){return CCNAME[cc]||(cc||"").toUpperCase();}
+const SCORERS=[ // top scorers: wc = goals at WC2026, total = goals across all World Cups. Refreshed daily by the loader.
+  {name:"Lionel Messi",cc:"ar",wc:5,total:18},
+  {name:"Ousmane Dembélé",cc:"fr",wc:4,total:4},
+  {name:"Kylian Mbappé",cc:"fr",wc:4,total:16},
+  {name:"Vinícius Júnior",cc:"br",wc:4,total:5},
+  {name:"Erling Haaland",cc:"no",wc:4,total:4},
+  {name:"Deniz Undav",cc:"de",wc:3,total:3},
+  {name:"Johan Manzambi",cc:"ch",wc:3,total:3},
+  {name:"Brian Brobbey",cc:"nl",wc:3,total:3},
+  {name:"Matheus Cunha",cc:"br",wc:3,total:3},
+  {name:"Ismael Saibari",cc:"ma",wc:3,total:3},
+  {name:"Jonathan David",cc:"ca",wc:3,total:3},
+  {name:"Ismaïla Sarr",cc:"sn",wc:3,total:3},
+  {name:"Folarin Balogun",cc:"us",wc:2,total:2},
+  {name:"Kai Havertz",cc:"de",wc:2,total:2},
+  {name:"Harry Kane",cc:"gb",wc:2,total:2},
+  {name:"Cody Gakpo",cc:"nl",wc:2,total:2}
+];
+function scorersHTML(){
+  if(!SCORERS.length) return `<div class="note">Поки немає даних бомбардирів.</div>`;
+  if(!noGate && !scorersShown)
+    return `<div class="note" style="padding:20px 16px;text-align:center">👟 Список бомбардирів показує, хто скільки забив — <b>можливі спойлери</b>.<br><br><button class="primary" id="scShow">Показати</button></div>`;
+  let h=`<div class="note">Голи на ЧС-2026 / усього на чемпіонатах світу.</div><div class="vlist">`;
+  SCORERS.forEach((s,i)=>{
+    h+=`<div class="vcard"><div class="vico" style="font-size:15px;font-weight:800;color:var(--muted)">${i+1}</div>`+
+       `<div class="vmid"><div class="vn">${esc(s.name)}</div><div class="vc">${flagCC(s.cc)} ${esc(ccName(s.cc))}</div></div>`+
+       `<div class="vcap"><b>${s.wc}/${s.total}</b><span>голів</span></div></div>`;
+  });
+  h+=`</div>`;
+  return h;
+}
 function venuesHTML(){
   // подсчёт назначенных матчей на арену
   const cnt={};
@@ -1440,19 +1475,21 @@ function fillSheet(){
 
 /* ============ RENDER ============ */
 function render(){
-  const titles={table:"Таблиця — ЧС 2026",matches:"Матчі — ЧС 2026",venues:"Стадіони ЧС 2026",calendar:"Календар — ЧС 2026",rules:"Правила — ЧС 2026"};
+  const titles={table:"Таблиця — ЧС 2026",matches:"Матчі — ЧС 2026",venues:"Стадіони ЧС 2026",calendar:"Календар — ЧС 2026",rules:"Правила — ЧС 2026",scorers:"Бомбардири — ЧС 2026"};
   $("topTitle").textContent=titles[mainView];
   $("navTable").classList.toggle("on",mainView==="table");
   $("navMatches").classList.toggle("on",mainView==="matches");
   $("navCalendar").classList.toggle("on",mainView==="calendar");
   $("navVenues").classList.toggle("on",mainView==="venues");
   $("navRules").classList.toggle("on",mainView==="rules");
+  $("navScorers").classList.toggle("on",mainView==="scorers");
   const pg=countProgress(), tot=pg.total||1;
   const gpct=Math.round(pg.done/tot*100), rpct=Math.round((pg.missed||0)/tot*100);
   $("progress").innerHTML=`<span>Заповнено</span><div class="bar"><i style="width:${gpct}%"></i><i class="miss" style="width:${rpct}%" title="пропущено: ${pg.missed||0}"></i></div><span class="pc">${pg.done} / ${pg.total}</span>`;
   renderSubtabs();
   let html;
-  if(mainView==="venues") html=venuesHTML();
+  if(mainView==="scorers") html=scorersHTML();
+  else if(mainView==="venues") html=venuesHTML();
   else if(mainView==="rules") html=rulesHTML();
   else if(mainView==="calendar") html=calendarHTML();
   else if(mainView==="table") html = sub==="thirds"?thirdsHTML():groupTableHTML();
@@ -1515,6 +1552,7 @@ function bind(){
     GKEYS.forEach(k=>PAIRS.forEach((p,mi)=>{ const m=MSTATS[`g-${k}-${mi}`]; if(m&&m.score) state.g[k][mi]=[String(m.score[0]),String(m.score[1])]; }));
     save(); render();
   };
+  const scb=$("scShow"); if(scb) scb.onclick=()=>{ if(confirmSpoiler("⚠️ Показати бомбардирів? Можливі спойлери.")){ scorersShown=true; render(); } };
 }
 function teamsForKey(key){
   const p=key.split("-");
@@ -1528,6 +1566,7 @@ function soft(focusId){render();const el=$(focusId);if(el){el.focus();try{el.set
 $("navTable").onclick=()=>{mainView="table";sub="groups";render();applyScroll();};
 $("navMatches").onclick=()=>{mainView="matches";sub=defaultMatchSub();render();applyScroll();};
 $("navCalendar").onclick=()=>{mainView="calendar";render();applyScroll();};
+$("navScorers").onclick=()=>{mainView="scorers";render();applyScroll();};
 $("navVenues").onclick=()=>{mainView="venues";render();applyScroll();};
 $("navRules").onclick=()=>{mainView="rules";render();applyScroll();};
 $("scrim").onclick=closeSheet;
