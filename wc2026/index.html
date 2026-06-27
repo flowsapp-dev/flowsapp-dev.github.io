@@ -666,7 +666,11 @@ const SCORERS=[ // top scorers: wc = goals at WC2026, total = goals across all W
 function scorersHTML(){
   if(!SCORERS.length) return `<div class="note">Поки немає даних бомбардирів.</div>`;
   if(!noGate && !scorersShown)
-    return `<div class="note" style="padding:20px 16px;text-align:center">👟 Список бомбардирів показує, хто скільки забив — <b>можливі спойлери</b>.<br><br><button class="primary" id="scShow">Показати</button></div>`;
+    return `<div style="padding:44px 22px;text-align:center">`+
+      `<div style="font-size:42px;margin-bottom:12px">👟</div>`+
+      `<div style="color:var(--muted);font-size:14px;line-height:1.55;max-width:320px;margin:0 auto 20px">Список бомбардирів показує, хто скільки забив — <b style="color:var(--txt)">можливі спойлери</b>.</div>`+
+      `<button id="scShow" style="padding:13px 32px;font-size:15px;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--green-d),#22c55e);border:0;border-radius:12px;cursor:pointer;box-shadow:0 3px 12px rgba(22,163,74,.35)">Показати бомбардирів</button>`+
+    `</div>`;
   let h=`<div class="note">Голи на ЧС-2026 / усього на чемпіонатах світу.</div><div class="vlist">`;
   SCORERS.forEach((s,i)=>{
     h+=`<div class="vcard"><div class="vico" style="font-size:15px;font-weight:800;color:var(--muted)">${i+1}</div>`+
@@ -1566,7 +1570,7 @@ function soft(focusId){render();const el=$(focusId);if(el){el.focus();try{el.set
 $("navTable").onclick=()=>{mainView="table";sub="groups";render();applyScroll();};
 $("navMatches").onclick=()=>{mainView="matches";sub=defaultMatchSub();render();applyScroll();};
 $("navCalendar").onclick=()=>{mainView="calendar";render();applyScroll();};
-$("navScorers").onclick=()=>{mainView="scorers";render();applyScroll();};
+$("navScorers").onclick=()=>{mainView="scorers";scorersShown=false;render();applyScroll();};
 $("navVenues").onclick=()=>{mainView="venues";render();applyScroll();};
 $("navRules").onclick=()=>{mainView="rules";render();applyScroll();};
 $("scrim").onclick=closeSheet;
