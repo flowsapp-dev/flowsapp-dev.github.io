@@ -658,11 +658,14 @@ const SCORERS=[ // top scorers: wc = goals at WC2026, total = goals across all W
   {name:"Ismael Saibari",cc:"ma",wc:3,total:3},
   {name:"Jonathan David",cc:"ca",wc:3,total:3},
   {name:"Ismaïla Sarr",cc:"sn",wc:3,total:3},
+  {name:"Elijah Just",cc:"nz",wc:3,total:3},
   {name:"Folarin Balogun",cc:"us",wc:2,total:2},
-  {name:"Kai Havertz",cc:"de",wc:2,total:2},
-  {name:"Harry Kane",cc:"gb",wc:2,total:2},
-  {name:"Cody Gakpo",cc:"nl",wc:2,total:2},
-  {name:"Pape Gueye",cc:"sn",wc:2,total:2}
+  {name:"Kai Havertz",cc:"de",wc:2,total:4},
+  {name:"Harry Kane",cc:"gb-eng",wc:2,total:10},
+  {name:"Cody Gakpo",cc:"nl",wc:2,total:5},
+  {name:"Pape Gueye",cc:"sn",wc:2,total:2},
+  {name:"Cristiano Ronaldo",cc:"pt",wc:2,total:10},
+  {name:"Leandro Trossard",cc:"be",wc:2,total:2}
 ];
 function scorersHTML(){
   if(!SCORERS.length) return `<div class="note">Поки немає даних бомбардирів.</div>`;
@@ -1342,6 +1345,20 @@ const MSTATS={
     score:[5,0],
     goals:[["4'","Habib Diarra","a"],["56'","Ismaïla Sarr","a"],["59'","Pape Gueye","a"],["71'","Pape Gueye","a"],["82'","Iliman Ndiaye","a"]],
     cards:[["13'","Rebin Sulaka","r","b"],["18'","Abdoulaye Seck","y","a"],["75'","Amir Alammari","y","b"],["81'","Pape Gueye","y","a"],["90'","M. Doski","y","b"]]
+  },
+  "g-G-4":{
+    score:[5,1],
+    goals:[["28'","Leandro Trossard","a"],["50'","Leandro Trossard","a"],["66'","Kevin De Bruyne","a"],["84'","Elijah Just","b"],["86'","Romelu Lukaku","a"],["90+4'","Alexis Saelemaekers","a"]]
+  },
+  "g-G-5":{
+    score:[1,1],
+    goals:[["5'","Mahmoud Saber","a"],["14'","Ramin Rezaeian","b"]],
+    stats:[["Очікувані голи (xG)",0.81,1.94],["Удари",15,13],["У створ",3,4]]
+  },
+  "g-H-5":{
+    score:[0,0],
+    goals:[],
+    stats:[["Очікувані голи (xG)",1.52,0.40]]
   }
 };
 const WCHIST={ // FIFA World Cup history through 2022 (apps, titles, best result). Static historical data — no spoiler.
