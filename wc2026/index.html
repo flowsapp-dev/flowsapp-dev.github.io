@@ -1552,7 +1552,7 @@ function bind(){
     GKEYS.forEach(k=>PAIRS.forEach((p,mi)=>{ const m=MSTATS[`g-${k}-${mi}`]; if(m&&m.score) state.g[k][mi]=[String(m.score[0]),String(m.score[1])]; }));
     save(); render();
   };
-  const scb=$("scShow"); if(scb) scb.onclick=()=>{ if(confirmSpoiler("⚠️ Показати бомбардирів? Можливі спойлери.")){ scorersShown=true; render(); } };
+  const scb=$("scShow"); if(scb) scb.onclick=()=>{ scorersShown=true; render(); };
 }
 function teamsForKey(key){
   const p=key.split("-");
