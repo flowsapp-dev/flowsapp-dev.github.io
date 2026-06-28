@@ -646,7 +646,7 @@ function koMatch(round,i,pair,res,tag){
 const CCNAME={ar:"Аргентина",fr:"Франція",br:"Бразилія",no:"Норвегія",de:"Німеччина",ch:"Швейцарія",nl:"Нідерланди",ma:"Марокко",ca:"Канада",sn:"Сенегал",us:"США",gb:"Англія",es:"Іспанія",pt:"Португалія",jp:"Японія",hr:"Хорватія",be:"Бельгія",mx:"Мексика",ko:"Республіка Корея",sa:"Саудівська Аравія",uy:"Уругвай",co:"Колумбія",eg:"Єгипет",dz:"Алжир"};
 function ccName(cc){return CCNAME[cc]||(cc||"").toUpperCase();}
 const SCORERS=[ // top scorers: wc = goals at WC2026, total = goals across all World Cups. Refreshed daily by the loader.
-  {name:"Lionel Messi",cc:"ar",wc:5,total:18},
+  {name:"Lionel Messi",cc:"ar",wc:6,total:19},
   {name:"Kylian Mbappé",cc:"fr",wc:4,total:16},
   {name:"Vinícius Júnior",cc:"br",wc:4,total:5},
   {name:"Ousmane Dembélé",cc:"fr",wc:4,total:4},
@@ -665,7 +665,9 @@ const SCORERS=[ // top scorers: wc = goals at WC2026, total = goals across all W
   {name:"Kai Havertz",cc:"de",wc:2,total:4},
   {name:"Folarin Balogun",cc:"us",wc:2,total:2},
   {name:"Pape Gueye",cc:"sn",wc:2,total:2},
-  {name:"Leandro Trossard",cc:"be",wc:2,total:2}
+  {name:"Leandro Trossard",cc:"be",wc:2,total:2},
+  {name:"Riyad Mahrez",cc:"dz",wc:2,total:2},
+  {name:"Marko Arnautovic",cc:"at",wc:2,total:2}
 ];
 function scorersHTML(){
   if(!SCORERS.length) return `<div class="note">Поки немає даних бомбардирів.</div>`;
@@ -1378,6 +1380,18 @@ const MSTATS={
   "g-K-5":{
     score:[2,1],
     goals:[["10'","Eldor Shomurodov","b"],["68'","Yoane Wissa","a"],["78'","Fiston Mayele","a"]]
+  },
+  "g-J-4":{
+    score:[3,1],
+    goals:[["19'","Giovani Lo Celso","a"],["31'","Lautaro Martínez","a"],["55'","Musa Al-Taamari","b"],["80'","Lionel Messi","a"]],
+    cards:[["90+4'","Mohammad Abu Zraiq","y","b"]],
+    stats:[["Очікувані голи (xG)",2.13,0.74],["Удари",13,5],["У створ",4,1]]
+  },
+  "g-J-5":{
+    score:[3,3],
+    goals:[["28'","Marko Arnautović","b"],["41'","Rafik Belghali","a"],["55'","Marcel Sabitzer","b"],["60'","Riyad Mahrez","a"],["90+3'","Riyad Mahrez","a"],["90+6'","Sasa Kalajdžić","b"]],
+    cards:[["11'","Marko Arnautović","y","b"]],
+    stats:[["Очікувані голи (xG)",1.62,1.44],["Удари",12,10],["У створ",5,3]]
   }
 };
 const WCHIST={ // FIFA World Cup history through 2022 (apps, titles, best result). Static historical data — no spoiler.
