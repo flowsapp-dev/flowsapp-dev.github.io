@@ -472,13 +472,6 @@ function buildSeed(){
   state.koSeed=REAL_KO32.slice();
   state.ko={R32:arr(16),R16:arr(8),QF:arr(4),SF:arr(2),F:arr(1),TP:arr(1)}; save();
 }
-function syncKoSeed(){ // auto-fix a stale koSeed (old bracket order) to current REAL_KO32, no manual re-seed needed
-  if(state.koSeed && JSON.stringify(state.koSeed)!==JSON.stringify(REAL_KO32)){
-    state.koSeed=REAL_KO32.slice();
-    state.ko={R32:arr(16),R16:arr(8),QF:arr(4),SF:arr(2),F:arr(1),TP:arr(1)};
-    save();
-  }
-}
 function roundTeams(r){
   if(r==="R32"){const o=[];for(let i=0;i<16;i++)o.push([state.koSeed?REAL_KO32[2*i]:null,state.koSeed?REAL_KO32[2*i+1]:null]);return o;}
   if(r==="TP")return [[loser("SF",0),loser("SF",1)]];
@@ -625,11 +618,21 @@ function koHTML(round){
   let h=`<div class="toolbar"><button class="primary" id="seedBtn">⚙️ Перезібрати плей-оф</button><button class="primary" id="fillKoBtn" style="margin-left:auto;background:var(--green-d)">✅ Заповнити всі</button></div>`;
   const teams=roundTeams(round);
   const labels={R32:"1/16 фіналу",R16:"1/8 фіналу",QF:"Чвертьфінал",SF:"Півфінал",F:"Фінал"};
+  // build items for this round (+ third-place on the Final tab), then group by date like the group tours
+  const items=teams.map((pair,i)=>({key:`k-${round}-${i}`,round,i,pair,tag:labels[round]+" · М"+(i+1)}));
+  if(round==="F"){ items.push({key:"k-TP-0",round:"TP",i:0,pair:roundTeams("TP")[0],tag:"Матч за 3-тє місце"}); }
+  const days=new Map();
+  items.forEach(it=>{ const sr=schedRead(it.key),d=sr&&sr.d?sr.d:"Без дати"; if(!days.has(d))days.set(d,{sk:(sr&&sr.d)?dateSortKey(sr.d,sr.t):9e9,items:[]}); days.get(d).items.push({...it,t:sr&&sr.t?sr.t:""}); });
   h+=`<div class="ko">`;
-  teams.forEach((pair,i)=>h+=koMatch(round,i,pair,result(round,i),labels[round]+" · М"+(i+1)));
+  let anc=false;
+  [...days.entries()].sort((a,b)=>a[1].sk-b[1].sk).forEach(([d,obj])=>{
+    obj.items.sort((x,y)=>timeMin(x.t)-timeMin(y.t));
+    const cur=!anc && obj.items.some(it=>!isPastMatch(it.key)); if(cur)anc=true;
+    h+=`<div class="mday"${cur?' id="nowAnchor"':''}><div class="mday-h">🗓 ${esc(d)}</div>`;
+    obj.items.forEach(it=>{ h+=koMatch(it.round,it.i,it.pair,result(it.round,it.i),it.tag); });
+    h+=`</div>`;
+  });
   if(round==="F"){
-    const tp=roundTeams("TP")[0];
-    h+=koMatch("TP",0,tp,result("TP",0),"Матч за 3-тє місце");
     const champ=winner("F",0);
     h+=`<div class="champ"><div class="lbl">ЧЕМПІОН СВІТУ 2026</div><div class="name"><span class="cup">🏆</span>${champ?flag(champ)+" "+champ:"—"}</div></div>`;
   }
@@ -1787,7 +1790,6 @@ $("codeInBtn").onclick=openCodeIn;
 })();
 
 migrateSched();
-syncKoSeed();
 render();applyScroll();
 </script>
 </body>
