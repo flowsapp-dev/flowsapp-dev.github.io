@@ -472,6 +472,13 @@ function buildSeed(){
   state.koSeed=REAL_KO32.slice();
   state.ko={R32:arr(16),R16:arr(8),QF:arr(4),SF:arr(2),F:arr(1),TP:arr(1)}; save();
 }
+function syncKoSeed(){ // auto-fix a stale koSeed (old bracket order) to current REAL_KO32, no manual re-seed needed
+  if(state.koSeed && JSON.stringify(state.koSeed)!==JSON.stringify(REAL_KO32)){
+    state.koSeed=REAL_KO32.slice();
+    state.ko={R32:arr(16),R16:arr(8),QF:arr(4),SF:arr(2),F:arr(1),TP:arr(1)};
+    save();
+  }
+}
 function roundTeams(r){
   if(r==="R32"){const o=[];for(let i=0;i<16;i++)o.push([state.koSeed?state.koSeed[2*i]:null,state.koSeed?state.koSeed[2*i+1]:null]);return o;}
   if(r==="TP")return [[loser("SF",0),loser("SF",1)]];
@@ -1780,6 +1787,7 @@ $("codeInBtn").onclick=openCodeIn;
 })();
 
 migrateSched();
+syncKoSeed();
 render();applyScroll();
 </script>
 </body>
