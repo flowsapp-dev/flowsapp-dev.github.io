@@ -122,6 +122,8 @@
   .mcard.due,.calmatch.due{box-shadow:inset 4px 0 0 #ef4444}
   .mcard.mismatch,.calmatch.mismatch{box-shadow:inset 4px 0 0 #f59e0b}
   .kmatch.done{box-shadow:inset 4px 0 0 var(--green)}
+  .kmatch.due{box-shadow:inset 4px 0 0 #ef4444}
+  .kmatch.mismatch{box-shadow:inset 4px 0 0 #f59e0b}
 
   /* ===== BOTTOM NAV ===== */
   .bottomnav{position:fixed;bottom:0;left:0;right:0;max-width:640px;margin:0 auto;background:#0f172a;display:flex;z-index:30;padding-bottom:env(safe-area-inset-bottom)}
@@ -631,7 +633,9 @@ function koMatch(round,i,pair,res,tag){
   const a=pair[0],b=pair[1],m=state.ko[round][i],key=`k-${round}-${i}`;
   const aw=res==="a",bw=res==="b";
   const tie=(m.sa!==""&&m.sb!==""&&m.sa!=null&&m.sb!=null&&!isNaN(+m.sa)&&!isNaN(+m.sb)&&+m.sa===+m.sb);
-  let h=`<div class="kmatch${isFilled(m.sa,m.sb)?" done":""}"><div class="ktag" style="display:flex;align-items:center;gap:8px"><span style="flex:1">${tag}</span>${(a&&b)?`<button class="fillbtn" data-fkey="${key}">⤵ результат</button>`:""}</div>`;
+  const mm=(a&&b)&&scoreMismatch(key);
+  const kcls=mm?" mismatch":(isFilled(m.sa,m.sb)?" done":((a&&b&&isPastMatch(key))?" due":""));
+  let h=`<div class="kmatch${kcls}"><div class="ktag" style="display:flex;align-items:center;gap:8px"><span style="flex:1">${tag}</span>${(a&&b)?`<button class="fillbtn" data-fkey="${key}">⤵ результат</button>`:""}</div>`;
   h+=`<div class="krow ${aw?'win':(res?'lose':'')}"><div class="kt">${flag(a)}<span class="nm">${a||"—"}</span></div><input id="k-${round}-${i}-a" type="number" min="0" inputmode="numeric" value="${m.sa}" ${a?'':'disabled'}></div>`;
   h+=`<div class="krow ${bw?'win':(res?'lose':'')}"><div class="kt">${flag(b)}<span class="nm">${b||"—"}</span></div><input id="k-${round}-${i}-b" type="number" min="0" inputmode="numeric" value="${m.sb}" ${b?'':'disabled'}></div>`;
   if(tie){
@@ -731,12 +735,14 @@ function schedRead(key){ // как sched(), но БЕЗ мутации state (д
   return SCHED_DEF[key]?{...SCHED_DEF[key],n:""}:null;
 }
 function isPastMatch(key){ const s=SCHED_DEF[key]; return !!(s && s.ko && Date.now() > s.ko + 150*60000); } // finished ≈ kickoff +2.5h
-function scoreMismatch(key){ // owner-entered group score differs from real MSTATS result -> badge (no spoiler of the real number)
+function scoreMismatch(key){ // owner-entered score differs from real MSTATS result -> badge (no spoiler of the real number)
   const m=MSTATS[key]; if(!m||!m.score) return false;
-  const p=key.split("-"); if(p[0]!=="g") return false;
-  const g=state.g[p[1]]&&state.g[p[1]][+p[2]]; if(!g) return false;
-  if(g[0]===""||g[1]===""||g[0]==null||g[1]==null) return false;
-  return (+g[0]!==m.score[0])||(+g[1]!==m.score[1]);
+  const p=key.split("-"); let sa,sb;
+  if(p[0]==="g"){ const g=state.g[p[1]]&&state.g[p[1]][+p[2]]; if(!g) return false; sa=g[0]; sb=g[1]; }
+  else if(p[0]==="k"){ const x=state.ko[p[1]]&&state.ko[p[1]][+p[2]]; if(!x) return false; sa=x.sa; sb=x.sb; }
+  else return false;
+  if(sa===""||sb===""||sa==null||sb==null) return false;
+  return (+sa!==m.score[0])||(+sb!==m.score[1]);
 }
 function filledByKey(key){
   const p=key.split("-");
