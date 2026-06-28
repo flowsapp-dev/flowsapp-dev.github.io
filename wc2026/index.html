@@ -647,10 +647,11 @@ const CCNAME={ar:"Аргентина",fr:"Франція",br:"Бразилія",
 function ccName(cc){return CCNAME[cc]||(cc||"").toUpperCase();}
 const SCORERS=[ // top scorers: wc = goals at WC2026, total = goals across all World Cups. Refreshed daily by the loader.
   {name:"Lionel Messi",cc:"ar",wc:5,total:18},
-  {name:"Ousmane Dembélé",cc:"fr",wc:4,total:4},
   {name:"Kylian Mbappé",cc:"fr",wc:4,total:16},
   {name:"Vinícius Júnior",cc:"br",wc:4,total:5},
+  {name:"Ousmane Dembélé",cc:"fr",wc:4,total:4},
   {name:"Erling Haaland",cc:"no",wc:4,total:4},
+  {name:"Harry Kane",cc:"gb-eng",wc:3,total:11},
   {name:"Deniz Undav",cc:"de",wc:3,total:3},
   {name:"Johan Manzambi",cc:"ch",wc:3,total:3},
   {name:"Brian Brobbey",cc:"nl",wc:3,total:3},
@@ -659,12 +660,11 @@ const SCORERS=[ // top scorers: wc = goals at WC2026, total = goals across all W
   {name:"Jonathan David",cc:"ca",wc:3,total:3},
   {name:"Ismaïla Sarr",cc:"sn",wc:3,total:3},
   {name:"Elijah Just",cc:"nz",wc:3,total:3},
-  {name:"Folarin Balogun",cc:"us",wc:2,total:2},
-  {name:"Kai Havertz",cc:"de",wc:2,total:4},
-  {name:"Harry Kane",cc:"gb-eng",wc:2,total:10},
-  {name:"Cody Gakpo",cc:"nl",wc:2,total:5},
-  {name:"Pape Gueye",cc:"sn",wc:2,total:2},
   {name:"Cristiano Ronaldo",cc:"pt",wc:2,total:10},
+  {name:"Cody Gakpo",cc:"nl",wc:2,total:5},
+  {name:"Kai Havertz",cc:"de",wc:2,total:4},
+  {name:"Folarin Balogun",cc:"us",wc:2,total:2},
+  {name:"Pape Gueye",cc:"sn",wc:2,total:2},
   {name:"Leandro Trossard",cc:"be",wc:2,total:2}
 ];
 function scorersHTML(){
@@ -1359,6 +1359,25 @@ const MSTATS={
     score:[0,0],
     goals:[],
     stats:[["Очікувані голи (xG)",1.52,0.40]]
+  },
+  "g-L-4":{
+    score:[2,0],
+    goals:[["62'","Jude Bellingham","a"],["67'","Harry Kane","a"]],
+    cards:[["53'","José Fajardo","y","b"],["60'","Jarell Quansah","y","a"],["84'","Andrés Andrade","y","b"]],
+    stats:[["Володіння",67,33,"%"],["Очікувані голи (xG)",1.49,0.58],["Удари",17,13],["У створ",6,2],["Кутові",7,3]]
+  },
+  "g-L-5":{
+    score:[2,1],
+    goals:[["31'","Petar Sučić","a"],["73'","Derrick Luckassen","b"],["83'","Nikola Vlašić","a"]],
+    cards:[["68'","Ivan Perišić","y","a"],["90+4'","Kwame Oppong","y","b"]]
+  },
+  "g-K-4":{
+    score:[0,0],
+    goals:[]
+  },
+  "g-K-5":{
+    score:[2,1],
+    goals:[["10'","Eldor Shomurodov","b"],["68'","Yoane Wissa","a"],["78'","Fiston Mayele","a"]]
   }
 };
 const WCHIST={ // FIFA World Cup history through 2022 (apps, titles, best result). Static historical data — no spoiler.
