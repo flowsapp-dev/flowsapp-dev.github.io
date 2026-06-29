@@ -674,27 +674,7 @@ const SCORERS=[ // top scorers: wc = goals at WC2026, total = goals across all W
   {name:"Ismael Saibari",cc:"ma",wc:3,total:3},
   {name:"Jonathan David",cc:"ca",wc:3,total:3},
   {name:"Ismaïla Sarr",cc:"sn",wc:3,total:3},
-  {name:"Elijah Just",cc:"nz",wc:3,total:3},
-  {name:"Cristiano Ronaldo",cc:"pt",wc:2,total:10},
-  {name:"Cody Gakpo",cc:"nl",wc:2,total:5},
-  {name:"Kai Havertz",cc:"de",wc:2,total:4},
-  {name:"Folarin Balogun",cc:"us",wc:2,total:2},
-  {name:"Pape Gueye",cc:"sn",wc:2,total:2},
-  {name:"Leandro Trossard",cc:"be",wc:2,total:2},
-  {name:"Riyad Mahrez",cc:"dz",wc:2,total:2},
-  {name:"Marko Arnautovic",cc:"at",wc:2,total:2},
-  {name:"Ayase Ueda",cc:"jp",wc:2,total:2},
-  {name:"Crysencio Summerville",cc:"nl",wc:2,total:2},
-  {name:"Cyle Larin",cc:"ca",wc:2,total:2},
-  {name:"Daichi Kamada",cc:"jp",wc:2,total:2},
-  {name:"Daniel Muñoz",cc:"co",wc:2,total:2},
-  {name:"Jude Bellingham",cc:"gb-eng",wc:2,total:2},
-  {name:"Julián Quiñones",cc:"mx",wc:2,total:2},
-  {name:"Mikel Oyarzabal",cc:"es",wc:2,total:2},
-  {name:"Nicolas Pépé",cc:"ci",wc:2,total:2},
-  {name:"Rubén Vargas",cc:"ch",wc:2,total:2},
-  {name:"Yasin Ayari",cc:"se",wc:2,total:2},
-  {name:"Yoane Wissa",cc:"cd",wc:2,total:2}
+  {name:"Elijah Just",cc:"nz",wc:3,total:3}
 ];
 function scorersHTML(){
   if(!SCORERS.length) return `<div class="note">Поки немає даних бомбардирів.</div>`;
@@ -1421,6 +1401,12 @@ const MSTATS={
     goals:[["28'","Marko Arnautović","b"],["41'","Rafik Belghali","a"],["55'","Marcel Sabitzer","b"],["60'","Riyad Mahrez","a"],["90+3'","Riyad Mahrez","a"],["90+6'","Sasa Kalajdžić","b"]],
     cards:[["11'","Marko Arnautović","y","b"]],
     stats:[["Очікувані голи (xG)",1.62,1.44],["Удари",12,10],["У створ",5,3]]
+  },
+  "k-R32-2":{
+    score:[0,1],
+    goals:[["90+2'","Stephen Eustáquio","b"]],
+    cards:[["54'","Nathan Saliba","y","b"],["67'","Niko Sigur","y","b"]],
+    stats:[["Удари",6,12],["У створ",1,7],["Кутові",1,4]]
   }
 };
 const WCHIST={ // FIFA World Cup history through 2022 (apps, titles, best result). Static historical data — no spoiler.
