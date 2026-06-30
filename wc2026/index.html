@@ -734,7 +734,10 @@ function scoreMismatch(key){ // owner-entered score differs from real MSTATS res
   else if(p[0]==="k"){ const x=state.ko[p[1]]&&state.ko[p[1]][+p[2]]; if(!x) return false; sa=x.sa; sb=x.sb; }
   else return false;
   if(sa===""||sb===""||sa==null||sb==null) return false;
-  return (+sa!==m.score[0])||(+sb!==m.score[1]);
+  if((+sa!==m.score[0])||(+sb!==m.score[1])) return true;
+  // knockout draw decided on penalties: wrong or missing shootout winner is a mismatch too
+  if(p[0]==="k" && +sa===+sb && m.pen){ const x=state.ko[p[1]][+p[2]]; return (x&&x.pen)!==m.pen; }
+  return false;
 }
 function filledByKey(key){
   const p=key.split("-");
@@ -1412,6 +1415,7 @@ const MSTATS={
   },
   "k-R32-0":{
     score:[1,1],
+    pen:"b",
     goals:[["42'","Julio Enciso","b"],["54'","Kai Havertz","a"]],
     cards:[["65'","Andrés Cubas","y","b"],["106'","Kai Havertz","y","a"],["115'","Jamal Musiala","y","a"],["117'","Matías Galarza","y","b"]]
   },
@@ -1629,7 +1633,7 @@ function bind(){
     if(!confirmSpoiler("⚠️ Авто-заповнення впише РЕАЛЬНИЙ рахунок матчу.\n\nЗаповнити?")) return;
     const p=key.split("-");
     if(p[0]==="g") state.g[p[1]][+p[2]]=[String(m.score[0]),String(m.score[1])];
-    else if(p[0]==="k"){ const x=state.ko[p[1]][+p[2]]; x.sa=String(m.score[0]); x.sb=String(m.score[1]); }
+    else if(p[0]==="k"){ const x=state.ko[p[1]][+p[2]]; x.sa=String(m.score[0]); x.sb=String(m.score[1]); x.pen=(m.score[0]===m.score[1])?(m.pen||null):null; }
     save(); render();
   });
   document.querySelectorAll('input[id^="g-"]').forEach(inp=>inp.addEventListener("input",e=>{
@@ -1673,7 +1677,7 @@ function bind(){
     let avail=0; RK.forEach(r=>state.ko[r].forEach((m,i)=>{ if(MSTATS[`k-${r}-${i}`]&&MSTATS[`k-${r}-${i}`].score) avail++; }));
     if(!avail){ alert("✅ Немає зіграних матчів плей-офф з даними."); return; }
     if(!confirmSpoiler(`⚠️ Заповнити РЕАЛЬНИМИ рахунками всі ${avail} матчів плей-офф (і виправити неправильні)?`)) return;
-    RK.forEach(r=>state.ko[r].forEach((m,i)=>{ const x=MSTATS[`k-${r}-${i}`]; if(x&&x.score){ m.sa=String(x.score[0]); m.sb=String(x.score[1]); } }));
+    RK.forEach(r=>state.ko[r].forEach((m,i)=>{ const x=MSTATS[`k-${r}-${i}`]; if(x&&x.score){ m.sa=String(x.score[0]); m.sb=String(x.score[1]); m.pen=(x.score[0]===x.score[1])?(x.pen||null):null; } }));
     save(); render();
   };
   const scb=$("scShow"); if(scb) scb.onclick=()=>{ scorersShown=true; render(); };
