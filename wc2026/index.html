@@ -185,6 +185,9 @@
   .bteam img.flag{width:18px;height:12px}
   .bteam.bw{color:var(--green-d);font-weight:800}
   .bteam.bl{opacity:.42}
+  .bsc{margin-left:auto;font-weight:800;font-size:11px;font-variant-numeric:tabular-nums;color:var(--muted);padding-left:4px}
+  .bteam.bw .bsc{color:var(--green-d)}
+  .bcell.mismatch{border-color:#f59e0b;box-shadow:inset 3px 0 0 #f59e0b}
   .bchamp{border:2px solid var(--green);border-radius:12px;padding:14px 8px;text-align:center;font-weight:800;font-size:13px;line-height:1.5;background:linear-gradient(160deg,#f0fdf4,#dcfce7)}
   /* двусторонняя сетка (фланги → центр) */
   .bracket2{display:flex;align-items:stretch;gap:6px;overflow-x:auto;padding:12px;min-height:560px;-webkit-overflow-scrolling:touch}
@@ -790,10 +793,12 @@ function bracketTreeHTML(){
   if(!state.koSeed)return `<div class="note">Сначала сформируй плей-офф: вкладка «1/16» → «Сформировать плей-офф».</div>`;
   // ячейка одного матча
   const cell=(r,i)=>{
-    const pair=roundTeams(r)[i],res=result(r,i),a=pair[0],b=pair[1];
-    return `<button class="bcell" data-key="k-${r}-${i}">`+
-      `<div class="bteam ${res==="a"?"bw":(res?"bl":"")}">${flag(a)}<span>${a||"—"}</span></div>`+
-      `<div class="bteam ${res==="b"?"bw":(res?"bl":"")}">${flag(b)}<span>${b||"—"}</span></div></button>`;
+    const key=`k-${r}-${i}`,pair=roundTeams(r)[i],res=result(r,i),a=pair[0],b=pair[1];
+    const m=state.ko[r][i],sa=(m&&m.sa!=null)?m.sa:"",sb=(m&&m.sb!=null)?m.sb:"";
+    const mm=(a&&b)&&scoreMismatch(key);
+    return `<button class="bcell${mm?" mismatch":""}" data-key="${key}">`+
+      `<div class="bteam ${res==="a"?"bw":(res?"bl":"")}">${flag(a)}<span>${a||"—"}</span><b class="bsc">${sa}</b></div>`+
+      `<div class="bteam ${res==="b"?"bw":(res?"bl":"")}">${flag(b)}<span>${b||"—"}</span><b class="bsc">${sb}</b></div></button>`;
   };
   // колонка с диапазоном слотов раунда [from..to]; заголовок вне .bcells → ячейки центрируются мат-точно
   const col=(label,r,from,to)=>{
