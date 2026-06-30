@@ -674,7 +674,8 @@ const SCORERS=[ // top scorers: wc = goals at WC2026, total = goals across all W
   {name:"Ismael Saibari",cc:"ma",wc:3,total:3},
   {name:"Jonathan David",cc:"ca",wc:3,total:3},
   {name:"Ismaïla Sarr",cc:"sn",wc:3,total:3},
-  {name:"Elijah Just",cc:"nz",wc:3,total:3}
+  {name:"Elijah Just",cc:"nz",wc:3,total:3},
+  {name:"Kai Havertz",cc:"de",wc:3,total:5}
 ];
 function scorersHTML(){
   if(!SCORERS.length) return `<div class="note">Поки немає даних бомбардирів.</div>`;
@@ -1407,6 +1408,17 @@ const MSTATS={
     goals:[["90+2'","Stephen Eustáquio","b"]],
     cards:[["54'","Nathan Saliba","y","b"],["67'","Niko Sigur","y","b"]],
     stats:[["Удари",6,12],["У створ",1,7],["Кутові",1,4]]
+  },
+  "k-R32-0":{
+    score:[1,1],
+    goals:[["42'","Julio Enciso","b"],["54'","Kai Havertz","a"]],
+    cards:[["65'","Andrés Cubas","y","b"],["106'","Kai Havertz","y","a"],["115'","Jamal Musiala","y","a"],["117'","Matías Galarza","y","b"]]
+  },
+  "k-R32-8":{
+    score:[2,1],
+    goals:[["29'","Kaishu Sano","b"],["56'","Casemiro","a"],["90+6'","Gabriel Martinelli","a"]],
+    cards:[["12'","Kaishu Sano","y","b"],["13'","Casemiro","y","a"],["45'","Daichi Kamada","y","b"]],
+    stats:[["Володіння",61,39,"%"],["Очікувані голи (xG)",1.72,0.23],["Удари",19,5],["У створ",7,2]]
   }
 };
 const WCHIST={ // FIFA World Cup history through 2022 (apps, titles, best result). Static historical data — no spoiler.
