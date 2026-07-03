@@ -673,6 +673,7 @@ const SCORERS=[ // top scorers: wc = goals at WC2026, total = goals across all W
   {name:"Ousmane Dembélé",cc:"fr",wc:4,total:4},
   {name:"Vinícius Júnior",cc:"br",wc:4,total:5},
   {name:"Ismaïla Sarr",cc:"sn",wc:4,total:5},
+  {name:"Mikel Oyarzabal",cc:"es",wc:4,total:4},
   {name:"Deniz Undav",cc:"de",wc:3,total:3},
   {name:"Johan Manzambi",cc:"ch",wc:3,total:3},
   {name:"Brian Brobbey",cc:"nl",wc:3,total:3},
@@ -683,7 +684,8 @@ const SCORERS=[ // top scorers: wc = goals at WC2026, total = goals across all W
   {name:"Kai Havertz",cc:"de",wc:3,total:5},
   {name:"Cody Gakpo",cc:"nl",wc:3,total:3},
   {name:"Julián Quiñones",cc:"mx",wc:3,total:3},
-  {name:"Folarin Balogun",cc:"us",wc:3,total:3}
+  {name:"Folarin Balogun",cc:"us",wc:3,total:3},
+  {name:"Cristiano Ronaldo",cc:"pt",wc:3,total:11}
 ];
 function scorersHTML(){
   if(!SCORERS.length) return `<div class="note">Поки немає даних бомбардирів.</div>`;
@@ -1471,6 +1473,15 @@ const MSTATS={
     goals:[["45'","Folarin Balogun","a"],["82'","Malik Tillman","a"]],
     cards:[["64'","Folarin Balogun","r","a"],["81'","Stjepan Radeljić","y","b"]],
     stats:[["Очікувані голи (xG)",0.92,0.25]]
+  },
+  "k-R32-4":{
+    score:[3,0],
+    goals:[["36'","Mikel Oyarzabal","a"],["66'","Pedro Porro","a"],["88'","Mikel Oyarzabal","a"]],
+    cards:[["83'","Stefan Posch","y","b"]]
+  },
+  "k-R32-5":{
+    score:[2,1],
+    goals:[["53'","Ivan Perišić","b"],["68'","Cristiano Ronaldo","a"],["90+4'","Gonçalo Ramos","a"]]
   }
 };
 const WCHIST={ // FIFA World Cup history through 2022 (apps, titles, best result). Static historical data — no spoiler.
