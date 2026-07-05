@@ -3,6 +3,10 @@ name: Deploy Pages (robust)
 # Replaces the flaky legacy "Deploy from a branch" (pages-build-deployment).
 # Requires repo Settings -> Pages -> Build and deployment -> Source = "GitHub Actions".
 # Uploads the whole repo root so every path (wc2026/, compliance pages, ...) is served.
+#
+# GitHub's Pages deploy backend intermittently returns "Deployment failed, try
+# again later." on the create-deployment call — hits the legacy build AND
+# deploy-pages@v4 alike. So we retry the deploy step up to 3 times.
 
 on:
   push:
@@ -24,7 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: ${{ steps.d1.outputs.page_url || steps.d2.outputs.page_url || steps.d3.outputs.page_url }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -34,10 +38,24 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: '.'
-      - name: Deploy to GitHub Pages
-        id: deployment
+
+      # --- Deploy with retry: the create-deployment call is the flaky part ---
+      - name: Deploy (attempt 1)
+        id: d1
+        continue-on-error: true
         uses: actions/deploy-pages@v4
-        with:
-          timeout: 600000
-          error_count: 10
-          reporting_interval: 5000
+      - name: Backoff before attempt 2
+        if: steps.d1.outcome == 'failure'
+        run: sleep 25
+      - name: Deploy (attempt 2)
+        id: d2
+        if: steps.d1.outcome == 'failure'
+        continue-on-error: true
+        uses: actions/deploy-pages@v4
+      - name: Backoff before attempt 3
+        if: steps.d1.outcome == 'failure' && steps.d2.outcome == 'failure'
+        run: sleep 60
+      - name: Deploy (attempt 3, final)
+        id: d3
+        if: steps.d1.outcome == 'failure' && steps.d2.outcome == 'failure'
+        uses: actions/deploy-pages@v4
