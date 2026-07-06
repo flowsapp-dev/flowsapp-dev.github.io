@@ -669,11 +669,13 @@ const SCORERS=[ // top scorers: wc = goals at WC2026, total = goals across all W
   {name:"Lionel Messi",cc:"ar",wc:7,total:20},
   {name:"Kylian Mbappé",cc:"fr",wc:7,total:19},
   {name:"Erling Haaland",cc:"no",wc:7,total:7},
-  {name:"Harry Kane",cc:"gb-eng",wc:5,total:13},
+  {name:"Harry Kane",cc:"gb-eng",wc:6,total:14},
   {name:"Ousmane Dembélé",cc:"fr",wc:4,total:4},
   {name:"Vinícius Júnior",cc:"br",wc:4,total:5},
   {name:"Ismaïla Sarr",cc:"sn",wc:4,total:5},
   {name:"Mikel Oyarzabal",cc:"es",wc:4,total:4},
+  {name:"Julián Quiñones",cc:"mx",wc:4,total:4},
+  {name:"Jude Bellingham",cc:"gb-eng",wc:4,total:4},
   {name:"Deniz Undav",cc:"de",wc:3,total:3},
   {name:"Johan Manzambi",cc:"ch",wc:3,total:3},
   {name:"Brian Brobbey",cc:"nl",wc:3,total:3},
@@ -683,10 +685,8 @@ const SCORERS=[ // top scorers: wc = goals at WC2026, total = goals across all W
   {name:"Elijah Just",cc:"nz",wc:3,total:3},
   {name:"Kai Havertz",cc:"de",wc:3,total:5},
   {name:"Cody Gakpo",cc:"nl",wc:3,total:6},
-  {name:"Julián Quiñones",cc:"mx",wc:3,total:3},
   {name:"Folarin Balogun",cc:"us",wc:3,total:3},
-  {name:"Cristiano Ronaldo",cc:"pt",wc:3,total:11},
-  {name:"Yoane Wissa",cc:"cd",wc:3,total:3}
+  {name:"Cristiano Ronaldo",cc:"pt",wc:3,total:11}
 ];
 function scorersHTML(){
   if(!SCORERS.length) return `<div class="note">Поки немає даних бомбардирів.</div>`;
@@ -1517,6 +1517,14 @@ const MSTATS={
     score:[1,2],
     goals:[["79'","Erling Haaland","b"],["90'","Erling Haaland","b"],["90+10'","Neymar","a"]],
     stats:[["Володіння",45,55,"%"],["Удари",14,9],["У створ",4,5]]
+  },
+  "k-R16-5":{
+    score:[2,3],
+    goals:[["36'","Jude Bellingham","b"],["38'","Jude Bellingham","b"],["42'","Julián Quiñones","a"],
+           ["60'","Harry Kane","b"],["69'","Raúl Jiménez","a"]],
+    cards:[["1'","Declan Rice","y","b"],["54'","Jarell Quansah","r","b"],
+           ["90+7'","Johan Vásquez","y","a"],["90+7'","Jordan Henderson","y","b"]],
+    stats:[["Володіння",63,37,"%"]]
   }
 };
 const WCHIST={ // FIFA World Cup history through 2022 (apps, titles, best result). Static historical data — no spoiler.
