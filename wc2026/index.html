@@ -668,7 +668,7 @@ function ccName(cc){return CCNAME[cc]||(cc||"").toUpperCase();}
 const SCORERS=[ // top scorers: wc = goals at WC2026, total = goals across all World Cups. Refreshed daily by the loader.
   {name:"Lionel Messi",cc:"ar",wc:7,total:20},
   {name:"Kylian Mbappé",cc:"fr",wc:7,total:19},
-  {name:"Erling Haaland",cc:"no",wc:5,total:5},
+  {name:"Erling Haaland",cc:"no",wc:7,total:7},
   {name:"Harry Kane",cc:"gb-eng",wc:5,total:13},
   {name:"Ousmane Dembélé",cc:"fr",wc:4,total:4},
   {name:"Vinícius Júnior",cc:"br",wc:4,total:5},
@@ -1512,6 +1512,11 @@ const MSTATS={
     score:[0,1],
     goals:[["70'","Kylian Mbappé","b"]],
     stats:[["Володіння",24,76,"%"],["Очікувані голи (xG)",0.15,1.36]]
+  },
+  "k-R16-4":{
+    score:[1,2],
+    goals:[["79'","Erling Haaland","b"],["90'","Erling Haaland","b"],["90+10'","Neymar","a"]],
+    stats:[["Володіння",45,55,"%"],["Удари",14,9],["У створ",4,5]]
   }
 };
 const WCHIST={ // FIFA World Cup history through 2022 (apps, titles, best result). Static historical data — no spoiler.
