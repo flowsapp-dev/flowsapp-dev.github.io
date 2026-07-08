@@ -666,7 +666,7 @@ function koMatch(round,i,pair,res,tag){
 const CCNAME={ar:"Аргентина",fr:"Франція",br:"Бразилія",no:"Норвегія",de:"Німеччина",ch:"Швейцарія",nl:"Нідерланди",ma:"Марокко",ca:"Канада",sn:"Сенегал",us:"США",gb:"Англія",es:"Іспанія",pt:"Португалія",jp:"Японія",hr:"Хорватія",be:"Бельгія",mx:"Мексика",ko:"Республіка Корея",sa:"Саудівська Аравія",uy:"Уругвай",co:"Колумбія",eg:"Єгипет",dz:"Алжир"};
 function ccName(cc){return CCNAME[cc]||(cc||"").toUpperCase();}
 const SCORERS=[ // top scorers: wc = goals at WC2026, total = goals across all World Cups. Refreshed daily by the loader.
-  {name:"Lionel Messi",cc:"ar",wc:7,total:20},
+  {name:"Lionel Messi",cc:"ar",wc:8,total:21},
   {name:"Kylian Mbappé",cc:"fr",wc:7,total:19},
   {name:"Erling Haaland",cc:"no",wc:7,total:7},
   {name:"Harry Kane",cc:"gb-eng",wc:6,total:14},
@@ -1533,6 +1533,17 @@ const MSTATS={
   },
   "k-R16-3":{
     score:[1,3]
+  },
+  "k-R16-6":{
+    score:[3,2],
+    goals:[["15'","Yasser Ibrahim","b"],["67'","Mostafa Zico","b"],
+           ["79'","Cristian Romero","a"],["83'","Lionel Messi","a"],["90+2'","Enzo Fernández","a"]],
+    stats:[["Очікувані голи (xG)",2.8,0.98],["Удари",19,5],["У створ",7,2]]
+  },
+  "k-R16-7":{
+    score:[0,0],
+    pen:"a",
+    goals:[]
   }
 };
 const WCHIST={ // FIFA World Cup history through 2022 (apps, titles, best result). Static historical data — no spoiler.
