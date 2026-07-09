@@ -505,17 +505,17 @@ function fmtCap(n){return n.toLocaleString("uk-UA");}
 function searchQ(a,b){return encodeURIComponent([a,b].filter(Boolean).join(" ")+" ЧС 2026 футбол");}
 
 /* ============ SUBTABS ============ */
-function defaultMatchSub(){ // latest round that has already started, by real date
-  const now=Date.now(), tmin={};
-  GKEYS.forEach(k=>PAIRS.forEach((p,mi)=>{
-    const s=SCHED_DEF[`g-${k}-${mi}`]; if(s&&s.ko){const id="t"+TOUR_OF[mi]; tmin[id]=Math.min(tmin[id]??Infinity,s.ko);}
-  }));
-  ["R32","R16","QF","SF","F"].forEach(r=>{
-    Object.keys(SCHED_DEF).forEach(key=>{ if(key.indexOf("k-"+r+"-")===0){const s=SCHED_DEF[key]; if(s&&s.ko) tmin[r]=Math.min(tmin[r]??Infinity,s.ko);} });
-  });
-  let pick="t1";
-  ["t1","t2","t3","R32","R16","QF","SF","F"].forEach(id=>{ if(tmin[id]!=null && now>=tmin[id]) pick=id; });
-  return pick;
+function defaultMatchSub(){ // round of the next not-yet-finished match (fills the gap between a finished round and the next one); all done -> last round
+  const now=Date.now(), FIN=150*60000, buckets={};
+  const add=(id,ko)=>{ (buckets[id]=buckets[id]||[]).push(ko); };
+  GKEYS.forEach(k=>PAIRS.forEach((p,mi)=>{ const s=SCHED_DEF[`g-${k}-${mi}`]; if(s&&s.ko) add("t"+TOUR_OF[mi],s.ko); }));
+  ["R32","R16","QF","SF","F"].forEach(r=>Object.keys(SCHED_DEF).forEach(key=>{ if(key.indexOf("k-"+r+"-")===0){const s=SCHED_DEF[key]; if(s&&s.ko) add(r,s.ko);} }));
+  const order=["t1","t2","t3","R32","R16","QF","SF","F"];
+  let best=null,bestKo=Infinity;
+  order.forEach(id=>(buckets[id]||[]).forEach(ko=>{ if(now<=ko+FIN && ko<bestKo){ bestKo=ko; best=id; } })); // earliest match not yet finished
+  if(best) return best;
+  for(let i=order.length-1;i>=0;i--) if(buckets[order[i]]) return order[i]; // everything played -> last round with matches
+  return "t1";
 }
 function renderSubtabs(){
   const box=$("subtabs");box.innerHTML="";
