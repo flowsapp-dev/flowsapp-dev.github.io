@@ -2,7 +2,9 @@ name: Deploy Pages (robust)
 
 # Replaces the flaky legacy "Deploy from a branch" (pages-build-deployment).
 # Requires repo Settings -> Pages -> Build and deployment -> Source = "GitHub Actions".
-# Uploads the whole repo root so every path (wc2026/, compliance pages, ...) is served.
+# Builds the site with Jekyll (so *.md compliance pages get permalinks and
+# render as HTML) then uploads _site so every path (wc2026/, /delete-account,
+# /privacy, /terms, ...) is served.
 #
 # GitHub's Pages deploy backend intermittently returns "Deployment failed, try
 # again later." on the create-deployment call — hits the legacy build AND
@@ -34,10 +36,15 @@ jobs:
         uses: actions/checkout@v4
       - name: Configure Pages
         uses: actions/configure-pages@v5
+      - name: Build with Jekyll
+        uses: actions/jekyll-build-pages@v1
+        with:
+          source: ./
+          destination: ./_site
       - name: Upload site artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: '.'
+          path: ./_site
 
       # --- Deploy with retry: the create-deployment call is the flaky part ---
       - name: Deploy (attempt 1)
