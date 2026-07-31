@@ -1,6 +1,7 @@
 ---
 layout: default
 title: Epoch Reels — Privacy Policy
+description: "Free social casino slots — legal documents"
 permalink: /epochreels/privacy
 ---
 
