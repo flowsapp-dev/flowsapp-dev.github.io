@@ -111,4 +111,4 @@ take effect means you accept the updated Policy.
 If you have questions about this Privacy Policy or wish to request data deletion,
 contact us at:
 
-**britishop@gmail.com**
+**flowsapp.dev@gmail.com**
