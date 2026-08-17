@@ -34,7 +34,10 @@ information may be collected automatically:
 - **Advertising identifier and device information** — your device's advertising
   ID (AD_ID), device model, operating system, language, coarse region, IP
   address, and ad interaction data. This is used to show and measure ads.
-- **Diagnostics** — crash logs and performance data used to keep the Game stable.
+- **Analytics and diagnostics** — analytics events (such as app opens, sessions,
+  and in-game actions), crash logs, and performance data used to understand usage
+  and keep the Game stable. Analytics collection is off until you accept it in the
+  Game.
 
 ## How We Use Information
 
@@ -60,10 +63,16 @@ process information as described in their own privacy policies:
   See: https://unity.com/legal/game-player-and-app-user-privacy-policy
 - **Google Play Billing (Google)** — processes in-app purchases.
   See: https://policies.google.com/privacy
+- **Google Analytics for Firebase and Firebase Crashlytics (Google)** — collect
+  analytics events (such as app opens and in-game actions) and crash and
+  performance diagnostics to help us understand usage and keep the Game stable.
+  Analytics collection stays **off until you accept it in the Game** on first
+  launch. See: https://firebase.google.com/support/privacy
 
 We do not sell your personal information. We share advertising identifiers and
 related device data with our advertising provider (Unity Ads) only to deliver and
-measure ads.
+measure ads. Analytics and diagnostics providers (Firebase, PlayFab) process this
+information on our behalf as our service providers, not for their own purposes.
 
 ## Advertising
 
