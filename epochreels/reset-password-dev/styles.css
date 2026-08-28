@@ -14,43 +14,37 @@ body {
     min-height: 100vh;
     margin: 0;
     background:
-        radial-gradient(circle at 50% 0%, rgba(142, 33, 22, 0.45), transparent 42%),
-        linear-gradient(180deg, #24120d 0%, #100b09 72%);
+        linear-gradient(rgba(5, 8, 20, 0.48), rgba(5, 3, 2, 0.7)),
+        url("assets/background.png") center / cover fixed no-repeat;
 }
 
 .page-shell {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     min-height: 100vh;
     place-items: center;
     padding: 24px 16px;
 }
 
 .card {
-    width: min(100%, 460px);
+    width: 100%;
+    max-width: 460px;
+    min-width: 0;
     padding: 36px clamp(22px, 7vw, 44px) 24px;
     border: 1px solid #815b2c;
     border-radius: 18px;
-    background: rgba(28, 20, 16, 0.96);
+    background: rgba(19, 14, 12, 0.9);
     box-shadow: 0 22px 60px rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(5px);
 }
 
-.brand-mark {
-    display: grid;
-    width: 58px;
-    height: 58px;
-    margin: 0 auto 14px;
-    place-items: center;
-    border: 2px solid #d5a44c;
-    border-radius: 50%;
-    color: #f8d889;
-    font-family: Georgia, serif;
-    font-size: 20px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    box-shadow: inset 0 0 0 4px #4c291b;
+.logo {
+    display: block;
+    width: min(100%, 300px);
+    height: auto;
+    margin: 0 auto 24px;
 }
 
-.eyebrow,
 .environment {
     color: #d5a44c;
     font-size: 12px;
@@ -159,13 +153,8 @@ button:disabled {
 }
 
 .success-panel {
-    padding-top: 10px;
+    padding: 18px 0 28px;
     text-align: center;
-}
-
-.success-panel p {
-    color: #cbbcac;
-    line-height: 1.5;
 }
 
 .success-icon {
@@ -184,6 +173,11 @@ button:disabled {
     margin: 28px 0 0;
     color: #77695e;
     font-size: 10px;
+}
+
+.card.is-success .reset-copy,
+.card.is-success .environment {
+    display: none;
 }
 
 [hidden] {

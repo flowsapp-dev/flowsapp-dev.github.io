@@ -7,6 +7,7 @@
     const token = query.get("token") || "";
 
     const form = document.getElementById("reset-form");
+    const card = document.querySelector(".card");
     const passwordInput = document.getElementById("password");
     const confirmPasswordInput = document.getElementById("confirm-password");
     const submitButton = document.getElementById("submit-button");
@@ -59,6 +60,8 @@
 
             if (response.ok && result.ok === true) {
                 form.hidden = true;
+                card.classList.add("is-success");
+                card.setAttribute("aria-labelledby", "success-title");
                 successPanel.hidden = false;
                 return;
             }

@@ -12,10 +12,11 @@
 <body>
     <main class="page-shell">
         <section class="card" aria-labelledby="page-title">
-            <div class="brand-mark" aria-hidden="true">ER</div>
-            <p class="eyebrow">Epoch Reels</p>
-            <h1 id="page-title">Reset your password</h1>
-            <p class="intro">Choose a new password for your Epoch Reels account.</p>
+            <img class="logo" src="assets/logo.png" alt="Epoch Reels">
+            <div class="reset-copy">
+                <h1 id="page-title">Reset your password</h1>
+                <p class="intro">Choose a new password for your Epoch Reels account.</p>
+            </div>
 
             <div id="link-error" class="message message-error" role="alert" hidden>
                 This password reset link is invalid or has expired. Request a new link from the game.
@@ -50,8 +51,7 @@
 
             <div id="success-panel" class="success-panel" role="status" hidden>
                 <div class="success-icon" aria-hidden="true">&#10003;</div>
-                <h2>Password updated</h2>
-                <p>Return to Epoch Reels and sign in with your new password.</p>
+                <h2 id="success-title">Password updated</h2>
             </div>
 
             <p class="environment">Development environment</p>
