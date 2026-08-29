@@ -1,0 +1,181 @@
+:root {
+    color-scheme: dark;
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: #120c09;
+    color: #f8ecd7;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    min-width: 320px;
+    min-height: 100vh;
+    margin: 0;
+    background:
+        linear-gradient(rgba(5, 8, 20, 0.48), rgba(5, 3, 2, 0.7)),
+        url("assets/background.png") center / cover fixed no-repeat;
+}
+
+.page-shell {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    min-height: 100vh;
+    place-items: center;
+    padding: 24px 16px;
+}
+
+.card {
+    width: 100%;
+    max-width: 460px;
+    min-width: 0;
+    padding: 36px clamp(22px, 7vw, 44px) 24px;
+    border: 1px solid #815b2c;
+    border-radius: 18px;
+    background: rgba(19, 14, 12, 0.9);
+    box-shadow: 0 22px 60px rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(5px);
+}
+
+.logo {
+    display: block;
+    width: min(100%, 300px);
+    height: auto;
+    margin: 0 auto 24px;
+}
+
+h1,
+h2 {
+    margin: 0;
+    color: #fff8ec;
+    font-family: Georgia, serif;
+    text-align: center;
+}
+
+h1 {
+    font-size: clamp(28px, 8vw, 38px);
+    line-height: 1.1;
+}
+
+h2 {
+    font-size: 26px;
+}
+
+.intro {
+    margin: 12px 0 28px;
+    color: #cbbcac;
+    line-height: 1.5;
+    text-align: center;
+}
+
+label {
+    display: block;
+    margin: 18px 0 7px;
+    color: #f6e7d1;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+input {
+    width: 100%;
+    min-height: 48px;
+    padding: 11px 13px;
+    border: 1px solid #6e5947;
+    border-radius: 8px;
+    outline: none;
+    background: #fffaf2;
+    color: #20140f;
+    font: inherit;
+}
+
+input:focus {
+    border-color: #e5b656;
+    box-shadow: 0 0 0 3px rgba(229, 182, 86, 0.22);
+}
+
+.hint {
+    margin: 6px 0 0;
+    color: #9f9185;
+    font-size: 12px;
+}
+
+button {
+    width: 100%;
+    min-height: 50px;
+    margin-top: 24px;
+    border: 1px solid #f2c768;
+    border-radius: 25px;
+    background: linear-gradient(180deg, #c93625, #8f140e);
+    color: #fff;
+    cursor: pointer;
+    font: inherit;
+    font-weight: 700;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.55);
+}
+
+button:hover:not(:disabled) {
+    filter: brightness(1.08);
+}
+
+button:focus-visible {
+    outline: 3px solid rgba(242, 199, 104, 0.55);
+    outline-offset: 3px;
+}
+
+button:disabled {
+    cursor: wait;
+    opacity: 0.65;
+}
+
+.message {
+    margin-top: 18px;
+    padding: 12px 14px;
+    border: 1px solid #a34837;
+    border-radius: 8px;
+    background: rgba(139, 35, 24, 0.22);
+    color: #ffd9d1;
+    font-size: 14px;
+    line-height: 1.45;
+}
+
+.message-error {
+    margin: 0 0 20px;
+}
+
+.success-panel {
+    padding: 18px 0 28px;
+    text-align: center;
+}
+
+.success-icon {
+    display: grid;
+    width: 62px;
+    height: 62px;
+    margin: 0 auto 18px;
+    place-items: center;
+    border: 2px solid #67bd72;
+    border-radius: 50%;
+    color: #8de49a;
+    font-size: 32px;
+}
+
+.card.is-success .reset-copy {
+    display: none;
+}
+
+[hidden] {
+    display: none !important;
+}
+
+@media (max-width: 480px) {
+    .page-shell {
+        align-items: start;
+        padding-top: 14px;
+    }
+
+    .card {
+        padding-top: 28px;
+        border-radius: 14px;
+    }
+}

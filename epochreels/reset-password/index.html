@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="referrer" content="no-referrer">
+    <meta name="robots" content="noindex, nofollow">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src https://rd25bpnv7xfnbfh2vvsnv6yfgq0iclua.lambda-url.eu-north-1.on.aws; img-src 'self' data:; style-src 'self'; script-src 'self'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'">
+    <title>Reset Password | Epoch Reels</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <main class="page-shell">
+        <section class="card" aria-labelledby="page-title">
+            <img class="logo" src="assets/logo.png" alt="Epoch Reels">
+            <div class="reset-copy">
+                <h1 id="page-title">Reset your password</h1>
+                <p class="intro">Choose a new password for your Epoch Reels account.</p>
+            </div>
+
+            <div id="link-error" class="message message-error" role="alert" hidden>
+                This password reset link is invalid or has expired. Request a new link from the game.
+            </div>
+
+            <form id="reset-form" novalidate>
+                <label for="password">New password</label>
+                <input
+                    id="password"
+                    name="password"
+                    type="password"
+                    minlength="6"
+                    autocomplete="new-password"
+                    required
+                >
+                <p class="hint">Use at least 6 characters.</p>
+
+                <label for="confirm-password">Confirm new password</label>
+                <input
+                    id="confirm-password"
+                    name="confirm-password"
+                    type="password"
+                    minlength="6"
+                    autocomplete="new-password"
+                    required
+                >
+
+                <div id="form-message" class="message" role="status" aria-live="polite" hidden></div>
+
+                <button id="submit-button" type="submit">Update password</button>
+            </form>
+
+            <div id="success-panel" class="success-panel" role="status" hidden>
+                <div class="success-icon" aria-hidden="true">&#10003;</div>
+                <h2 id="success-title">Password updated</h2>
+            </div>
+        </section>
+    </main>
+
+    <script src="app.js" defer></script>
+</body>
+</html>
