@@ -1,11 +1,11 @@
 ---
-layout: default
+layout: epochreels
 title: Delete Your Epoch Reels Account
-description: "Free social casino slots — legal documents"
+heading: Delete Your Account
+description: How to request deletion of your Epoch Reels account and game data.
 permalink: /epochreels/delete-account
+page_class: epochreels-legal
 ---
-
-# Delete Your Epoch Reels Account
 
 You can request deletion of your Epoch Reels player account and its data at any
 time. Epoch Reels plays as a guest — your progress is tied to an anonymous player

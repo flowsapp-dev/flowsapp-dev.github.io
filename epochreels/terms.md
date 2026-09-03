@@ -1,11 +1,11 @@
 ---
-layout: default
+layout: epochreels
 title: Epoch Reels — Terms of Service
-description: "Free social casino slots — legal documents"
+heading: Terms of Service
+description: The rules and conditions for using and playing Epoch Reels.
 permalink: /epochreels/terms
+page_class: epochreels-legal
 ---
-
-# Terms of Service for Epoch Reels
 
 **Effective date:** 2026-08-04
 

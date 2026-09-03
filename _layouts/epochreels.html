@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="{{ page.lang | default: 'en' }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#120c09">
+    <title>{{ page.title | default: site.title }}</title>
+    <meta name="description" content="{{ page.description | escape }}">
+    <link rel="stylesheet" href="{{ '/epochreels/assets/site.css' | relative_url }}">
+</head>
+<body class="{{ page.page_class | default: 'epochreels-legal' }}">
+    <a class="skip-link" href="#main-content">Skip to content</a>
+
+    <header class="hero">
+        <nav class="site-nav" aria-label="Epoch Reels navigation">
+            <a class="brand" href="{{ '/epochreels/' | relative_url }}">Epoch Reels</a>
+            <div class="nav-links">
+                <a href="{{ '/epochreels/privacy' | relative_url }}">Privacy</a>
+                <a href="{{ '/epochreels/terms' | relative_url }}">Terms</a>
+                <a href="{{ '/epochreels/delete-account' | relative_url }}">Delete account</a>
+            </div>
+        </nav>
+
+        <div class="hero-content">
+            {% if page.show_logo %}
+            <img class="hero-logo" src="{{ '/epochreels/reset-password/assets/logo.png' | relative_url }}" alt="Epoch Reels">
+            {% else %}
+            <p class="eyebrow">Epoch Reels</p>
+            {% endif %}
+            <h1>{{ page.heading | default: page.title }}</h1>
+            {% if page.description %}
+            <p class="hero-description">{{ page.description }}</p>
+            {% endif %}
+        </div>
+    </header>
+
+    <main id="main-content" class="content-shell">
+        <article class="content-card">
+            {{ content }}
+        </article>
+    </main>
+
+    <footer class="site-footer">
+        <span>Epoch Reels by FlowsApp</span>
+        <a href="mailto:flowsapp.dev@gmail.com">flowsapp.dev@gmail.com</a>
+    </footer>
+</body>
+</html>

@@ -1,11 +1,11 @@
 ---
-layout: default
+layout: epochreels
 title: Epoch Reels — Privacy Policy
-description: "Free social casino slots — legal documents"
+heading: Privacy Policy
+description: How Epoch Reels collects, uses, and protects information.
 permalink: /epochreels/privacy
+page_class: epochreels-legal
 ---
-
-# Privacy Policy for Epoch Reels
 
 **Effective date:** 2026-07-31
 
