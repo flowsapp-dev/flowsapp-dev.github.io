@@ -1,10 +1,11 @@
 ---
-layout: default
-title: Delete Your FLOW$ Account
+layout: flows
+title: FLOWS — Delete Account
+heading: Delete Account
+description: Instructions for deleting your FLOWS account and associated data.
 permalink: /delete-account
+page_class: flows-legal
 ---
-
-# Delete Your FLOW$ Account
 
 You can delete your FLOW$ account at any time. Account deletion and local
 data wipe are two separate actions in the app — see below.

@@ -1,10 +1,11 @@
 ---
-layout: default
-title: Terms of Service
+layout: flows
+title: FLOWS — Terms of Service
+heading: Terms of Service
+description: Terms and conditions for using the FLOWS mobile application.
 permalink: /terms
+page_class: flows-legal
 ---
-
-# Terms of Service
 
 **Last updated: May 16, 2026**
 

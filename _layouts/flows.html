@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="{{ page.lang | default: 'en' }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#0f766e">
+    <title>{{ page.title | default: 'FLOWS — Support & Legal' }}</title>
+    <meta name="description" content="{{ page.description | escape }}">
+    <link rel="stylesheet" href="{{ '/assets/flows.css' | relative_url }}">
+</head>
+<body class="{{ page.page_class | default: 'flows-page' }}">
+    <a class="skip-link" href="#main-content">Skip to content</a>
+
+    <header class="hero">
+        <nav class="site-nav" aria-label="FLOWS navigation">
+            <a class="brand" href="{{ '/' | relative_url }}">FlowsApp</a>
+            <div class="nav-links">
+                <a href="{{ '/flows' | relative_url }}">FLOWS</a>
+                <a href="{{ '/privacy' | relative_url }}">Privacy</a>
+                <a href="{{ '/terms' | relative_url }}">Terms</a>
+                <a href="{{ '/delete-account' | relative_url }}">Delete account</a>
+            </div>
+        </nav>
+
+        <div class="hero-content">
+            <p class="eyebrow">FlowsApp</p>
+            <h1>{{ page.heading | default: page.title }}</h1>
+            {% if page.description %}
+            <p class="hero-description">{{ page.description }}</p>
+            {% endif %}
+        </div>
+    </header>
+
+    <main id="main-content" class="content-shell">
+        <article class="content-card">
+            {{ content }}
+        </article>
+    </main>
+
+    <footer class="site-footer">
+        <span>FLOWS by FlowsApp</span>
+        <a href="mailto:flowsapp.dev@gmail.com">flowsapp.dev@gmail.com</a>
+    </footer>
+</body>
+</html>

@@ -1,10 +1,11 @@
 ---
-layout: default
-title: Privacy Policy
+layout: flows
+title: FLOWS — Privacy Policy
+heading: Privacy Policy
+description: Privacy information for the FLOWS mobile application.
 permalink: /privacy
+page_class: flows-legal
 ---
-
-# Privacy Policy
 
 **Last updated: May 16, 2026**
 
