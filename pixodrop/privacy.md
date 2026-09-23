@@ -1,11 +1,11 @@
 ---
-layout: default
+layout: pixodrop
 title: Pixodrop — Privacy Policy
-description: "Free block puzzle game — legal documents"
+heading: Privacy Policy
+description: How Pixodrop collects, uses, and protects information.
 permalink: /pixodrop/privacy
+page_class: pixodrop-legal
 ---
-
-# Privacy Policy for Pixodrop
 
 **Effective date:** 2026-09-21
 

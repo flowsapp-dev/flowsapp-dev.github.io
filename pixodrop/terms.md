@@ -1,11 +1,11 @@
 ---
-layout: default
+layout: pixodrop
 title: Pixodrop — Terms of Service
-description: "Free block puzzle game — legal documents"
+heading: Terms of Service
+description: The rules and conditions for using and playing Pixodrop.
 permalink: /pixodrop/terms
+page_class: pixodrop-legal
 ---
-
-# Terms of Service for Pixodrop
 
 **Effective date:** 2026-09-21
 

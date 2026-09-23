@@ -1,11 +1,11 @@
 ---
-layout: default
+layout: pixodrop
 title: Delete Your Pixodrop Account
-description: "Free block puzzle game — legal documents"
+heading: Delete Your Account
+description: How to request deletion of your Pixodrop account and game data.
 permalink: /pixodrop/delete-account
+page_class: pixodrop-legal
 ---
-
-# Delete Your Pixodrop Account
 
 You can request deletion of your Pixodrop player account and its data at any
 time. Pixodrop plays as a guest — your progress is tied to an anonymous player

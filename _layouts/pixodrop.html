@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="{{ page.lang | default: 'en' }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#0c1526">
+    <title>{{ page.title | default: site.title }}</title>
+    <meta name="description" content="{{ page.description | escape }}">
+    <link rel="stylesheet" href="{{ '/pixodrop/assets/site.css' | relative_url }}">
+</head>
+<body class="{{ page.page_class | default: 'pixodrop-legal' }}">
+    <a class="skip-link" href="#main-content">Skip to content</a>
+
+    <header class="hero">
+        <nav class="site-nav" aria-label="Pixodrop navigation">
+            <a class="brand" href="{{ '/pixodrop/' | relative_url }}">Pixodrop</a>
+            <div class="nav-links">
+                <a href="{{ '/pixodrop/privacy' | relative_url }}">Privacy</a>
+                <a href="{{ '/pixodrop/terms' | relative_url }}">Terms</a>
+                <a href="{{ '/pixodrop/delete-account' | relative_url }}">Delete account</a>
+            </div>
+        </nav>
+
+        <div class="hero-content">
+            {% if page.show_logo %}
+            <img class="hero-logo" src="{{ '/pixodrop/assets/logo.png' | relative_url }}" alt="Pixodrop">
+            {% else %}
+            <p class="eyebrow">Pixodrop</p>
+            {% endif %}
+            <h1>{{ page.heading | default: page.title }}</h1>
+            {% if page.description %}
+            <p class="hero-description">{{ page.description }}</p>
+            {% endif %}
+        </div>
+    </header>
+
+    <main id="main-content" class="content-shell">
+        <article class="content-card">
+            {{ content }}
+        </article>
+    </main>
+
+    <footer class="site-footer">
+        <span>Pixodrop by FlowsApp</span>
+        <a href="mailto:flowsapp.dev@gmail.com">flowsapp.dev@gmail.com</a>
+    </footer>
+</body>
+</html>
